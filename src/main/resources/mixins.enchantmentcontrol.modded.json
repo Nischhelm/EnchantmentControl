@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "enchantmentcontrol.mixin",
+  "refmap": "mixins.enchantmentcontrol.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.8",
+  "mixins": [
+    "EnchantmentMixin"
+  ],
+  "injectors": {
+    "maxShiftBy": 10
+  }
+}
