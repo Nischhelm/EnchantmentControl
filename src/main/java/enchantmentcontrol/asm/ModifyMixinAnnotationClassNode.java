@@ -38,7 +38,7 @@ public class ModifyMixinAnnotationClassNode extends ClassNode {
 		@Override
 		public void visitEnd() {
 			//TODO: read from config
-			Annotations.setValue(this, "targets", Arrays.asList("com.Shultrea.Rin.Enchantment_Base_Sector.EnchantmentBase"));
+			Annotations.setValue(this, "targets", Arrays.asList("com.Shultrea.Rin.Enchantment_Base_Sector.EnchantmentBase", "com.Shultrea.Rin.Ench0_4_5.EnchantmentFrenzy"));
 		}
 	}
 }

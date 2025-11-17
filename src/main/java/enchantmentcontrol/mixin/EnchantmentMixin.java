@@ -12,63 +12,67 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.List;
 
 @Debug(export = true)
-@Mixin(targets = {"net.minecraft.enchantment"}) //set to .Enchantment to have the injectors succeed while working on code
+@Pseudo
+@Mixin(targets = {"net.minecraft.enchantment.Enchantment"}, remap = false)
 public abstract class EnchantmentMixin extends Enchantment {
     protected EnchantmentMixin(Rarity rarityIn, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {
         super(rarityIn, typeIn, slots);
     }
 
-    @WrapMethod(method = "getEntityEquipment")
-    public List<ItemStack> getEntityEquipment(EntityLivingBase entityIn, Operation<List<ItemStack>> original) {
+    @WrapMethod(method = "func_185260_a")
+    public List<ItemStack> ec_getEntityEquipment(EntityLivingBase entityIn, Operation<List<ItemStack>> original) {
         return original.call(entityIn);
     }
 
-    @WrapMethod(method = "getRarity")
-    public Enchantment.Rarity getRarity(Operation<Rarity> original) {
+    @WrapMethod(method = "func_77324_c")
+    public Enchantment.Rarity ec_getRarity(Operation<Enchantment.Rarity> original) {
         return original.call();
     }
 
-    @WrapMethod(method = "getMinLevel")
-    public int getMinLevel(Operation<Integer> original) {
+    @WrapMethod(method = "func_77319_d")
+    public int ec_getMinLevel(Operation<Integer> original) {
         return original.call();
     }
 
-    @WrapMethod(method = "getMaxLevel")
-    public int getMaxLevel(Operation<Integer> original) {
+    @Unique
+    @WrapMethod(method = "func_77325_b")
+    public int ec_getMaxLevel(Operation<Integer> original) {
         return original.call();
     }
 
-    @WrapMethod(method = "getMinEnchantability")
-    public int getMinEnchantability(int enchantmentLevel, Operation<Integer> original) {
+    @WrapMethod(method = "func_77321_a")
+    public int ec_getMinEnchantability(int enchantmentLevel, Operation<Integer> original) {
         return original.call(enchantmentLevel);
     }
 
-    @WrapMethod(method = "getMaxEnchantability")
-    public int getMaxEnchantability(int enchantmentLevel, Operation<Integer> original) {
+    @WrapMethod(method = "func_77317_b")
+    public int ec_getMaxEnchantability(int enchantmentLevel, Operation<Integer> original) {
         return original.call(enchantmentLevel);
     }
 
-    @WrapMethod(method = "calcModifierDamage")
-    public int calcModifierDamage(int level, DamageSource source, Operation<Integer> original) {
+    @WrapMethod(method = "func_77318_a")
+    public int ec_calcModifierDamage(int level, DamageSource source, Operation<Integer> original) {
         return original.call(level, source);
     }
 
-    @WrapMethod(method = "calcDamageByCreature")
-    public float calcDamageByCreature(int level, EnumCreatureAttribute creatureType, Operation<Float> original) {
+    @WrapMethod(method = "func_152376_a")
+    public float ec_calcDamageByCreature(int level, EnumCreatureAttribute creatureType, Operation<Float> original) {
         return original.call(level, creatureType);
     }
 
-    @WrapMethod(method = "canApplyTogether")
-    protected boolean canApplyTogether(Enchantment ench, Operation<Boolean> original) {
+    @WrapMethod(method = "func_77326_a")
+    protected boolean ec_canApplyTogether(Enchantment ench, Operation<Boolean> original) {
         return original.call(ench);
     }
 
-    @WrapMethod(method = "getTranslatedName")
-    public String getTranslatedName(int level, Operation<String> original) {
+    @WrapMethod(method = "func_77316_c")
+    public String ec_getTranslatedName(int level, Operation<String> original) {
         return original.call(level);
         //TODO: color
 //        String s = I18n.translateToLocal(this.getName());
@@ -80,38 +84,38 @@ public abstract class EnchantmentMixin extends Enchantment {
 //        return level == 1 && this.getMaxLevel() == 1 ? s : s + " " + I18n.translateToLocal("enchantment.level." + level);
     }
 
-    @WrapMethod(method = "canApply")
-    public boolean canApply(ItemStack stack, Operation<Boolean> original) {
+    @WrapMethod(method = "func_92089_a")
+    public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
         return original.call(stack);
     }
 
-    @WrapMethod(method = "onEntityDamaged")
-    public void onEntityDamaged(EntityLivingBase user, Entity target, int level, Operation<Void> original) {
+    @WrapMethod(method = "func_151368_a")
+    public void ec_onEntityDamaged(EntityLivingBase user, Entity target, int level, Operation<Void> original) {
         original.call(user, target, level);
     }
 
-    @WrapMethod(method = "onUserHurt")
-    public void onUserHurt(EntityLivingBase user, Entity attacker, int level, Operation<Void> original) {
+    @WrapMethod(method = "func_151367_b")
+    public void ec_onUserHurt(EntityLivingBase user, Entity attacker, int level, Operation<Void> original) {
         original.call(user, attacker, level);
     }
 
-    @WrapMethod(method = "isTreasureEnchantment")
-    public boolean isTreasureEnchantment(Operation<Boolean> original) {
+    @WrapMethod(method = "func_185261_e")
+    public boolean ec_isTreasureEnchantment(Operation<Boolean> original) {
         return original.call();
     }
 
-    @WrapMethod(method = "isCurse")
-    public boolean isCurse(Operation<Boolean> original) {
+    @WrapMethod(method = "func_190936_d")
+    public boolean ec_isCurse(Operation<Boolean> original) {
         return original.call();
     }
 
     @WrapMethod(method = "canApplyAtEnchantingTable")
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
+    public boolean ec_canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
         return original.call(stack);
     }
 
     @WrapMethod(method = "isAllowedOnBooks")
-    public boolean isAllowedOnBooks(Operation<Boolean> original) {
+    public boolean ec_isAllowedOnBooks(Operation<Boolean> original) {
         return original.call();
     }
 }
