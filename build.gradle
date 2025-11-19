@@ -62,6 +62,10 @@ dependencies {
 
 mixin {
     add sourceSets.main, "mixins.${mod_id}.refmap.json"
+
+    messages {
+        TARGET_VALIDATOR = 'warning'
+    }
 }
 
 fancyGradle {
