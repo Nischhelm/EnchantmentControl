@@ -14,8 +14,12 @@ public class ConfigHandler {
 	@Config.Comment("Enable")
 	@Config.Name("Enable")
 	@Config.RequiresMcRestart
-	@MixinConfig.MixinToggle(lateMixin = "mixins.enchantmentcontrol.modded.json", defaultValue = true)
-	public static boolean enableVanillaMixin = true;
+	@MixinConfig.MixinToggle(
+			earlyMixin = "mixins.enchantmentcontrol.vanilla.json",
+			lateMixin = "mixins.enchantmentcontrol.modded.json",
+			defaultValue = true
+	)
+	public static boolean enable = true; //TODO: needs way more config
 
 	@Mod.EventBusSubscriber(modid = EnchantmentControl.MODID)
 	private static class EventHandler{

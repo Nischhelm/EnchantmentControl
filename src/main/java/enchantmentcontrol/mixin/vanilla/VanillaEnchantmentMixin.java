@@ -1,9 +1,8 @@
-package enchantmentcontrol.mixin.modded;
+package enchantmentcontrol.mixin.vanilla;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.enchantment.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
@@ -16,10 +15,33 @@ import org.spongepowered.asm.mixin.Mixin;
 import java.util.List;
 
 @Debug(export = true)
-@Mixin(targets = {"net.minecraft.enchantment.Enchantment"})
-@SuppressWarnings({"MixinSuperClass"})
-public abstract class EnchantmentMixin extends Enchantment {
-    protected EnchantmentMixin(Rarity rarityIn, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {
+@Mixin(value = {
+        EnchantmentArrowDamage.class,
+        EnchantmentArrowFire.class,
+        EnchantmentArrowInfinite.class,
+        EnchantmentArrowKnockback.class,
+        EnchantmentBindingCurse.class,
+        EnchantmentDamage.class,
+        EnchantmentDigging.class,
+        EnchantmentDurability.class,
+        EnchantmentFireAspect.class,
+        EnchantmentFishingSpeed.class,
+        EnchantmentFrostWalker.class,
+        EnchantmentKnockback.class,
+        EnchantmentLootBonus.class,
+        EnchantmentMending.class,
+        EnchantmentOxygen.class,
+        EnchantmentProtection.class,
+        EnchantmentSweepingEdge.class,
+        EnchantmentThorns.class,
+        EnchantmentUntouching.class,
+        EnchantmentVanishingCurse.class,
+        EnchantmentWaterWalker.class,
+        EnchantmentWaterWorker.class
+})
+@SuppressWarnings({"MixinAnnotationTarget", "UnresolvedMixinReference"})
+public abstract class VanillaEnchantmentMixin extends Enchantment {
+    protected VanillaEnchantmentMixin(Rarity rarityIn, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {
         super(rarityIn, typeIn, slots);
     }
 
