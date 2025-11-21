@@ -1,0 +1,30 @@
+package enchantmentcontrol.util;
+
+public enum MaxEnchantabilityMode {
+    NORMAL {
+        @Override
+        public int getMaxEnch(int enchLvl, int min, int range) {
+            return min + range;
+        }
+    },
+    SUPER {
+        @Override
+        public int getMaxEnch(int enchLvl, int min, int range) {
+            return 1 + enchLvl * 10 + 5;
+        }
+    },
+    CONST {
+        @Override
+        public int getMaxEnch(int enchLvl, int min, int range) {
+            return range;
+        }
+    },
+    LINEAR {
+        @Override
+        public int getMaxEnch(int enchLvl, int min, int range) {
+            return range * enchLvl;
+        }
+    };
+
+    public abstract int getMaxEnch(int enchLvl, int min, int range);
+}

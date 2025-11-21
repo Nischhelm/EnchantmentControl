@@ -16,7 +16,7 @@ public class EnchantmentControl {
     public static final String MODID = "enchantmentcontrol";
     public static final String VERSION = "indev";
     public static final String NAME = "EnchantmentControl";
-    public static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger(EnchantmentControl.NAME);
 
 	@Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
