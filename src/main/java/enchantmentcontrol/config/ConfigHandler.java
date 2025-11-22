@@ -10,6 +10,9 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Config(modid = EnchantmentControl.MODID)
 @MixinConfig(name = EnchantmentControl.MODID)
 public class ConfigHandler {
@@ -40,6 +43,12 @@ public class ConfigHandler {
 			"Disabling will instead only look at the actual checks of each EnumEnchantmentType (like SWORD = has to be instanceof ItemSword) to match.")
 	@Config.Name("-Allow Custom Items")
 	public static boolean allowCustomItems = true;
+
+	@Config.Comment("Override vanilla rarity weights (COMMON = 10, UNCOMMON = 5, RARE = 2, VERY_RARE = 1) or define your own rarities with their own weights here.")
+	@Config.Name("Defined Rarities")
+	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){{
+		put("LEGENDARY", 1);
+	}};
 
 	@Mod.EventBusSubscriber(modid = EnchantmentControl.MODID)
 	private static class EventHandler {

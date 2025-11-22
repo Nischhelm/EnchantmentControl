@@ -22,19 +22,6 @@ public abstract class EnchantmentMixin extends Enchantment {
         super(rarityIn, typeIn, slots);
     }
 
-    //TODO: anything to do here? mainly slots right
-//    @WrapMethod(method = "getEntityEquipment")
-//    public List<ItemStack> ec_getEntityEquipment(EntityLivingBase entityIn, Operation<List<ItemStack>> original) {
-//        return original.call(entityIn);
-//    }
-
-    @WrapMethod(method = "getRarity")
-    public Rarity ec_getRarity(Operation<Rarity> original) {
-        EnchantmentInfo info = EnchantmentInfo.get(this);
-        if(info != null && info.rarity != null) return info.rarity;
-        return original.call();
-    }
-
     @WrapMethod(method = "getMinLevel")
     public int ec_getMinLevel(Operation<Integer> original) {
         EnchantmentInfo info = EnchantmentInfo.get(this);
