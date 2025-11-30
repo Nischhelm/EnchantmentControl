@@ -1,6 +1,5 @@
 package enchantmentcontrol.core;
 
-import enchantmentcontrol.annotation.MixinAllSubClasses;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -11,7 +10,6 @@ import org.spongepowered.asm.util.Annotations;
 import java.util.Arrays;
 
 public class EnchantmentControlClassTransformer implements IClassTransformer {
-    private static final String mixinAllSubClassesDesc = Type.getDescriptor(MixinAllSubClasses.class);
     private static final String mixinDesc = Type.getDescriptor(Mixin.class);
 
     @Override
@@ -25,12 +23,8 @@ public class EnchantmentControlClassTransformer implements IClassTransformer {
             @Override
             public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
                 AnnotationVisitor node = super.visitAnnotation(desc, visible);
-                if (desc.equals(mixinAllSubClassesDesc)) { //replace @MixinAllSubClasses with @Mixin
+                if (desc.equals(mixinDesc)) {
                     this.node = (AnnotationNode) node;
-                    this.node.desc = mixinDesc;
-                }
-                else if(desc.equals(mixinDesc)){ //remove old @Mixin
-                    this.invisibleAnnotations.remove(node);
                 }
                 return node;
             }

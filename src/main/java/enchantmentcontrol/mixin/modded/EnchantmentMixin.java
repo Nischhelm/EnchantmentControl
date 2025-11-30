@@ -2,8 +2,8 @@ package enchantmentcontrol.mixin.modded;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import enchantmentcontrol.annotation.MixinAllSubClasses;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
+import enchantmentcontrol.core.EnchantmentDummy;
 import enchantmentcontrol.util.EnchantmentInfo;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -17,10 +17,9 @@ import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Debug(export = true)
-@MixinAllSubClasses(targets = {"net.minecraft.enchantment.Enchantment"})
-@Mixin(targets = {"net.minecraft.enchantment.Enchantment", "net.minecraft.enchantment.Enchantment"}) //twice cause mixin fails otherwise InjectionInfo.parseSelectors -> TargetSelector.parse -> MemberInfo.attach -> MixinTargetContext.getTargetClassRef
+@Mixin(targets = {"net.minecraft.enchantment.Enchantment"}, value = EnchantmentDummy.class) //needs to be two separate Enchantment classes for the refmaps to not write the owner class in front of the searge method names
 @SuppressWarnings({"MixinSuperClass"})
-public abstract class EnchantmentMixin extends Enchantment {
+public abstract class EnchantmentMixin extends Enchantment { //needs to extend for refmaps to work
     protected EnchantmentMixin(Rarity rarityIn, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {
         super(rarityIn, typeIn, slots);
     }
