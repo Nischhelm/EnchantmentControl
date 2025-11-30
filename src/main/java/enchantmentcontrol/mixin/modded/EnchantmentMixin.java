@@ -2,6 +2,7 @@ package enchantmentcontrol.mixin.modded;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import enchantmentcontrol.annotation.MixinAllSubClasses;
 import enchantmentcontrol.util.EnchantmentInfo;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -15,7 +16,8 @@ import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Debug(export = true)
-@Mixin(targets = {"net.minecraft.enchantment.Enchantment"})
+@MixinAllSubClasses(targets = {"net.minecraft.enchantment.Enchantment"})
+@Mixin(targets = {"net.minecraft.enchantment.Enchantment", "net.minecraft.enchantment.Enchantment"}) //twice cause mixin fails otherwise InjectionInfo.parseSelectors -> TargetSelector.parse -> MemberInfo.attach -> MixinTargetContext.getTargetClassRef
 @SuppressWarnings({"MixinSuperClass"})
 public abstract class EnchantmentMixin extends Enchantment {
     protected EnchantmentMixin(Rarity rarityIn, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {
