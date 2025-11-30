@@ -1,8 +1,10 @@
 package enchantmentcontrol.config;
 
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.config.folders.BlacklistConfig;
+import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.config.provider.BlacklistConfigProvider;
-import enchantmentcontrol.config.provider.CanApplyConfigProvider;
+import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import fermiumbooter.annotations.MixinConfig;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -31,24 +33,19 @@ public class ConfigHandler {
 	public static String[] incompatibleGroups = {
 	};
 
-	@Config.Comment("Pattern: \n" +
-			"    Name to use; Regex to match against item ids\n" +
-			"Custom types can also be used in canApplyAnvil config")
-	@Config.Name("Custom Item Types")
-	public static String[] customTypes = {
-	};
-
-	@Config.Comment("Some modded items only pretend to be a specific item type without actually being them (wolf armor being SWORD and ARMOR_FEET, better survival items being SWORD etc).\n" +
-			"Enabling this toggle will make the given item type match those too.\n" +
-			"Disabling will instead only look at the actual checks of each EnumEnchantmentType (like SWORD = has to be instanceof ItemSword) to match.")
-	@Config.Name("-Allow Custom Items")
-	public static boolean allowCustomItems = true;
-
-	@Config.Comment("Override vanilla rarity weights (COMMON = 10, UNCOMMON = 5, RARE = 2, VERY_RARE = 1) or define your own rarities with their own weights here.")
+	@Config.Comment("Override vanilla rarity weights (COMMON = 10, UNCOMMON = 5, RARE = 2, VERY_RARE = 1) or define your own rarities with their own weights here." +
+			"Pattern: ") //TODO
 	@Config.Name("Defined Rarities")
 	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){{
-		put("LEGENDARY", 1);
 	}};
+
+	@Config.Comment("TODO")
+	@Config.Name("Blacklists")
+	public static BlacklistConfig blacklist = new BlacklistConfig();
+
+	@Config.Comment("TODO")
+	@Config.Name("Item Types")
+	public static ItemTypeConfig itemTypes = new ItemTypeConfig();
 
 	@Mod.EventBusSubscriber(modid = EnchantmentControl.MODID)
 	private static class EventHandler {
@@ -57,7 +54,7 @@ public class ConfigHandler {
 			if(event.getModID().equals(EnchantmentControl.MODID)) {
 				ConfigManager.sync(EnchantmentControl.MODID, Config.Type.INSTANCE);
 
-				CanApplyConfigProvider.resetCanApply();
+				ItemTypeConfigProvider.resetCanApply();
 				BlacklistConfigProvider.resetBlacklists();
 				//TODO: reset incompat
 			}

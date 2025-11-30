@@ -17,6 +17,7 @@ public class EnchantmentControl {
     public static final String VERSION = "indev";
     public static final String NAME = "EnchantmentControl";
     public static final Logger LOGGER = LogManager.getLogger(EnchantmentControl.NAME);
+    public static final String SEP = ",";
 
 	@Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {

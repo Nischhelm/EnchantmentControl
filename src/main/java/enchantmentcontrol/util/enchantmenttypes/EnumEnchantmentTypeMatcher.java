@@ -20,11 +20,11 @@ public class EnumEnchantmentTypeMatcher implements ITypeMatcher {
         // enchantment.type == myPretended_vanillaEnumEnchantment_type
 
         // The main issue why we cant use the normal system is that vanilla only allows one type per enchant
-        // but some SME enchants just go on multiple item types
-        if(ConfigHandler.allowCustomItems) {
+        if(ConfigHandler.itemTypes.allowCustomItems) {
+            EnumEnchantmentType tmpType = enchantment.type;
             enchantment.type = this.type;
-            boolean doesMatch = item.canApplyAtEnchantingTable(stack, enchantment);
-            enchantment.type = Types.NONE; //could paste in an earlier copy but in Enchantment.init its always set to NONE and should be NONE
+            boolean doesMatch = item.canApplyAtEnchantingTable(stack, enchantment); //TODO: are there really no weird edge cases here?
+            enchantment.type = tmpType;
 
             return doesMatch;
         }

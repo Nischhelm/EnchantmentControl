@@ -2,18 +2,16 @@ package enchantmentcontrol.config.provider;
 
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.util.enchantmenttypes.CustomTypeMatcher;
-import enchantmentcontrol.util.enchantmenttypes.EnumEnchantmentTypeMatcher;
-import enchantmentcontrol.util.enchantmenttypes.ITypeMatcher;
+import enchantmentcontrol.util.enchantmenttypes.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
+import java.util.Set;
 
-public class CanApplyConfigProvider {
+public class ItemTypeConfigProvider {
     private static final HashMap<String, ITypeMatcher> typeMatchers = new HashMap<>();
 
     public static void resetCanApply(){
@@ -37,21 +35,21 @@ public class CanApplyConfigProvider {
         typeMatchers.put("WEARABLE", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.WEARABLE));
 
         //These don't have an associated fake enchant
-        //TODO: ANY
-//        typeMatchers.put("AXE", new EnumEnchantmentTypeMatcher(Types.AXE));
-//        typeMatchers.put("PICKAXE", new EnumEnchantmentTypeMatcher(Types.PICKAXE));
-//        typeMatchers.put("HOE", new EnumEnchantmentTypeMatcher(Types.HOE));
-//        typeMatchers.put("SHOVEL", new EnumEnchantmentTypeMatcher(Types.SPADE));
-//        typeMatchers.put("SHIELD", new EnumEnchantmentTypeMatcher(Types.SHIELD));
-//        typeMatchers.put("NONE", new EnumEnchantmentTypeMatcher(Types.NONE));
+        typeMatchers.put("ANY", new BooleanTypeMatcher("ANY", true));
+        typeMatchers.put("AXE", new InstanceofTypeMatcher("AXE", ItemAxe.class));
+        typeMatchers.put("PICKAXE", new InstanceofTypeMatcher("PICKAXE", ItemPickaxe.class));
+        typeMatchers.put("HOE", new InstanceofTypeMatcher("HOE", ItemHoe.class));
+        typeMatchers.put("SHOVEL", new InstanceofTypeMatcher("SHOVEL", ItemSpade.class));
+        typeMatchers.put("SHIELD", new InstanceofTypeMatcher("SHIELD", ItemShield.class));
+        typeMatchers.put("NONE", new BooleanTypeMatcher("NONE", false));
 
-        for (String s : ConfigHandler.customTypes) {
+        for (String s : ConfigHandler.itemTypes.customTypes) {
             CustomTypeMatcher c = new CustomTypeMatcher(s);
             if (c.isValid()) typeMatchers.put(c.getName(), c);
         }
     }
 
-    public static boolean canItemApply(Enchantment enchantment, String[] enchantConfig, ItemStack stack){
+    public static boolean canItemApply(Enchantment enchantment, Set<String> enchantConfig, ItemStack stack){
         Item item = stack.getItem();
         boolean isValid = false;
         boolean invertedMatches = false;

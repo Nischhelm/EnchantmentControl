@@ -18,7 +18,7 @@ public class IncompatibleConfigProvider {
         for(String configLine : ConfigHandler.incompatibleGroups) {
             if(configLine.contains(regName.getPath())) {
                 //Assumes that config lines are enchantments separated by comma
-                String[] enchsInList = configLine.split(",");
+                String[] enchsInList = configLine.split(EnchantmentControl.SEP);
                 for(String lineEntry : enchsInList) {
                     lineEntry = lineEntry.trim();
                     if(lineEntry.isEmpty()) continue;

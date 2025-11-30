@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Debug(export = true)
 @Mixin(Enchantment.Rarity.class)
 public abstract class EnchantmentRarityMixin {
     @SuppressWarnings("target") @Shadow @Final @Mutable private static Enchantment.Rarity[] $VALUES;
@@ -24,7 +25,7 @@ public abstract class EnchantmentRarityMixin {
         RarityProvider.registerRarities(EnchantmentRarityMixin::ec$addEnchantmentRarity); //TODO: isnt this too early for config?
     }
 
-    @Inject(method = "<init>", at = @At("TAIL"))
+    @Inject(method = "<init>(Ljava/lang/String;II)V", at = @At("TAIL"))
     private void ec_overrideRarityWeights(String internalName, int internalId, int weight, CallbackInfo ci){
         this.weight = ConfigHandler.rarityWeights.getOrDefault(internalName, weight);
     }

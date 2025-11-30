@@ -3,6 +3,7 @@ package enchantmentcontrol.mixin.modded;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import enchantmentcontrol.annotation.MixinAllSubClasses;
+import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.util.EnchantmentInfo;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -93,11 +94,17 @@ public abstract class EnchantmentMixin extends Enchantment {
 
     @WrapMethod(method = "canApply")
     public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
+        EnchantmentInfo info = EnchantmentInfo.get(this);
+        if(info != null && info.typesAnvil != null)
+            return ItemTypeConfigProvider.canItemApply(this, info.typesAnvil, stack) || original.call(stack);
         return original.call(stack);
     }
 
     @WrapMethod(method = "canApplyAtEnchantingTable", remap = false)
     public boolean ec_canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
+        EnchantmentInfo info = EnchantmentInfo.get(this);
+        if(info != null && info.typesAnvil != null)
+            return ItemTypeConfigProvider.canItemApply(this, info.typesEnchTable, stack);
         return original.call(stack);
     }
 

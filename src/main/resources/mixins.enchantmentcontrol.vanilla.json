@@ -7,7 +7,13 @@
   "minVersion": "0.8",
   "mixins": [
     "vanilla.BaseEnchantmentMixin",
+    "vanilla.EnchantmentHelperLvlsMixin",
     "vanilla.EnchantmentRarityMixin",
-    "vanilla.VanillaEnchantmentMixin"
+    "vanilla.VanillaEnchantmentMixin",
+    "vanilla.blacklists.ContainerEnchantmentThreadLocalMixin",
+    "vanilla.blacklists.EnchantmentHelperMixin",
+    "vanilla.blacklists.EnchantRandomlyMixin",
+    "vanilla.blacklists.EntityVillagerListEnchantedBookForEmeraldsMixin",
+    "vanilla.blacklists.ForgeEnchantmentRegistryMixin"
   ]
 }

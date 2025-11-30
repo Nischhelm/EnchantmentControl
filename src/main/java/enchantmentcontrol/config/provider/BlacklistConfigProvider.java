@@ -26,31 +26,31 @@ public class BlacklistConfigProvider {
 
     public static List<Enchantment> getRandomLevelEnchantsBlacklist() {
         if(randomLevelEnchantsBlacklist == null)
-            randomLevelEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklistedRandomLevelEnchants);
+            randomLevelEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklist.blacklistedRandomLevelEnchants);
         return randomLevelEnchantsBlacklist;
     }
 
     public static List<Enchantment> getRandomEnchantsBlacklist() {
         if(randomEnchantsBlacklist == null)
-            randomEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklistedRandomEnchants);
+            randomEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklist.blacklistedRandomEnchants);
         return randomEnchantsBlacklist;
     }
 
     public static List<Enchantment> getLibrarianEnchantsBlacklist() {
         if(librarianEnchantsBlacklist == null)
-            librarianEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklistedLibrarianEnchants);
+            librarianEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklist.blacklistedLibrarianEnchants);
         return librarianEnchantsBlacklist;
     }
 
     public static List<Enchantment> getEnchantTableEnchantsBlacklist() {
         if(enchantTableEnchantsBlacklist == null)
-            enchantTableEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklistedEnchTableEnchants);
+            enchantTableEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklist.blacklistedEnchTableEnchants);
         return enchantTableEnchantsBlacklist;
     }
 
     public static List<String> getRegistryEnchantsBlacklist(){
         if(registryEnchantsBlacklist == null)
-            registryEnchantsBlacklist = Arrays.asList(ConfigHandler.blacklistedRegistryEnchants);
+            registryEnchantsBlacklist = Arrays.asList(ConfigHandler.blacklist.blacklistedRegistryEnchants);
         return registryEnchantsBlacklist;
     }
 

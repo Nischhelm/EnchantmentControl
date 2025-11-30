@@ -22,7 +22,7 @@ public class EnchantmentInfo {
         return byEnchId.get(enchid);
     }
 
-    public static @Nullable EnchantmentInfo get(Enchantment ench){
+    public static @Nullable EnchantmentInfo get(Enchantment ench) {
         return byEnchObj.computeIfAbsent(ench, enchant -> enchant.getRegistryName() == null ? null : get(enchant.getRegistryName().toString()));
     }
 
@@ -32,7 +32,7 @@ public class EnchantmentInfo {
 
     // -------- PROPERTIES --------
 
-    private final String enchid;
+    private final String enchId;
     private final boolean isDisabled;
 
     private String replaceId = null;
@@ -60,20 +60,34 @@ public class EnchantmentInfo {
 
     //TODO: price change on villagers?
 
-    public Set<Enchantment> incompats; //TODO
-    private Set<String> typesAnvil; //TODO
-    private Set<String> typesEnchTable; //TODO
-    private Set<String> typesBoth; //TODO
+    public Set<Enchantment> incompats;
+    public Set<String> typesAnvil;
+    public Set<String> typesEnchTable;
 
     private boolean hasSharpnessBehavior; //TODO
     private boolean hasArthropodBehavior; //TODO
     private boolean hasProtectionBehavior; //TODO
     private boolean hasThornsBehavior; //TODO
 
+    private int sweepingStrength;
+    private int knockbackStrength;
+    private int fireAspectStrength;
+    private int respirationStrength;
+    private int depthStriderStrength;
+    private int efficiencyStrength;
+    private int luckOfTheSeaStrength;
+    private int lureStrength;
+    private int lootingStrength;
+
+    private int hasAquaAffinity;
+    private int ignoresMagmaDmg; //frost walker
+    private int hasBindingCurse;
+    private int hasVanishingCurse;
+
     //-------- CONSTRUCTOR --------
 
     public EnchantmentInfo(String id, boolean isDisabled) {
-        this.enchid = id;
+        this.enchId = id;
         this.isDisabled = isDisabled;
 
         byEnchId.put(id, this);
@@ -122,8 +136,12 @@ public class EnchantmentInfo {
         this.rarity = rarity;
     }
 
-    public void setIncompats(Set<Enchantment> incompats) {
-        this.incompats = incompats;
+    public void setEnchTableTypes(Set<String> types) {
+        this.typesEnchTable = types;
+    }
+
+    public void setAnvilTypes(Set<String> types) {
+        this.typesAnvil = types;
     }
 
     // -------- GETTERS --------
