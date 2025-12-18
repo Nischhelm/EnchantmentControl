@@ -75,7 +75,6 @@ public class EnchantmentInfo {
     // -------- PROPERTIES --------
 
     private final String enchId;
-    private final boolean isDisabled;
 
     public boolean overwritesIsTreasure;
     public boolean isTreasure;
@@ -127,9 +126,8 @@ public class EnchantmentInfo {
 
     //-------- CONSTRUCTOR --------
 
-    public EnchantmentInfo(String id, boolean isDisabled) {
+    public EnchantmentInfo(String id) {
         this.enchId = id;
-        this.isDisabled = isDisabled;
 
         byEnchId.put(id, this);
     }
