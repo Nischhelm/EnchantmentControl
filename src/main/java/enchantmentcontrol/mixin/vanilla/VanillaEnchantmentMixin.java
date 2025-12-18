@@ -133,7 +133,7 @@ public abstract class VanillaEnchantmentMixin extends Enchantment {
     @WrapMethod(method = "calcModifierDamage") //protection
     public int ec_calcModifierDamage(int level, DamageSource source, Operation<Integer> original) {
         EnchantmentInfo info = EnchantmentInfo.get(this);
-        if(info != null && info.hasProtectionBehavior && info.protectionBehavior != null)
+        if(info != null && info.protectionBehavior != null)
             return info.protectionBehavior.apply(level, source);
         return original.call(level, source);
     }
@@ -141,7 +141,7 @@ public abstract class VanillaEnchantmentMixin extends Enchantment {
     @WrapMethod(method = "calcDamageByCreature") //sharpness
     public float ec_calcDamageByCreature(int level, EnumCreatureAttribute creatureType, Operation<Float> original) {
         EnchantmentInfo info = EnchantmentInfo.get(this);
-        if(info != null && info.hasSharpnessBehavior && info.sharpnessBehavior != null)
+        if(info != null && info.sharpnessBehavior != null)
             return info.sharpnessBehavior.apply(level, creatureType);
         return original.call(level, creatureType);
     }
@@ -149,7 +149,7 @@ public abstract class VanillaEnchantmentMixin extends Enchantment {
     @WrapMethod(method = "onEntityDamaged") //arthropod
     public void ec_onEntityDamaged(EntityLivingBase user, Entity target, int level, Operation<Void> original) {
         EnchantmentInfo info = EnchantmentInfo.get(this);
-        if(info != null && info.hasArthropodBehavior && info.arthropodBehavior != null) {
+        if(info != null && info.arthropodBehavior != null) {
             info.arthropodBehavior.accept(user, target, level);
             return;
         }
@@ -159,7 +159,7 @@ public abstract class VanillaEnchantmentMixin extends Enchantment {
     @WrapMethod(method = "onUserHurt") //thorns
     public void ec_onUserHurt(EntityLivingBase user, Entity attacker, int level, Operation<Void> original) {
         EnchantmentInfo info = EnchantmentInfo.get(this);
-        if(info != null && info.hasThornsBehavior && info.thornsBehavior != null) {
+        if(info != null && info.thornsBehavior != null) {
             info.thornsBehavior.accept(user, attacker, level);
             return;
         }

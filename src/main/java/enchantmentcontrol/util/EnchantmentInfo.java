@@ -115,10 +115,12 @@ public class EnchantmentInfo {
     //-------- SETTERS --------
 
     public void setMinLvl(int minLvl) {
+        this.overwritesMinLvl = true;
         this.minLvl = minLvl;
     }
 
     public void setMaxLvl(int maxLvl) {
+        this.overwritesMaxLvl = true;
         this.maxLvl = maxLvl;
     }
 
@@ -137,14 +139,17 @@ public class EnchantmentInfo {
 
     public void setTreasure(boolean isTreasure) {
         this.isTreasure = isTreasure;
+        this.overwritesIsTreasure = true;
     }
 
     public void setCurse(boolean isCurse) {
         this.isCurse = isCurse;
+        this.overwritesIsCurse = true;
     }
 
     public void setAllowedOnBooks(boolean isAllowedOnBooks) {
         this.isAllowedOnBooks = isAllowedOnBooks;
+        this.overwritesIsAllowedOnBooks = true;
     }
 
     public void setRarity(Enchantment.Rarity rarity) {
