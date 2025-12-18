@@ -1,11 +1,9 @@
 package enchantmentcontrol.util;
 
-import com.sun.jna.platform.unix.X11;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
@@ -14,10 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -26,13 +21,29 @@ public class EnchantmentInfo {
 
     private static final Map<String, EnchantmentInfo> byEnchId = new HashMap<>();
     private static final Map<Enchantment, EnchantmentInfo> byEnchObj = new HashMap<>();
+    private static final Map<EnchantmentInfo, Enchantment> toEnchObj = new HashMap<>();
 
     public static @Nullable EnchantmentInfo get(String enchid){
         return byEnchId.get(enchid);
     }
 
     public static @Nullable EnchantmentInfo get(Enchantment ench) {
-        return byEnchObj.computeIfAbsent(ench, enchant -> enchant.getRegistryName() == null ? null : get(enchant.getRegistryName().toString()));
+        EnchantmentInfo info = byEnchObj.get(ench);
+        if(info == null){
+            info = ench.getRegistryName() == null ? null : get(ench.getRegistryName().toString());
+            if(info != null){
+                byEnchObj.put(ench, info);
+                toEnchObj.put(info, ench);
+            }
+        }
+        return info;
+    }
+
+    public static @Nullable Enchantment getEnchantmentObject(EnchantmentInfo info){
+        return toEnchObj.get(info);
+    }
+    public static @Nullable String getEnchantmentId(EnchantmentInfo info){
+        return info.enchId;
     }
 
     public static Collection<EnchantmentInfo> getAll(){
