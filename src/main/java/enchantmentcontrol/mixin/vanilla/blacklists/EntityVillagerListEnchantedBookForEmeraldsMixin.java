@@ -33,6 +33,6 @@ public abstract class EntityVillagerListEnchantedBookForEmeraldsMixin {
 
     @Unique
     private static boolean soManyEnchantments$enchantmentIsAllowed(Enchantment enchantment){
-        return BlacklistConfigProvider.getLibrarianEnchantsBlacklist().contains(enchantment) == ConfigHandler.blacklist.blacklistedLibrarianEnchantsIsWhitelist;
+        return BlacklistConfigProvider.getLibrarianEnchantsBlacklist().contains(enchantment) == ConfigHandler.blacklists.blacklistedLibrarianEnchantsIsWhitelist;
     }
 }

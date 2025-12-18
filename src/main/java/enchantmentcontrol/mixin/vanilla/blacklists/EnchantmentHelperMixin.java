@@ -33,7 +33,7 @@ public abstract class EnchantmentHelperMixin {
     @Unique
     private static boolean soManyEnchantments$enchantmentIsAllowed(EnchantmentData data, boolean fromEnchantingTable){
         if(fromEnchantingTable)
-            return BlacklistConfigProvider.getEnchantTableEnchantsBlacklist().contains(data.enchantment) == ConfigHandler.blacklist.blacklistedEnchTableEnchantsIsWhitelist;
-        else return BlacklistConfigProvider.getRandomLevelEnchantsBlacklist().contains(data.enchantment) == ConfigHandler.blacklist.blacklistedRandomLevelEnchantsIsWhitelist;
+            return BlacklistConfigProvider.getEnchantTableEnchantsBlacklist().contains(data.enchantment) == ConfigHandler.blacklists.blacklistedEnchTableEnchantsIsWhitelist;
+        else return BlacklistConfigProvider.getRandomLevelEnchantsBlacklist().contains(data.enchantment) == ConfigHandler.blacklists.blacklistedRandomLevelEnchantsIsWhitelist;
     }
 }

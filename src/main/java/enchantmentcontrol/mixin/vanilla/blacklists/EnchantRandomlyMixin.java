@@ -31,7 +31,7 @@ public abstract class EnchantRandomlyMixin {
     private void soManyEnchantments_vanillaEnchantRandomly_init(LootCondition[] conditionsIn, List<Enchantment> enchantmentsIn, CallbackInfo ci){
         //This is for predefined enchantments in the loot function
         List<Enchantment> filteredEnchants = enchantments.stream()
-                .filter(e -> BlacklistConfigProvider.getRandomEnchantsBlacklist().contains(e) == ConfigHandler.blacklist.blacklistedRandomEnchantsIsWhitelist)
+                .filter(e -> BlacklistConfigProvider.getRandomEnchantsBlacklist().contains(e) == ConfigHandler.blacklists.blacklistedRandomEnchantsIsWhitelist)
                 .collect(Collectors.toList());
         this.enchantments.clear();
         this.enchantments.addAll(filteredEnchants);
@@ -44,7 +44,7 @@ public abstract class EnchantRandomlyMixin {
     private void soManyEnchantments_vanillaEnchantRandomly_apply(ItemStack stack, Random rand, LootContext context, CallbackInfoReturnable<ItemStack> cir, @Local List<Enchantment> enchantments) {
         //This is for the full list from the forge registry
         List<Enchantment> filteredEnchants = enchantments.stream()
-                .filter(e -> BlacklistConfigProvider.getRandomEnchantsBlacklist().contains(e) == ConfigHandler.blacklist.blacklistedRandomEnchantsIsWhitelist)
+                .filter(e -> BlacklistConfigProvider.getRandomEnchantsBlacklist().contains(e) == ConfigHandler.blacklists.blacklistedRandomEnchantsIsWhitelist)
                 .collect(Collectors.toList());
         enchantments.clear();
         enchantments.addAll(filteredEnchants);

@@ -49,7 +49,7 @@ public class ConfigHandler {
 
 	@Config.Comment("TODO")
 	@Config.Name("Blacklists")
-	public static BlacklistConfig blacklist = new BlacklistConfig();
+	public static BlacklistConfig blacklists = new BlacklistConfig();
 
 	@Config.Comment("TODO")
 	@Config.Name("Item Types")

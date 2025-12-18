@@ -26,31 +26,31 @@ public class BlacklistConfigProvider {
 
     public static List<Enchantment> getRandomLevelEnchantsBlacklist() {
         if(randomLevelEnchantsBlacklist == null)
-            randomLevelEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklist.blacklistedRandomLevelEnchants);
+            randomLevelEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklists.blacklistedRandomLevelEnchants);
         return randomLevelEnchantsBlacklist;
     }
 
     public static List<Enchantment> getRandomEnchantsBlacklist() {
         if(randomEnchantsBlacklist == null)
-            randomEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklist.blacklistedRandomEnchants);
+            randomEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklists.blacklistedRandomEnchants);
         return randomEnchantsBlacklist;
     }
 
     public static List<Enchantment> getLibrarianEnchantsBlacklist() {
         if(librarianEnchantsBlacklist == null)
-            librarianEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklist.blacklistedLibrarianEnchants);
+            librarianEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklists.blacklistedLibrarianEnchants);
         return librarianEnchantsBlacklist;
     }
 
     public static List<Enchantment> getEnchantTableEnchantsBlacklist() {
         if(enchantTableEnchantsBlacklist == null)
-            enchantTableEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklist.blacklistedEnchTableEnchants);
+            enchantTableEnchantsBlacklist = populateEnchantmentList(ConfigHandler.blacklists.blacklistedEnchTableEnchants);
         return enchantTableEnchantsBlacklist;
     }
 
     public static List<String> getRegistryEnchantsBlacklist(){
         if(registryEnchantsBlacklist == null)
-            registryEnchantsBlacklist = Arrays.asList(ConfigHandler.blacklist.blacklistedRegistryEnchants);
+            registryEnchantsBlacklist = Arrays.asList(ConfigHandler.blacklists.blacklistedRegistryEnchants);
         return registryEnchantsBlacklist;
     }
 
