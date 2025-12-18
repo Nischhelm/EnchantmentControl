@@ -9,6 +9,7 @@
     "vanilla.BaseEnchantmentMixin",
     "vanilla.EnchantmentHelperLvlsMixin",
     "vanilla.EnchantmentRarityMixin",
+    "vanilla.IForgeRegistryEntryMixin",
     "vanilla.VanillaEnchantmentMixin",
     "vanilla.blacklists.ContainerEnchantmentThreadLocalMixin",
     "vanilla.blacklists.EnchantmentHelperMixin",

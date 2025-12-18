@@ -33,6 +33,12 @@ public class ConfigHandler {
 	public static String[] incompatibleGroups = {
 	};
 
+	@Config.Comment("If you really dont like one mods enchantment id (modid:enchid), you can add it here with a second entry of what you want to call it instead (modid:enchid). \n" +
+			"WARNING: this will cause permanent id remapping issues for old worlds! Only do this for new worlds or before you release a modpack, if you really need to!\n" +
+			"pattern: S:\"modid:oldenchid\"=modid:newenchid")
+	@Config.Name(EarlyConfigReader.IDREMAP_CONFIG_NAME)
+	public static Map<String, String> idRemaps = new HashMap<String, String>(){};
+
 	@Config.Comment("Enchantment classes that should not be modified at all by this mod. \n" +
 			"Use this if there are crashes when this mod tries to automatically modify some mods enchantments. \n" +
 			"You find the class name in config/enchantmentcontrol/tmp/enchclasses.dump\n" +

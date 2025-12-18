@@ -35,8 +35,6 @@ public class EnchantmentInfo {
     private final String enchId;
     private final boolean isDisabled;
 
-    private String replaceId = null;
-
     public boolean overwritesIsTreasure;
     public boolean isTreasure;
 
@@ -94,10 +92,6 @@ public class EnchantmentInfo {
     }
 
     //-------- SETTERS --------
-
-    public void setReplacementId(String replaceId) {
-        this.replaceId = replaceId;
-    }
 
     public void setMinLvl(int minLvl) {
         this.minLvl = minLvl;
