@@ -1,16 +1,25 @@
 package enchantmentcontrol.util;
 
+import com.sun.jna.platform.unix.X11;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.util.TriConsumer;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class EnchantmentInfo {
     // -------- STATIC LOOKUP --------
@@ -57,15 +66,16 @@ public class EnchantmentInfo {
     public MaxEnchantabilityMode enchMode = null;
 
     //TODO: price change on villagers?
+    //TODO: can be on villagers?
 
     public Set<Enchantment> incompats;
     public Set<String> typesAnvil;
     public Set<String> typesEnchTable;
 
-    private boolean hasSharpnessBehavior; //TODO
-    private boolean hasArthropodBehavior; //TODO
-    private boolean hasProtectionBehavior; //TODO
-    private boolean hasThornsBehavior; //TODO
+    public BiFunction<Integer, EnumCreatureAttribute, Float> sharpnessBehavior;
+    public TriConsumer<EntityLivingBase, Entity, Integer> arthropodBehavior;
+    public BiFunction<Integer, DamageSource, Integer> protectionBehavior;
+    public TriConsumer<EntityLivingBase, Entity, Integer> thornsBehavior;
 
     private int sweepingStrength;
     private int knockbackStrength;
