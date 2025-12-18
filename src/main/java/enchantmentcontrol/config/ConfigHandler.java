@@ -33,6 +33,14 @@ public class ConfigHandler {
 	public static String[] incompatibleGroups = {
 	};
 
+	@Config.Comment("Enchantment classes that should not be modified at all by this mod. \n" +
+			"Use this if there are crashes when this mod tries to automatically modify some mods enchantments. \n" +
+			"You find the class name in config/enchantmentcontrol/tmp/enchclasses.dump\n" +
+			"Classes noted here need to look like net.minecraft.enchantment.EnchantmentDamage\n" +
+			"Vanilla enchants will always be targeted, so putting their classes in here won't do anything")
+	@Config.Name(EarlyConfigReader.BLACKLIST_CONFIG_NAME)
+	public static String[] disabledClasses = {};
+
 	@Config.Comment("Override vanilla rarity weights (COMMON = 10, UNCOMMON = 5, RARE = 2, VERY_RARE = 1) or define your own rarities with their own weights here." +
 			"Pattern: ") //TODO
 	@Config.Name("Defined Rarities")

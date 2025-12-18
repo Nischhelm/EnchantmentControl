@@ -1,5 +1,6 @@
 package enchantmentcontrol;
 
+import enchantmentcontrol.config.classdump.EnchantmentClassWriter;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -25,5 +26,6 @@ public class EnchantmentControl {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        EnchantmentClassWriter.postInit();
     }
 }

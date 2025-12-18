@@ -13,7 +13,10 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[]{EnchantmentControlClassTransformer.class.getName()};
+		return new String[]{
+				EnchantmentControlClassTransformer.class.getName(),
+				ModCompatClassTransformer.class.getName()
+		};
 	}
 	
 	@Override public String getModContainerClass() {return null;}

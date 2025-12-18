@@ -108,6 +108,7 @@ jar {
         attr['FMLCorePlugin']               = mixin_loader_class
         attr['FMLCorePluginContainsFMLMod'] = 'true'
         attr['TweakClass']                  = 'org.spongepowered.asm.launch.MixinTweaker'
+        attr['ForceLoadAsMod']              = "true"
 
         def currentTasks = gradle.startParameter.taskNames
         if (currentTasks[0] == 'build' || currentTasks[0] == 'assemble')

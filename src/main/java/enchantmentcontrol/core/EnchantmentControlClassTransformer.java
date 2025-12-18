@@ -1,5 +1,7 @@
 package enchantmentcontrol.core;
 
+import enchantmentcontrol.config.EarlyConfigReader;
+import enchantmentcontrol.config.classdump.EnchantmentClassReader;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -7,7 +9,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.util.Annotations;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class EnchantmentControlClassTransformer implements IClassTransformer {
     private static final String mixinDesc = Type.getDescriptor(Mixin.class);
@@ -31,11 +33,10 @@ public class EnchantmentControlClassTransformer implements IClassTransformer {
 
             @Override
             public void visitEnd() {
-                Annotations.setValue(this.node, "targets", Arrays.asList(
-                        //TODO: config list
-                        "com.Shultrea.Rin.Enchantment_Base_Sector.EnchantmentBase",
-                        "com.Shultrea.Rin.Ench0_4_5.EnchantmentFrenzy"
-                ));
+                List<String> modifiedEnchClasses = EnchantmentClassReader.read();
+                modifiedEnchClasses.removeIf(s -> s.startsWith("net.minecraft.enchantment"));
+                EarlyConfigReader.readConfigForBlacklist().forEach(modifiedEnchClasses::remove);
+                Annotations.setValue(this.node, "targets", modifiedEnchClasses);
             }
         };
         new ClassReader(basicClass).accept(classNode, 0);
