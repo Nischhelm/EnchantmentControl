@@ -75,8 +75,13 @@ public final class EnchantmentInfoCreator {
 
             //CONST if all 3 maxEnch the same
             if(maxEnchProbed[2] == maxEnchProbed[1] && maxEnchProbed[1] == maxEnchProbed[0]){
-                mode = MaxEnchantabilityMode.CONST;
-                range = maxEnchProbed[0];
+                if(ench.getMaxLevel() != ench.getMinLevel()) {
+                    mode = MaxEnchantabilityMode.CONST;
+                    range = maxEnchProbed[0];
+                } else {
+                    //enchants with just 1 lvl might not have a range defined,
+                    // we'll denote them as normal,
+                    // doesn't make a difference except if someone changes the max lvl,
             }
             else if(maxEnchProbed[2] - maxEnchProbed[1] == maxEnchProbed[1] - maxEnchProbed[0]){ //NORMAL, SUPER and LINEAR all have the behavior that they grow linearly with lvl (slope is lvlSpan, 10 and range respectively)
 
@@ -97,8 +102,6 @@ public final class EnchantmentInfoCreator {
                     mode = MaxEnchantabilityMode.SUPER;
                     range = dd0;
                 }
-                //LINEAR if maxench at lvl 0 is 0 (that would never happen otherwise)
-                else if(maxEnchProbed[0] == 0){
                     mode = MaxEnchantabilityMode.LINEAR;
                     range = maxEnchProbed[1];
                 } else {

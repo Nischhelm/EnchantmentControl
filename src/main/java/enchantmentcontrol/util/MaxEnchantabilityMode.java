@@ -18,12 +18,6 @@ public enum MaxEnchantabilityMode {
         public int getMaxEnch(int enchLvl, int min, int range) {
             return range;
         }
-    },
-    LINEAR {
-        @Override
-        public int getMaxEnch(int enchLvl, int min, int range) {
-            return range * enchLvl;
-        }
     };
 
     public abstract int getMaxEnch(int enchLvl, int min, int range);
