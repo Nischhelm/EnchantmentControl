@@ -216,6 +216,7 @@ public class EnchantmentInfo {
     }
 
     public void setRarity(Enchantment.Rarity rarity) {
+        //unlike other entries calling this will not automatically apply the rarity change, that happens in EnchantmentInfoConfigHandler.applyManualInfoOverrides
         this.rarity = rarity;
     }
 
@@ -228,6 +229,7 @@ public class EnchantmentInfo {
     }
 
     public void setSlots(List<EntityEquipmentSlot> slots) {
+        //unlike other entries calling this will not automatically apply the slots change, that happens in EnchantmentInfoConfigHandler.applyManualInfoOverrides
         this.slots = slots;
     }
 

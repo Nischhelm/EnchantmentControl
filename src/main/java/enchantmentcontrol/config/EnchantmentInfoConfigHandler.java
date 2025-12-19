@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.util.EnchantmentInfo;
+import enchantmentcontrol.util.IEnchantmentPropertySetter;
+import net.minecraft.inventory.EntityEquipmentSlot;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -15,11 +17,8 @@ import java.util.List;
 public class EnchantmentInfoConfigHandler {
     public static final String ENCH_CFG_PATH = "config/enchantmentcontrol/enchantments.json";
     public static final String ENCH_CFG_PER_FILE_DIR = "config/enchantmentcontrol/enchantments";
-    public static final String ENCH_CFG_OUT_PER_FILE_DIR = "config/enchantmentcontrol/out";
 
     public static void preInit(){
-        //create EnchantmentInfo from json cfg files, wish i had Meldexun Forge Config Extension
-        
         // Legacy enchantments.json support (read once, then rename to enchantments.legacy.unused)
         readLegacyConfigs();
 
@@ -34,12 +33,16 @@ public class EnchantmentInfoConfigHandler {
     }
 
     public static void postInit(){
-        if (!ConfigHandler.dev.printDefaults) return;
-        try {
-            writeAllCurrentEnchantmentInfos();
-        } catch (IOException e) {
-            EnchantmentControl.LOGGER.warn("Writing enchantment defaults failed!");
-            e.printStackTrace(System.out);
+        applyManualOverrides();
+    }
+
+    public static void applyManualOverrides(){
+        for(EnchantmentInfo info : EnchantmentInfo.getAll()){
+            if(info.rarity == null && info.slots == null) continue;
+            IEnchantmentPropertySetter setter = (IEnchantmentPropertySetter) EnchantmentInfo.getEnchantmentObject(info);
+            if(setter == null) continue;
+            setter.ec$setRarity(info.rarity);
+            setter.ec$setSlots(info.slots.toArray(new EntityEquipmentSlot[0]));
         }
     }
 
@@ -60,36 +63,6 @@ public class EnchantmentInfoConfigHandler {
                     .registerTypeAdapter(EnchantmentInfo.class, new EnchantmentInfoDeserialiser())
                     .create();
             return gson.fromJson(reader, EnchantmentInfo.class);
-        }
-    }
-
-    private static void writeAllCurrentEnchantmentInfos() throws IOException {
-        // Write one file per enchantment into config/enchantmentcontrol/out/<modid>/<enchid>.json
-        File baseOut = new File(ENCH_CFG_OUT_PER_FILE_DIR);
-        if (!baseOut.exists() && !baseOut.mkdirs()) {
-            EnchantmentControl.LOGGER.warn("Could not create output directory: {}", baseOut.getPath());
-        }
-
-        for (EnchantmentInfo info : EnchantmentInfo.getAll()) {
-            String id = EnchantmentInfo.getEnchantmentId(info);
-            String[] split = id.split(":");
-            String modid = split[0];
-            String enchid = split[1];
-
-            File modDir = new File(baseOut, modid);
-            if (!modDir.exists() && !modDir.mkdirs()) {
-                EnchantmentControl.LOGGER.warn("Could not create mod output directory: {}", modDir.getPath());
-            }
-
-            File outFile = new File(modDir, enchid + ".json");
-
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(EnchantmentInfo.class, new EnchantmentInfoDeserialiser())
-                    .setPrettyPrinting()
-                    .create();
-            try (Writer w = new OutputStreamWriter(Files.newOutputStream(outFile.toPath()), StandardCharsets.UTF_8)) {
-                gson.toJson(info, EnchantmentInfo.class, w);
-            }
         }
     }
 

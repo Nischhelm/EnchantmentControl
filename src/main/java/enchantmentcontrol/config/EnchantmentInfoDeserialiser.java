@@ -15,6 +15,7 @@ import java.util.List;
 public class EnchantmentInfoDeserialiser implements JsonDeserializer<EnchantmentInfo>, JsonSerializer<EnchantmentInfo> {
     @Override
     public EnchantmentInfo deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        //From JSON to EnchantmentInfo
         if (!json.isJsonObject()) return null;
         JsonObject o = json.getAsJsonObject();
 
@@ -99,6 +100,7 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
 
     @Override
     public JsonElement serialize(EnchantmentInfo info, java.lang.reflect.Type typeOfSrc, JsonSerializationContext context) {
+        //From EnchantmentInfo to JSON
         JsonObject o = new JsonObject();
 
         // id
