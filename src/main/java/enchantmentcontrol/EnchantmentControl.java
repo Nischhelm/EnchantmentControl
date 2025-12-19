@@ -2,10 +2,10 @@ package enchantmentcontrol;
 
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.EarlyConfigReader;
-import enchantmentcontrol.config.EnchantmentInfoConfigHandler;
-import enchantmentcontrol.config.EnchantmentInfoWriter;
+import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoConfigReader;
+import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
 import enchantmentcontrol.config.classdump.EnchantmentClassWriter;
-import enchantmentcontrol.util.EnchantmentInfoInferrer;
+import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoInferrerWriter;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -27,18 +27,18 @@ public class EnchantmentControl {
 
 	@Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        EnchantmentInfoConfigHandler.preInit(); //read EnchantmentInfo's from /enchantments
+        EnchantmentInfoConfigReader.preInit(); //read EnchantmentInfo's from /enchantments
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         EnchantmentClassWriter.postInit(); //write /tmp/enchclasses.dump for next startup (sad that this is after late mixin load. classgraph could fix that if i could get it to work. then i wouldn't even need a custom file)
 
-        EnchantmentInfoConfigHandler.postInit(); //apply manual overrides for rarity and slots, TODO this could move into a different class im not sure where it fits
+        EnchantmentInfoConfigReader.applyManualOverrides(); //apply manual overrides for rarity and slots
 
         //infer info from existing enchantment objects (can be used for testing and development, it creates the best fitting approximation of an enchant)
         if(ConfigHandler.dev.printInferred)
-            EnchantmentInfoInferrer.postInit();
+            EnchantmentInfoInferrerWriter.postInit();
 
         if (ConfigHandler.debug.printLoaded)
             EnchantmentInfoWriter.postInit();

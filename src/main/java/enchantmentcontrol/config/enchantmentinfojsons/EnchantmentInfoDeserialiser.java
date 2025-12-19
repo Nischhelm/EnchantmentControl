@@ -1,4 +1,4 @@
-package enchantmentcontrol.config;
+package enchantmentcontrol.config.enchantmentinfojsons;
 
 import com.google.gson.*;
 import enchantmentcontrol.util.EnchantmentInfo;

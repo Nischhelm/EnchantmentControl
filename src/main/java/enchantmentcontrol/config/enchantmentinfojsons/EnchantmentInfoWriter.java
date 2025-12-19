@@ -1,8 +1,9 @@
-package enchantmentcontrol.config;
+package enchantmentcontrol.config.enchantmentinfojsons;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.util.EnchantmentInfo;
 
 import java.io.File;
@@ -14,12 +15,12 @@ import java.nio.file.Files;
 import java.util.Collection;
 
 public class EnchantmentInfoWriter {
-    public static final String ENCH_CFG_OUT_PER_FILE_DIR = "config/enchantmentcontrol/loaded";
+    public static String modifiablePath = "loaded";
+    public static final String MAIN_DIR = "config/enchantmentcontrol/";
 
     public static void postInit(){
         if (!ConfigHandler.debug.printLoaded) return;
-        //TODO: figure out how/whether to use this
-        writeAllCurrentEnchantmentInfos(EnchantmentInfo.getAll(), ENCH_CFG_OUT_PER_FILE_DIR);
+        writeAllCurrentEnchantmentInfos(EnchantmentInfo.getAll(), MAIN_DIR + modifiablePath);
     }
 
     public static void writeAllCurrentEnchantmentInfos(Collection<EnchantmentInfo> infos, String path) {

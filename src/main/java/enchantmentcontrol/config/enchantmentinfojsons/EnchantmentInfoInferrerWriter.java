@@ -1,8 +1,9 @@
-package enchantmentcontrol.util;
+package enchantmentcontrol.config.enchantmentinfojsons;
 
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.config.EnchantmentInfoWriter;
 import enchantmentcontrol.mixin.vanilla.EnchantmentAccessor;
+import enchantmentcontrol.util.EnchantmentInfo;
+import enchantmentcontrol.util.MaxEnchantabilityMode;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.text.TextFormatting;
 
@@ -14,14 +15,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Builds EnchantmentInfo by inspecting Enchantment instances.
+ * Builds EnchantmentInfo by inspecting Enchantment objects and writes those to file as an approximate start point.
  */
-public final class EnchantmentInfoInferrer {
-    public static final String ENCH_CFG_INFERRED_DIR = "config/enchantmentcontrol/inferred";
+public final class EnchantmentInfoInferrerWriter {
+    public static final String MAIN_DIR = "config/enchantmentcontrol/inferred";
 
     public static void postInit(){
-        EnchantmentInfoWriter.clearDirectoryContents(new File(ENCH_CFG_INFERRED_DIR));
-        EnchantmentInfoWriter.writeAllCurrentEnchantmentInfos(inferInfoForAllRegisteredEnchantments(), ENCH_CFG_INFERRED_DIR);
+        EnchantmentInfoWriter.clearDirectoryContents(new File(MAIN_DIR));
+        EnchantmentInfoWriter.writeAllCurrentEnchantmentInfos(inferInfoForAllRegisteredEnchantments(), MAIN_DIR);
     }
 
     public static List<EnchantmentInfo> inferInfoForAllRegisteredEnchantments() {

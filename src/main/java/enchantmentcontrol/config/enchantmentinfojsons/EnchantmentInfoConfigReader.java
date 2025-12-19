@@ -1,9 +1,10 @@
-package enchantmentcontrol.config;
+package enchantmentcontrol.config.enchantmentinfojsons;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.IEnchantmentPropertySetter;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -14,17 +15,23 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnchantmentInfoConfigHandler {
-    public static final String ENCH_CFG_PATH = "config/enchantmentcontrol/enchantments.json";
-    public static final String ENCH_CFG_PER_FILE_DIR = "config/enchantmentcontrol/enchantments";
+public class EnchantmentInfoConfigReader {
+    public static final String LEGACY_PATH = "config/enchantmentcontrol/enchantments.json";
+    public static final String MAIN_DIR = "config/enchantmentcontrol/enchantments";
 
     public static void preInit(){
         // Legacy enchantments.json support (read once, then rename to enchantments.legacy.unused)
-        readLegacyConfigs();
+        List<EnchantmentInfo> readInfos = readLegacyConfigs();
+        if(!readInfos.isEmpty()){
+            EnchantmentInfo.registerAll(readInfos);
+            ConfigHandler.debug.printLoaded = true; //tmp set config value to true to print the imported files
+            EnchantmentInfoWriter.modifiablePath = "legacy_enchcontrol-copy_from_here";
+            return; //if found, will not load contents of /enchantments/ (will only print to legacy-copy_from_here, next restart is gonna be fine again)
+        }
 
-        // Per-enchantment files (default): config/enchantmentcontrol/enchantments/modid/enchid.json
+        // Per-enchantment files: config/enchantmentcontrol/enchantments/modid/enchid.json
         try {
-            List<EnchantmentInfo> readInfos = readPerFileConfigs();
+            readInfos = readPerFileConfigs();
             EnchantmentInfo.registerAll(readInfos);
         } catch (Exception e){
             EnchantmentControl.LOGGER.warn("Reading enchantment configs failed!");
@@ -32,10 +39,7 @@ public class EnchantmentInfoConfigHandler {
         }
     }
 
-    public static void postInit(){
-        applyManualOverrides();
-    }
-
+    //Done in post init to modify the final fields ench.rarity and ench.applicableEquipmentTypes
     public static void applyManualOverrides(){
         for(EnchantmentInfo info : EnchantmentInfo.getAll()){
             if(info.rarity == null && info.slots == null) continue;
@@ -67,7 +71,7 @@ public class EnchantmentInfoConfigHandler {
     }
 
     private static List<EnchantmentInfo> readPerFileConfigs() {
-        File base = new File(ENCH_CFG_PER_FILE_DIR);
+        File base = new File(MAIN_DIR);
         if (!base.exists() || !base.isDirectory()) return new ArrayList<>(); // nothing to read
 
         List<EnchantmentInfo> infos = new ArrayList<>();
@@ -97,12 +101,15 @@ public class EnchantmentInfoConfigHandler {
     }
 
     private static List<EnchantmentInfo> readLegacyConfigs() {
+        EnchantmentControl.LOGGER.info("Reading legacy enchantments.json...");
         List<EnchantmentInfo> infos = new ArrayList<>();
 
-        File legacyFile = new File(ENCH_CFG_PATH);
+        File legacyFile = new File(LEGACY_PATH);
         if (legacyFile.exists() && legacyFile.isFile()) {
             try (InputStream in = Files.newInputStream(legacyFile.toPath())) {
+                EnchantmentControl.LOGGER.info("Legacy enchantments.json found, parsing...");
                 infos.addAll(readListWithGson(in));
+                EnchantmentControl.LOGGER.info("Legacy enchantments.json parsed successfully. Read {} enchantments.", infos.size());
 
                 // After parsing successfully: rename to enchantments.legacy.unused
                 File renamed = new File("config/enchantmentcontrol/enchantments.legacy.unused");
