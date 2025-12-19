@@ -10,7 +10,7 @@ public enum MaxEnchantabilityMode {
     SUPER {
         @Override
         public int getMaxEnch(int enchLvl, int min, int range) {
-            return 1 + enchLvl * 10 + 5;
+            return 1 + enchLvl * 10 + range;
         }
     },
     CONST {
