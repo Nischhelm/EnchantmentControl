@@ -1,5 +1,6 @@
 package enchantmentcontrol;
 
+import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.EnchantmentInfoConfigHandler;
 import enchantmentcontrol.config.classdump.EnchantmentClassWriter;
 import enchantmentcontrol.util.EnchantmentInfo;
@@ -30,5 +31,7 @@ public class EnchantmentControl {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         EnchantmentClassWriter.postInit();
+        // Optionally print defaults
+        EnchantmentInfoConfigHandler.postInit();
     }
 }

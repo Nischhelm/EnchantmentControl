@@ -58,8 +58,12 @@ public class ConfigHandler {
 	public static BlacklistConfig blacklists = new BlacklistConfig();
 
 	@Config.Comment("TODO")
-	@Config.Name("Item Types")
-	public static ItemTypeConfig itemTypes = new ItemTypeConfig();
+ @Config.Name("Item Types")
+ public static ItemTypeConfig itemTypes = new ItemTypeConfig();
+
+ @Config.Comment("If enabled, writes all currently registered enchantment infos to config/enchantmentcontrol/enchantments_out.json during PostInit. Disabled by default.")
+ @Config.Name("Print Default Enchantment Infos")
+ public static boolean printDefaults = false;
 
 	@Mod.EventBusSubscriber(modid = EnchantmentControl.MODID)
 	private static class EventHandler {

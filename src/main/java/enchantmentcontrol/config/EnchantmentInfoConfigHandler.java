@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 public class EnchantmentInfoConfigHandler {
     public static final String ENCH_CFG_PATH = "config/enchantmentcontrol/enchantments.json";
+    public static final String ENCH_CFG_OUT_PATH = "config/enchantmentcontrol/enchantments_out.json";
 
     public static void preInit(){
         //create EnchantmentInfo from json cfg files, wish i had Meldexun Forge Config Extension
@@ -30,6 +31,16 @@ public class EnchantmentInfoConfigHandler {
             List<EnchantmentInfo> infos = readWithGson(Files.newInputStream(new File(ENCH_CFG_PATH).toPath()));
         } catch (Exception e){
             EnchantmentControl.LOGGER.warn("Reading enchantment configs failed!");
+            e.printStackTrace(System.out);
+        }
+    }
+
+    public static void postInit(){
+        if (!ConfigHandler.printDefaults) return;
+        try {
+            writeAllInfos();
+        } catch (IOException e) {
+            EnchantmentControl.LOGGER.warn("Writing enchantment defaults failed!");
             e.printStackTrace(System.out);
         }
     }
@@ -160,6 +171,76 @@ public class EnchantmentInfoConfigHandler {
                 }
             }
             return out;
+        }
+    }
+
+    private static void writeAllInfos() throws IOException {
+        // Ensure directory exists
+        File outFile = new File(ENCH_CFG_OUT_PATH);
+        File parent = outFile.getParentFile();
+        if (parent != null && !parent.exists()) parent.mkdirs();
+
+        JsonArray arr = new JsonArray();
+        for (EnchantmentInfo info : EnchantmentInfo.getAll()) {
+            JsonObject o = new JsonObject();
+
+            // id
+            o.addProperty("id", EnchantmentInfo.getEnchantmentId(info));
+
+            // rarity
+            if (info.rarity != null) o.addProperty("rarity", info.rarity.name());
+
+            // booleans with overwrite flags
+            if (info.overwritesIsTreasure) o.addProperty("isTreasure", info.isTreasure);
+            if (info.overwritesIsCurse) o.addProperty("isCurse", info.isCurse);
+            if (info.overwritesIsAllowedOnBooks) o.addProperty("isAllowedOnBooks", info.isAllowedOnBooks);
+
+            // levels
+            if (info.overwritesMinLvl) o.addProperty("minLvl", info.minLvl);
+            if (info.overwritesMaxLvl) o.addProperty("maxLvl", info.maxLvl);
+
+            // enchantability
+            if (info.ench != null) {
+                JsonObject ench = new JsonObject();
+                ench.addProperty("minEnch", info.ench.minEnchLvl);
+                ench.addProperty("lvlSpan", info.ench.enchLvlSpan);
+                ench.addProperty("range", info.ench.enchLvlRange);
+                if (info.ench.enchMode != null)
+                    ench.addProperty("maxEnchMode", info.ench.enchMode.name());
+                o.add("enchantability", ench);
+            }
+
+            // slots
+            if (info.slots != null) {
+                JsonArray slots = new JsonArray();
+                for (EntityEquipmentSlot slot : info.slots) slots.add(new JsonPrimitive(slot.name()));
+                o.add("slots", slots);
+            }
+
+            // types
+            if (info.typesEnchTable != null) {
+                JsonArray types = new JsonArray();
+                for (String t : info.typesEnchTable) types.add(new JsonPrimitive(t));
+                o.add("types", types);
+            }
+            if (info.typesAnvil != null) {
+                JsonArray typesAnvil = new JsonArray();
+                for (String t : info.typesAnvil) typesAnvil.add(new JsonPrimitive(t));
+                o.add("typesAnvil", typesAnvil);
+            }
+
+            // displayColor
+            if (info.displayColor != null) o.addProperty("displayColor", info.displayColor.name());
+
+            // doublePrice
+            if (info.overwritesDoublePrice) o.addProperty("doublePrice", info.doublePrice);
+
+            arr.add(o);
+        }
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try (Writer w = new OutputStreamWriter(new FileOutputStream(outFile), StandardCharsets.UTF_8)) {
+            gson.toJson(arr, w);
         }
     }
 
