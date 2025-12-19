@@ -24,8 +24,8 @@ public class EnchantmentInfoConfigHandler {
 
         // Per-enchantment files (default): config/enchantmentcontrol/enchantments/modid/enchid.json
         try {
-            List<EnchantmentInfo> ignored = readPerFileConfigs();
-            EnchantmentControl.LOGGER.info("Loaded {} enchantment configs from files.", ignored.size());
+            List<EnchantmentInfo> readInfos = readPerFileConfigs();
+            EnchantmentInfo.registerAll(readInfos);
         } catch (Exception e){
             EnchantmentControl.LOGGER.warn("Reading enchantment configs failed!");
             e.printStackTrace(System.out);

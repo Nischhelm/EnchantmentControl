@@ -53,6 +53,14 @@ public class EnchantmentInfo {
         return byEnchId.values();
     }
 
+    public static void register(EnchantmentInfo info){
+        byEnchId.put(info.enchId, info);
+    }
+
+    public static void registerAll(List<EnchantmentInfo> infos){
+        infos.forEach(EnchantmentInfo::register);
+    }
+
     // -------- VANILLA SYSTEM OVERRIDES --------
 
     private static final Map<String, List<EnchantmentInfo>> vanillaSystemOverriders = new HashMap<String, List<EnchantmentInfo>>(){{
@@ -172,8 +180,6 @@ public class EnchantmentInfo {
 
     public EnchantmentInfo(@Nonnull String id) {
         this.enchId = id;
-
-        byEnchId.put(id, this);
     }
 
     //-------- SETTERS --------

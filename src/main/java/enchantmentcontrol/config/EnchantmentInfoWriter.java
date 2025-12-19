@@ -14,21 +14,24 @@ import java.nio.file.Files;
 import java.util.Collection;
 
 public class EnchantmentInfoWriter {
-    public static final String ENCH_CFG_OUT_PER_FILE_DIR = "config/enchantmentcontrol/out";
+    public static final String ENCH_CFG_OUT_PER_FILE_DIR = "config/enchantmentcontrol/loaded";
 
     public static void postInit(){
-        if (!ConfigHandler.dev.printDefaults) return;
+        if (!ConfigHandler.debug.printLoaded) return;
         //TODO: figure out how/whether to use this
-        writeAllCurrentEnchantmentInfos(EnchantmentInfo.getAll());
+        writeAllCurrentEnchantmentInfos(EnchantmentInfo.getAll(), ENCH_CFG_OUT_PER_FILE_DIR);
     }
 
-    public static void writeAllCurrentEnchantmentInfos(Collection<EnchantmentInfo> infos) {
+    public static void writeAllCurrentEnchantmentInfos(Collection<EnchantmentInfo> infos, String path) {
         // Write one file per enchantment into config/enchantmentcontrol/out/modid/enchid.json
         try {
-            File baseOut = new File(ENCH_CFG_OUT_PER_FILE_DIR);
+            File baseOut = new File(path);
             if (!baseOut.exists() && !baseOut.mkdirs()) {
-                EnchantmentControl.LOGGER.warn("Could not create output directory: {}", baseOut.getPath());
+                EnchantmentControl.LOGGER.warn("Could not create directory: {}", baseOut.getPath());
             }
+
+            // Clear any existing files so the directory reflects only the current run
+            clearDirectoryContents(baseOut);
 
             for (EnchantmentInfo info : infos) {
                 String id = EnchantmentInfo.getEnchantmentId(info);
@@ -38,7 +41,7 @@ public class EnchantmentInfoWriter {
 
                 File modDir = new File(baseOut, modid);
                 if (!modDir.exists() && !modDir.mkdirs()) {
-                    EnchantmentControl.LOGGER.warn("Could not create mod output directory: {}", modDir.getPath());
+                    EnchantmentControl.LOGGER.warn("Could not create directory: {}", modDir.getPath());
                 }
 
                 File outFile = new File(modDir, enchid + ".json");
@@ -52,8 +55,21 @@ public class EnchantmentInfoWriter {
                 }
             }
         } catch (IOException e) {
-            EnchantmentControl.LOGGER.warn("Writing enchantment defaults failed!");
-            e.printStackTrace(System.out);
+            EnchantmentControl.LOGGER.warn("Writing loaded enchantment infos failed!");
+        }
+    }
+
+    public static void clearDirectoryContents(File dir) {
+        if (dir == null || !dir.exists() || !dir.isDirectory()) return;
+        File[] children = dir.listFiles();
+        if (children == null) return;
+        for (File f : children) {
+            if (f.isDirectory()) {
+                clearDirectoryContents(f);
+            }
+            if (!f.delete()) {
+                EnchantmentControl.LOGGER.debug("Could not delete {} while clearing {}", f.getPath(), dir.getPath());
+            }
         }
     }
 }

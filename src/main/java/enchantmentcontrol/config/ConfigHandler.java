@@ -2,8 +2,9 @@ package enchantmentcontrol.config;
 
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.folders.BlacklistConfig;
+import enchantmentcontrol.config.folders.DebugConfig;
+import enchantmentcontrol.config.folders.FirstSetupConfig;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
-import enchantmentcontrol.config.folders.ModPackDevConfig;
 import enchantmentcontrol.config.provider.BlacklistConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import fermiumbooter.annotations.MixinConfig;
@@ -38,6 +39,7 @@ public class ConfigHandler {
 			"or define your own rarities with their own weights here.\n" +
 			"Pattern: I:YOUR_RARITY_NAME=weight")
 	@Config.Name(EarlyConfigReader.RARITY_CONFIG_NAME)
+	@Config.RequiresMcRestart
 	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){{
 		put("COMMON", 20);
 		put("UNCOMMON", 10);
@@ -54,9 +56,13 @@ public class ConfigHandler {
 	@Config.Name("Item Types")
 	public static ItemTypeConfig itemTypes = new ItemTypeConfig();
 
-	@Config.Comment("TODO")
-	@Config.Name("Start here as modpack dev")
-	public static ModPackDevConfig dev = new ModPackDevConfig();
+	@Config.Comment("If you're a modpack dev just starting to set up this mod, you probably want to start here.")
+	@Config.Name("First Setup")
+	public static FirstSetupConfig dev = new FirstSetupConfig();
+
+	@Config.Comment(" ")
+	@Config.Name("Debug")
+	public static DebugConfig debug = new DebugConfig();
 
 	@Mod.EventBusSubscriber(modid = EnchantmentControl.MODID)
 	private static class EventHandler {

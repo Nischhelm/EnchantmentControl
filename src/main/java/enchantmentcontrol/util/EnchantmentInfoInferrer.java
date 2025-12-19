@@ -1,12 +1,13 @@
 package enchantmentcontrol.util;
 
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.config.EnchantmentInfoWriter;
 import enchantmentcontrol.mixin.vanilla.EnchantmentAccessor;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,10 +17,11 @@ import java.util.List;
  * Builds EnchantmentInfo by inspecting Enchantment instances.
  */
 public final class EnchantmentInfoInferrer {
+    public static final String ENCH_CFG_INFERRED_DIR = "config/enchantmentcontrol/inferred";
 
     public static void postInit(){
-        if(ConfigHandler.dev.inferEnchantmentInfo)
-            inferInfoForAllRegisteredEnchantments();
+        EnchantmentInfoWriter.clearDirectoryContents(new File(ENCH_CFG_INFERRED_DIR));
+        EnchantmentInfoWriter.writeAllCurrentEnchantmentInfos(inferInfoForAllRegisteredEnchantments(), ENCH_CFG_INFERRED_DIR);
     }
 
     public static List<EnchantmentInfo> inferInfoForAllRegisteredEnchantments() {
@@ -76,11 +78,13 @@ public final class EnchantmentInfoInferrer {
 
             int minEnch = minEnchProbed[1];
             int lvlSpan = minEnchProbed[2] - minEnchProbed[1];
-            if(minEnchProbed[1] - minEnchProbed[0] != lvlSpan)
-                EnchantmentControl.LOGGER.warn("Enchantability for {} has inconsistent lvlSpan behavior that can't be copied to EnchantmentInfo, defaulting to minEnchAtLvl2 - minEnchAtLvl1", ench.getRegistryName());
+            if(minEnchProbed[1] - minEnchProbed[0] != lvlSpan) {
+                EnchantmentControl.LOGGER.warn("Enchantability for {} has inconsistent lvlSpan behavior that can't be copied to EnchantmentInfo, won't overwrite", ench.getRegistryName());
+                return null;
+            }
 
             int range = 0;
-            MaxEnchantabilityMode mode = MaxEnchantabilityMode.NORMAL;
+            MaxEnchantabilityMode mode = null;
 
             //CONST if all 3 maxEnch the same
             if(maxEnchProbed[2] == maxEnchProbed[1] && maxEnchProbed[1] == maxEnchProbed[0]){
@@ -115,11 +119,11 @@ public final class EnchantmentInfoInferrer {
                     mode = MaxEnchantabilityMode.SUPER;
                     range = dd0;
                 }
-                else {
-                    EnchantmentControl.LOGGER.warn("Enchantability for {} has inconsistent maxEnch behavior that can't be copied to EnchantmentInfo, defaulting to NORMAL with range 0", ench.getRegistryName());
-                    mode = MaxEnchantabilityMode.NORMAL;
-                    range = 0;
-                }
+            }
+
+            if(mode == null){
+                EnchantmentControl.LOGGER.warn("Enchantability for {} has inconsistent maxEnch behavior that can't be copied to EnchantmentInfo, won't overwrite", ench.getRegistryName());
+                return null;
             }
 
             return new EnchantmentInfo.EnchantabilityCalc(minEnch, lvlSpan, range, mode);
