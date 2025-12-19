@@ -38,7 +38,13 @@ public class ConfigHandler {
 			"or define your own rarities with their own weights here.\n" +
 			"Pattern: I:YOUR_RARITY_NAME=weight")
 	@Config.Name(EarlyConfigReader.RARITY_CONFIG_NAME)
-	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){};
+	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){{
+		put("COMMON", 20);
+		put("UNCOMMON", 10);
+		put("RARE", 4);
+		put("VERY_RARE", 2);
+		put("LEGENDARY", 1);
+	}};
 
 	@Config.Comment("TODO")
 	@Config.Name("Blacklists")
