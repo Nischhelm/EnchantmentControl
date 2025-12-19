@@ -1,6 +1,7 @@
 package enchantmentcontrol.util;
 
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.mixin.vanilla.EnchantmentAccessor;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.text.TextFormatting;
@@ -10,32 +11,36 @@ import java.util.*;
 /**
  * Builds EnchantmentInfo by inspecting Enchantment instances.
  */
-public final class EnchantmentInfoCreator {
+public final class EnchantmentInfoInferrer {
 
-    private EnchantmentInfoCreator() {}
+    public static void postInit(){
+        if(ConfigHandler.inferEnchantmentInfo)
+            inferInfoForAllRegisteredEnchantments();
+    }
 
     public static List<EnchantmentInfo> inferInfoForAllRegisteredEnchantments() {
         List<EnchantmentInfo> out = new ArrayList<>();
         for (Enchantment ench : Enchantment.REGISTRY) {
-            EnchantmentInfo info = inferInfoFromEnchantment(ench);
+            EnchantmentInfo info = inferInfoForEnchantment(ench);
             if (info != null) out.add(info);
         }
         return out;
     }
 
-    public static @Nullable EnchantmentInfo inferInfoFromEnchantment(Enchantment ench) {
+    public static @Nullable EnchantmentInfo inferInfoForEnchantment(Enchantment ench) {
         if (ench == null || ench.getRegistryName() == null) return null;
 
         EnchantmentInfo info = new EnchantmentInfo(ench.getRegistryName().toString());
 
-        info.setCurse(ench.isCurse());
-        info.setTreasure(ench.isTreasureEnchantment());
         info.rarity = ench.getRarity();
         info.setMinLvl(ench.getMinLevel());
         info.setMaxLvl(ench.getMaxLevel());
+        info.setCurse(ench.isCurse());
+        info.setTreasure(ench.isTreasureEnchantment());
+        info.setDoublePrice(ench.isTreasureEnchantment()); //just copying behavior
         info.setAllowedOnBooks(ench.isAllowedOnBooks());
         info.setEnchantabilities(probeEnchantability(ench));
-        info.typesEnchTable = Collections.singleton(ench.type.toString());
+        info.typesEnchTable = ench.type == null ? null : Collections.singleton(ench.type.toString());
         info.slots = Arrays.asList(((EnchantmentAccessor) ench).getSlots());
 
         TextFormatting fmt = probeDisplayColor(ench); // Display color (only for unusual, not for default none or RED if curse)
@@ -82,6 +87,10 @@ public final class EnchantmentInfoCreator {
                     //enchants with just 1 lvl might not have a range defined,
                     // we'll denote them as normal,
                     // doesn't make a difference except if someone changes the max lvl,
+                    // where its good for it to behave NORMAL
+                    mode = MaxEnchantabilityMode.NORMAL;
+                    range = maxEnchProbed[1]-minEnchProbed[1]; //best guess
+                }
             }
             else if(maxEnchProbed[2] - maxEnchProbed[1] == maxEnchProbed[1] - maxEnchProbed[0]){ //NORMAL, SUPER and LINEAR all have the behavior that they grow linearly with lvl (slope is lvlSpan, 10 and range respectively)
 
@@ -102,9 +111,7 @@ public final class EnchantmentInfoCreator {
                     mode = MaxEnchantabilityMode.SUPER;
                     range = dd0;
                 }
-                    mode = MaxEnchantabilityMode.LINEAR;
-                    range = maxEnchProbed[1];
-                } else {
+                else {
                     EnchantmentControl.LOGGER.warn("Enchantability for {} has inconsistent maxEnch behavior that can't be copied to EnchantmentInfo, defaulting to NORMAL with range 0", ench.getRegistryName());
                     mode = MaxEnchantabilityMode.NORMAL;
                     range = 0;
