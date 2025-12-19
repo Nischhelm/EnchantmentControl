@@ -102,7 +102,7 @@ public abstract class EnchantmentMixin extends Enchantment { //needs to extend f
     @WrapMethod(method = "canApplyAtEnchantingTable", remap = false)
     public boolean ec_canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
         EnchantmentInfo info = EnchantmentInfo.get(this);
-        if(info != null && info.typesAnvil != null)
+        if(info != null && info.typesEnchTable != null)
             return ItemTypeConfigProvider.canItemApply(this, info.typesEnchTable, stack);
         return original.call(stack);
     }
