@@ -31,7 +31,6 @@ public class EnchantmentControl {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         EnchantmentClassWriter.postInit();
-        // Optionally print defaults
         EnchantmentInfoConfigHandler.postInit();
     }
 }
