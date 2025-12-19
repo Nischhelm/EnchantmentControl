@@ -24,7 +24,7 @@ public class DebugConfig {
     @Config.Comment("This is just a safety switch if you really dislike the idea of this mod having a mixin straight into item registration (IForgeRegistryEntry.Impl.setRegistryName) and you dont use the enchantment id remapping feature anyway. It will save a few startup milliseconds for sure.")
     @Config.Name("Enable Registry Remapping (MixinToggle)")
     @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.registryremapping.json", defaultValue = true)
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.registryremap.json", defaultValue = true)
     public boolean enableRegistryRemap = true;
 
     @Config.Comment("Disable this to remove EnchantmentControls main feature which hooks into all registered enchantments code to modify how they behave. \n" +

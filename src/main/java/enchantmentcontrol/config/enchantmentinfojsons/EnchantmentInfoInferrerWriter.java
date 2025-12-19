@@ -58,7 +58,7 @@ public final class EnchantmentInfoInferrerWriter {
 
     private static @Nullable TextFormatting probeDisplayColor(Enchantment ench) {
         try {
-            String name = ench.getTranslatedName(1); //TODO: works on server?
+            String name = ench.getTranslatedName(1);
             // Search the start of the name for a textformatting flag
             for (TextFormatting fmt : TextFormatting.values()) if (name.startsWith(fmt.toString())) return fmt;
         } catch (Throwable ignored) {
