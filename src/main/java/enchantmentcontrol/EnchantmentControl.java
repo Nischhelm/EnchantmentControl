@@ -36,12 +36,10 @@ public class EnchantmentControl {
 
         EnchantmentInfoConfigReader.applyManualOverrides(); //apply manual overrides for rarity and slots
 
-        //infer info from existing enchantment objects (can be used for testing and development, it creates the best fitting approximation of an enchant)
-        if(ConfigHandler.dev.printInferred)
-            EnchantmentInfoInferrerWriter.postInit();
+        //infer info from existing enchantment objects (can be used for testing and development, it creates the best fitting approximation of an enchant). these are not loaded
+        if(ConfigHandler.dev.printInferred) EnchantmentInfoInferrerWriter.printInferred();
+        if (ConfigHandler.debug.printLoaded) EnchantmentInfoWriter.printLoaded();
 
-        if (ConfigHandler.debug.printLoaded)
-            EnchantmentInfoWriter.postInit();
 
         //this just as cache clear
         EarlyConfigReader.clearLines();

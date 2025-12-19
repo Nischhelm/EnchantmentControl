@@ -20,7 +20,7 @@ import java.util.List;
 public final class EnchantmentInfoInferrerWriter {
     public static final String MAIN_DIR = "config/enchantmentcontrol/inferred";
 
-    public static void postInit(){
+    public static void printInferred(){
         EnchantmentInfoWriter.clearDirectoryContents(new File(MAIN_DIR));
         EnchantmentInfoWriter.writeAllCurrentEnchantmentInfos(inferInfoForAllRegisteredEnchantments(), MAIN_DIR);
     }

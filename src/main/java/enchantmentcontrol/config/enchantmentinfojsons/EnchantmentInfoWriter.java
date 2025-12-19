@@ -18,7 +18,7 @@ public class EnchantmentInfoWriter {
     public static String modifiablePath = "loaded";
     public static final String MAIN_DIR = "config/enchantmentcontrol/";
 
-    public static void postInit(){
+    public static void printLoaded(){
         if (!ConfigHandler.debug.printLoaded) return;
         writeAllCurrentEnchantmentInfos(EnchantmentInfo.getAll(), MAIN_DIR + modifiablePath);
     }

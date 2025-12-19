@@ -116,6 +116,7 @@ public class EnchantmentInfo {
 
     @SerializedName("enchantability")
     public EnchantabilityCalc ench;
+
     public static class EnchantabilityCalc {
         @SerializedName("minEnch")
         public int minEnchLvl;
