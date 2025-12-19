@@ -37,7 +37,7 @@ public class ConfigHandler {
 	@Config.Comment("Override vanilla rarity weights (COMMON = 10, UNCOMMON = 5, RARE = 2, VERY_RARE = 1) \n" +
 			"or define your own rarities with their own weights here.\n" +
 			"Pattern: I:YOUR_RARITY_NAME=weight")
-	@Config.Name("Defined Rarities")
+	@Config.Name(EarlyConfigReader.RARITY_CONFIG_NAME)
 	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){};
 
 	@Config.Comment("TODO")

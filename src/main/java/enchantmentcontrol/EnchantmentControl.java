@@ -1,5 +1,6 @@
 package enchantmentcontrol;
 
+import enchantmentcontrol.config.EarlyConfigReader;
 import enchantmentcontrol.config.EnchantmentInfoConfigHandler;
 import enchantmentcontrol.config.classdump.EnchantmentClassWriter;
 import enchantmentcontrol.util.EnchantmentInfoInferrer;
@@ -32,5 +33,6 @@ public class EnchantmentControl {
         EnchantmentClassWriter.postInit();
         EnchantmentInfoInferrer.postInit();
         EnchantmentInfoConfigHandler.postInit();
+        EarlyConfigReader.clearLines();
     }
 }

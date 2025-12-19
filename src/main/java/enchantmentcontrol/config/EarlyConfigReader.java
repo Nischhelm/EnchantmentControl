@@ -1,5 +1,6 @@
 package enchantmentcontrol.config;
 
+import enchantmentcontrol.EnchantmentControl;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -8,68 +9,105 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Function;
 
 public class EarlyConfigReader {
     public static final String BLACKLIST_CONFIG_NAME = "Blacklisted Enchantment Classes";
     public static final String IDREMAP_CONFIG_NAME = "Enchantment Id Remaps";
+    public static final String RARITY_CONFIG_NAME = "Rarities";
+
     public static final String CONFIG_PATH = "config/enchantmentcontrol.cfg";
 
-    private static Set<String> blacklistConfig_earlyAccess = null;
-    private static Map<String, ResourceLocation> remapConfig_earlyAccess = null;
+    private static Set<String> blacklistConfig = null;
+    private static Map<String, ResourceLocation> remapConfig = null;
+    private static Map<String, Integer> rarityConfig = null;
 
-    public static Set<String> readConfigForBlacklist(){
-        if(blacklistConfig_earlyAccess == null) {
-            blacklistConfig_earlyAccess = new HashSet<>();
+    private static List<String> lines = null;
+    private static List<String> readLines(){
+        if(lines == null){
+            lines = new ArrayList<>();
             Path enchclasses_path = Paths.get(CONFIG_PATH);
             try {
                 Files.createDirectories(enchclasses_path.getParent());
-
-                boolean isReading = false;
-                for (String line : Files.readAllLines(enchclasses_path)) {
-                    if (line.contains("S:\""+ BLACKLIST_CONFIG_NAME +"\"")) {
-                        isReading = true;
-                        continue;
-                    }
-                    if (!isReading) continue; //unimportant lines
-                    if (line.contains(">")) break; //End of bracket
-
-                    blacklistConfig_earlyAccess.add(line.trim());
-                }
+                lines.addAll(Files.readAllLines(enchclasses_path));
             } catch (IOException ignored) {}
         }
+        return lines;
+    }
+    public static void clearLines(){
+        lines = null;
+    }
 
-        return blacklistConfig_earlyAccess;
+    public static Set<String> getClassBlacklistConfig(){
+        if(blacklistConfig == null) {
+            blacklistConfig = new HashSet<>();
+            boolean isReading = false;
+            for (String line : readLines()) {
+                if (line.contains("S:\""+ BLACKLIST_CONFIG_NAME +"\"")) {
+                    isReading = true;
+                    continue;
+                }
+                if (!isReading) continue; //unimportant lines
+                if (line.contains(">")) break; //End of bracket
+
+                blacklistConfig.add(line.trim());
+            }
+        }
+
+        return blacklistConfig;
     }
 
     @Nullable
     public static ResourceLocation getRemap(String in){
-        return readConfigForRemaps().get(in);
+        return getRemapConfig().get(in);
     }
 
-    public static Map<String, ResourceLocation> readConfigForRemaps(){
-        if(remapConfig_earlyAccess == null) {
-            remapConfig_earlyAccess = new HashMap<>();
-            Path enchclasses_path = Paths.get(CONFIG_PATH);
-            try {
-                Files.createDirectories(enchclasses_path.getParent());
+    public static Map<String, ResourceLocation> getRemapConfig(){
+        if(remapConfig == null)
+            remapConfig = readConfigMap(IDREMAP_CONFIG_NAME, Function.identity(), ResourceLocation::new);
 
-                boolean isReading = false;
-                for (String line : Files.readAllLines(enchclasses_path)) {
-                    //"enchantment id remaps" {
-                    if (line.contains("\""+ IDREMAP_CONFIG_NAME.toLowerCase(Locale.ROOT)+"\" {")) {
-                        isReading = true;
-                        continue;
-                    }
-                    if (!isReading) continue; //unimportant lines
+        return remapConfig;
+    }
 
-                    if (line.contains("}")) break; //end of bracket
+    public static Map<String, Integer> getRarityConfig(){
+        if(rarityConfig == null)
+            rarityConfig = readConfigMap(RARITY_CONFIG_NAME, Function.identity(), Integer::parseInt);
 
-                    String[] split = line.split("\"=");
-                    remapConfig_earlyAccess.put(split[0].replaceFirst("S:\"","").trim(),new ResourceLocation(split[1].trim()));
-                }
-            } catch (IOException ignored) {}
+        return rarityConfig;
+    }
+
+    public static <I, O> Map<I,O> readConfigMap(String name, Function<String, I> inputMapper, Function<String, O> outputMapper) {
+        Map<I, O> output = new HashMap<>();
+
+        boolean isReading = false;
+        String nameToCheckFor = (name.contains(" ") ? "\"" + name + "\"" : name) + " {";
+        nameToCheckFor = nameToCheckFor.toLowerCase(Locale.ROOT);
+
+        boolean found = false;
+        for (String line : readLines()) {
+            if (line.contains(nameToCheckFor)) {
+                isReading = true;
+                continue;
+            }
+            if (!isReading) continue; //unimportant lines
+
+            if (line.contains("}")) break; //end of bracket
+
+            found = true;
+
+            String[] split = line.split("=");
+            if (split.length != 2) {
+                EnchantmentControl.LOGGER.warn("Unable to early-read config map for {} at line {}, expected X:\"somestring\"=val", name, line);
+                continue;
+            }
+            String input = split[0].trim().substring(2); //remove X:
+            boolean hasQuotes = input.startsWith("\"") && input.endsWith("\"");
+            if (hasQuotes) input = input.substring(1, input.length() - 1); //remove quotes
+
+            output.put(inputMapper.apply(input.trim()), outputMapper.apply(split[1].trim()));
         }
+        if (!found) EnchantmentControl.LOGGER.warn("Didnt find config map to early-read for {}", name);
 
-        return remapConfig_earlyAccess;
+        return output;
     }
 }

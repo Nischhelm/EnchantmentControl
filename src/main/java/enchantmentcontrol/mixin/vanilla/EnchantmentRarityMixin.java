@@ -21,7 +21,7 @@ public abstract class EnchantmentRarityMixin {
     @Invoker("<init>") private static Enchantment.Rarity ec_invokeInit(String internalName, int internalId, int weight){ throw new AssertionError("EnchantmentControl couldn't find constructor for Enchantment Rarity enum");}
 
     static {
-        RarityProvider.registerRarities(EnchantmentRarityMixin::ec$addEnchantmentRarity); //TODO: isnt this too early for config?
+        RarityProvider.registerRarities(EnchantmentRarityMixin::ec$addEnchantmentRarity);
     }
 
     @Inject(method = "<init>(Ljava/lang/String;II)V", at = @At("TAIL"))

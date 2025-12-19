@@ -35,7 +35,7 @@ public class EnchantmentControlClassTransformer implements IClassTransformer {
             public void visitEnd() {
                 List<String> modifiedEnchClasses = EnchantmentClassReader.read();
                 modifiedEnchClasses.removeIf(s -> s.startsWith("net.minecraft.enchantment"));
-                EarlyConfigReader.readConfigForBlacklist().forEach(modifiedEnchClasses::remove);
+                EarlyConfigReader.getClassBlacklistConfig().forEach(modifiedEnchClasses::remove);
                 Annotations.setValue(this.node, "targets", modifiedEnchClasses);
             }
         };
