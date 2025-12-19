@@ -7,7 +7,6 @@ import enchantmentcontrol.config.folders.FirstSetupConfig;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.config.provider.BlacklistConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
-import fermiumbooter.annotations.MixinConfig;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -18,17 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Config(modid = EnchantmentControl.MODID)
-@MixinConfig(name = EnchantmentControl.MODID)
 public class ConfigHandler {
-	@Config.Comment("Enable")
-	@Config.Name("Enable")
-	@Config.RequiresMcRestart
-	@MixinConfig.MixinToggle(
-			earlyMixin = "mixins.enchantmentcontrol.vanilla.json",
-			lateMixin = "mixins.enchantmentcontrol.modded.json",
-			defaultValue = true
-	)
-	public static boolean enable = true; //TODO: needs way more config
 
 	@Config.Comment("List groupings of enchantments that should be incompatible with each other")
 	@Config.Name("Incompatible Enchantment Groups")
@@ -48,11 +37,11 @@ public class ConfigHandler {
 		put("LEGENDARY", 1);
 	}};
 
-	@Config.Comment("TODO")
+	@Config.Comment("Option to blacklist enchants to appear from various sources (or entirely)")
 	@Config.Name("Blacklists")
 	public static BlacklistConfig blacklists = new BlacklistConfig();
 
-	@Config.Comment("TODO")
+	@Config.Comment("Options for custom item type matchers to use in enchantment applicability")
 	@Config.Name("Item Types")
 	public static ItemTypeConfig itemTypes = new ItemTypeConfig();
 

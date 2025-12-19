@@ -141,9 +141,6 @@ public class EnchantmentInfo {
         }
     }
 
-    //TODO: price change on villagers?
-    //TODO: can be on villagers?
-
     public Set<Enchantment> incompats;
     @SerializedName("typesAnvil")
     public Set<String> typesAnvil;

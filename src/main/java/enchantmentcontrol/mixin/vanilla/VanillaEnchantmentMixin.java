@@ -40,7 +40,7 @@ import org.spongepowered.asm.mixin.Mixin;
         EnchantmentWaterWorker.class
 })
 @SuppressWarnings({"MixinAnnotationTarget", "UnresolvedMixinReference"})
-public abstract class VanillaEnchantmentMixin extends Enchantment {
+public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of VanillaBaseEnchantmentMixin and modded.EnchantmentMixin just for all vanilla enchantments
     protected VanillaEnchantmentMixin(Rarity rarityIn, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {
         super(rarityIn, typeIn, slots);
     }

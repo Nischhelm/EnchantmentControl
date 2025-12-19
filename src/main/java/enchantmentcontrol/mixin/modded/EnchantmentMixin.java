@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.Mixin;
 @Debug(export = true)
 @Mixin(targets = {"net.minecraft.enchantment.Enchantment"}, value = EnchantmentDummy.class) //needs to be two separate Enchantment classes for the refmaps to not write the owner class in front of the searge method names
 @SuppressWarnings({"MixinSuperClass"})
+//copy of vanilla.VanillaBaseEnchantmentMixin and vanilla.VanillaEnchantmentMixin just for all modded enchantments and their intermediaries
 public abstract class EnchantmentMixin extends Enchantment { //needs to extend for refmaps to work
     protected EnchantmentMixin(Rarity rarityIn, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {
         super(rarityIn, typeIn, slots);

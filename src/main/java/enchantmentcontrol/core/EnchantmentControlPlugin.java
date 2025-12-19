@@ -1,5 +1,6 @@
 package enchantmentcontrol.core;
 
+import fermiumbooter.FermiumRegistryAPI;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.spongepowered.asm.launch.MixinBootstrap;
 
@@ -9,6 +10,8 @@ import java.util.Map;
 public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 	public EnchantmentControlPlugin() {
 		MixinBootstrap.init();
+
+		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.json");
 	}
 
 	@Override

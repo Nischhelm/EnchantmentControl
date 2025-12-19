@@ -14,7 +14,7 @@ import net.minecraft.util.DamageSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(Enchantment.class)
+@Mixin(Enchantment.class) //copy of VanillaEnchantmentMixin and modded.EnchantmentMixin just for net.minecraft.enchantment.Enchantment
 public abstract class VanillaBaseEnchantmentMixin {
     @Shadow public abstract String getName();
 
