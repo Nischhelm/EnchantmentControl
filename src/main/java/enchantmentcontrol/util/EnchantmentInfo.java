@@ -1,5 +1,6 @@
 package enchantmentcontrol.util;
 
+import com.google.gson.annotations.SerializedName;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -76,32 +77,46 @@ public class EnchantmentInfo {
 
     // -------- PROPERTIES --------
 
+    @SerializedName("id")
     private final String enchId;
 
     public boolean overwritesIsTreasure = false;
+    @SerializedName("isTreasure")
     public boolean isTreasure;
 
     public boolean overwritesIsCurse = false;
+    @SerializedName("isCurse")
     public boolean isCurse;
 
     public boolean overwritesIsAllowedOnBooks = false;
+    @SerializedName("isAllowedOnBooks")
     public boolean isAllowedOnBooks;
 
+    @SerializedName("rarity")
     public Enchantment.Rarity rarity = null;
 
+    @SerializedName("displayColor")
     public TextFormatting displayColor = null;
 
     public boolean overwritesMinLvl = false;
+    @SerializedName("minLvl")
     public int minLvl;
+
     public boolean overwritesMaxLvl = false;
+    @SerializedName("maxLvl")
     public int maxLvl;
 
+    @SerializedName("enchantability")
     public EnchantabilityCalc ench;
     public static class EnchantabilityCalc {
-        private int minEnchLvl;
-        private int enchLvlSpan;
-        private int enchLvlRange;
-        private MaxEnchantabilityMode enchMode;
+        @SerializedName("minEnch")
+        public int minEnchLvl;
+        @SerializedName("lvlSpan")
+        public int enchLvlSpan;
+        @SerializedName("range")
+        public int enchLvlRange;
+        @SerializedName("minEnch")
+        public MaxEnchantabilityMode enchMode;
 
         public EnchantabilityCalc(int minEnch, int lvlSpan, int range, MaxEnchantabilityMode mode){
             this.minEnchLvl = minEnch;
@@ -122,11 +137,15 @@ public class EnchantmentInfo {
     //TODO: can be on villagers?
 
     public Set<Enchantment> incompats;
+    @SerializedName("typesAnvil")
     public Set<String> typesAnvil;
+    @SerializedName("types")
     public Set<String> typesEnchTable;
+    @SerializedName("slots")
     public List<EntityEquipmentSlot> slots;
 
     public boolean overwritesDoublePrice = false;
+    @SerializedName("doublePrice")
     public boolean doublePrice;
 
     public BiFunction<Integer, EnumCreatureAttribute, Float> sharpnessBehavior;
