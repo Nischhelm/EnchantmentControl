@@ -53,8 +53,8 @@ public class EnchantmentInfoConfigHandler {
     private static EnchantmentInfo readEnchantmentInfo(JsonReader reader) throws IOException {
         String id = null;
         Enchantment.Rarity rarity = null;
-        Boolean treasure = null;
-        Boolean curse = null;
+        Boolean isTreasure = null;
+        Boolean isCurse = null;
         Boolean isAllowedOnBooks = null;
         Integer minLvl = null;
         Integer maxLvl = null;
@@ -79,8 +79,8 @@ public class EnchantmentInfoConfigHandler {
             switch (name){
                 case "id": id = reader.nextString(); break;
                 case "rarity": rarity = Enchantment.Rarity.valueOf(reader.nextString()); break;
-                case "treasure": treasure = reader.nextBoolean(); break;
-                case "curse": curse = reader.nextBoolean(); break;
+                case "isTreasure": case "treasure": isTreasure = reader.nextBoolean(); break;
+                case "isCurse": case "curse": isCurse = reader.nextBoolean(); break;
                 case "isAllowedOnBooks": case "allowed_on_books": isAllowedOnBooks = reader.nextBoolean(); break;
                 case "minLvl": case "min_lvl": minLvl = reader.nextInt(); break;
                 case "maxLvl": case "max_lvl": maxLvl = reader.nextInt(); break;
@@ -121,8 +121,8 @@ public class EnchantmentInfoConfigHandler {
 
         EnchantmentInfo info = new EnchantmentInfo(id);
         if(rarity != null) info.setRarity(rarity);
-        if(treasure != null) info.setTreasure(treasure);
-        if(curse != null) info.setCurse(curse);
+        if(isTreasure != null) info.setTreasure(isTreasure);
+        if(isCurse != null) info.setCurse(isCurse);
         if(isAllowedOnBooks != null) info.setAllowedOnBooks(isAllowedOnBooks);
         if(minLvl != null) info.setMinLvl(minLvl);
         if(maxLvl != null) info.setMaxLvl(maxLvl);
@@ -177,7 +177,7 @@ public class EnchantmentInfoConfigHandler {
             int finalRange = range;
             int finalLvlSpan = lvlSpan == null ? 0 : lvlSpan;
             MaxEnchantabilityMode finalMaxEnchMode = maxEnchMode;
-            return info -> info.setEnchantabilities(finalMinEnch, finalRange, finalLvlSpan, finalMaxEnchMode);
+            return info -> info.setEnchantabilities(finalMinEnch, finalLvlSpan, finalRange, finalMaxEnchMode);
         }
         return null;
     }
@@ -195,15 +195,15 @@ public class EnchantmentInfoConfigHandler {
 
         if(maxEnchEval.startsWith("(1+10*LVL)+")) {
             mode = MaxEnchantabilityMode.SUPER;
-            range = Integer.parseInt(maxEnchEval.substring(11));
+            range = Integer.parseInt(maxEnchEval.substring(11)); //remove "(1+10*LVL)+")
         } else if(maxEnchEval.startsWith("MIN+")){
             mode = MaxEnchantabilityMode.NORMAL;
-            range = Integer.parseInt(maxEnchEval.substring(4));
-        } else if(maxEnchEval.matches("\\d+")){ //just numbers
+            range = Integer.parseInt(maxEnchEval.substring(4)); //remove "MIN+"
+        } else if(maxEnchEval.matches("\\d+")){
             mode = MaxEnchantabilityMode.CONST;
-            range = Integer.parseInt(maxEnchEval);
+            range = Integer.parseInt(maxEnchEval); //just numbers
         }
 
-        info.setEnchantabilities(minEnch, range, lvlSpan, mode);
+        info.setEnchantabilities(minEnch, lvlSpan, range, mode);
     }
 }

@@ -96,8 +96,27 @@ public class EnchantmentInfo {
     public boolean overwritesMaxLvl;
     public int maxLvl;
 
-    private int minEnchLvl, enchLvlSpan, enchLvlRange;
-    public MaxEnchantabilityMode enchMode = null;
+    public EnchantabilityCalc ench;
+    public static class EnchantabilityCalc {
+        private int minEnchLvl;
+        private int enchLvlSpan;
+        private int enchLvlRange;
+        private MaxEnchantabilityMode enchMode;
+
+        public EnchantabilityCalc(int minEnch, int lvlSpan, int range, MaxEnchantabilityMode mode){
+            this.minEnchLvl = minEnch;
+            this.enchLvlSpan = lvlSpan;
+            this.enchLvlRange = range;
+            this.enchMode = mode;
+        }
+
+        public int getMinEnch(int lvl) {
+            return minEnchLvl + enchLvlSpan * (lvl-1);
+        }
+        public int getMaxEnch(int lvl) {
+            return enchMode.getMaxEnch(lvl, getMinEnch(lvl), enchLvlRange);
+        }
+    }
 
     //TODO: price change on villagers?
     //TODO: can be on villagers?
@@ -105,7 +124,7 @@ public class EnchantmentInfo {
     public Set<Enchantment> incompats;
     public Set<String> typesAnvil;
     public Set<String> typesEnchTable;
-    public List<EntityEquipmentSlot> slots; //TODO
+    public List<EntityEquipmentSlot> slots;
 
     public BiFunction<Integer, EnumCreatureAttribute, Float> sharpnessBehavior;
     public TriConsumer<EntityLivingBase, Entity, Integer> arthropodBehavior;
@@ -147,13 +166,10 @@ public class EnchantmentInfo {
         this.maxLvl = maxLvl;
     }
 
-    public void setEnchantabilities(int minEnch, int range, int span, @Nullable MaxEnchantabilityMode mode) {
-        if (mode != null) this.enchMode = mode;
-        else this.enchMode = MaxEnchantabilityMode.NORMAL;
+    public void setEnchantabilities(int minEnch, int span, int range, @Nullable MaxEnchantabilityMode mode) {
+        if (mode == null) mode = MaxEnchantabilityMode.NORMAL;
 
-        this.minEnchLvl = minEnch;
-        this.enchLvlSpan = span;
-        this.enchLvlRange = range;
+        this.ench = new EnchantabilityCalc(minEnch, span, range, mode);
     }
 
     public void setTextDisplayColor(TextFormatting displayColor) {
@@ -211,14 +227,6 @@ public class EnchantmentInfo {
     }
 
     // -------- GETTERS --------
-
-    public int getMinEnchLvl(int lvl){
-        return this.minEnchLvl + this.enchLvlSpan * (lvl - 1);
-    }
-
-    public int getMaxEnchLvl(int lvl){
-        return this.enchMode.getMaxEnch(lvl, this.getMinEnchLvl(lvl), this.enchLvlRange);
-    }
 
     @SideOnly(Side.CLIENT) @SuppressWarnings("deprecation")
     public String getTranslatedName(Enchantment ench, int lvl){

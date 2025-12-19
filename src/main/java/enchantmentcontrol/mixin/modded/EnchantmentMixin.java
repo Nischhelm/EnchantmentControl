@@ -41,14 +41,14 @@ public abstract class EnchantmentMixin extends Enchantment { //needs to extend f
     @WrapMethod(method = "getMinEnchantability")
     public int ec_getMinEnchantability(int enchantmentLevel, Operation<Integer> original) {
         EnchantmentInfo info = EnchantmentInfo.get(this);
-        if(info != null && info.enchMode != null) return info.getMinEnchLvl(enchantmentLevel);
+        if(info != null && info.ench != null) return info.ench.getMinEnch(enchantmentLevel);
         return original.call(enchantmentLevel);
     }
 
     @WrapMethod(method = "getMaxEnchantability")
     public int ec_getMaxEnchantability(int enchantmentLevel, Operation<Integer> original) {
         EnchantmentInfo info = EnchantmentInfo.get(this);
-        if(info != null && info.enchMode != null) return info.getMaxEnchLvl(enchantmentLevel);
+        if(info != null && info.ench != null) return info.ench.getMaxEnch(enchantmentLevel);
         return original.call(enchantmentLevel);
     }
 
