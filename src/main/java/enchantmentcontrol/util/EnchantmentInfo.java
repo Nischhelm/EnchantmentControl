@@ -78,22 +78,22 @@ public class EnchantmentInfo {
 
     private final String enchId;
 
-    public boolean overwritesIsTreasure;
+    public boolean overwritesIsTreasure = false;
     public boolean isTreasure;
 
-    public boolean overwritesIsCurse;
+    public boolean overwritesIsCurse = false;
     public boolean isCurse;
 
-    public boolean overwritesIsAllowedOnBooks;
+    public boolean overwritesIsAllowedOnBooks = false;
     public boolean isAllowedOnBooks;
 
     public Enchantment.Rarity rarity = null;
 
     public TextFormatting displayColor = null;
 
-    public boolean overwritesMinLvl;
+    public boolean overwritesMinLvl = false;
     public int minLvl;
-    public boolean overwritesMaxLvl;
+    public boolean overwritesMaxLvl = false;
     public int maxLvl;
 
     public EnchantabilityCalc ench;
@@ -125,6 +125,9 @@ public class EnchantmentInfo {
     public Set<String> typesAnvil;
     public Set<String> typesEnchTable;
     public List<EntityEquipmentSlot> slots;
+
+    public boolean overwritesDoublePrice = false;
+    public boolean doublePrice;
 
     public BiFunction<Integer, EnumCreatureAttribute, Float> sharpnessBehavior;
     public TriConsumer<EntityLivingBase, Entity, Integer> arthropodBehavior;
@@ -205,6 +208,11 @@ public class EnchantmentInfo {
 
     public void setSlots(List<EntityEquipmentSlot> slots) {
         this.slots = slots;
+    }
+
+    public void setDoublePrice(boolean doublePrice) {
+        this.doublePrice = doublePrice;
+        this.overwritesDoublePrice = true;
     }
 
     public void registerVanillaSystemOverride(String type, float perLevel){

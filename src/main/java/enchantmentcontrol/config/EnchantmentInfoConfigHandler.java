@@ -71,6 +71,8 @@ public class EnchantmentInfoConfigHandler {
 
         String displayColor = null;
 
+        Boolean doublePrice = null;
+
         //TODO: a separate config file for just the descriptions
 
         reader.beginObject();
@@ -89,6 +91,7 @@ public class EnchantmentInfoConfigHandler {
                 case "types": if(reader.peek() != JsonToken.NULL) types = readStringArray(reader); break;
                 case "typesAnvil": if(reader.peek() != JsonToken.NULL) typesAnvil = readStringArray(reader); break;
                 case "displayColor": displayColor = reader.nextString(); break;
+                case "doublePrice": case "double_price": doublePrice = reader.nextBoolean(); break;
                 // --- only old enchcontrol ---
                 case "type": types = Collections.singletonList(reader.nextString()); break;
                 case "custom_evaluations": custom_evaluations = reader.nextBoolean(); break;
@@ -100,7 +103,6 @@ public class EnchantmentInfoConfigHandler {
                     enabled <- handled via registration blacklist
                     hide_on_item <- idk if i like it, might implement later
                     hide_on_book <- same
-                    double_price <- might implement
                     incompat_mode <- idk why theres a mode. mode == 1 seems to fully disable all incompats
                     incompatible <- handled via config groups
                     applicability_mode <- i didnt understand this system
@@ -131,6 +133,7 @@ public class EnchantmentInfoConfigHandler {
         if(types != null) info.setEnchTableTypes(new HashSet<>(types));
         if(typesAnvil != null) info.setAnvilTypes(new HashSet<>(typesAnvil));
         if(displayColor != null) info.setTextDisplayColor(TextFormatting.valueOf(displayColor));
+        if(doublePrice != null) info.setDoublePrice(doublePrice);
 
         if(custom_evaluations != null && custom_evaluations && min_ench_eval != null && max_ench_eval != null)
             parseLegacyEnchantmentsControlConfig(info, min_ench_eval, max_ench_eval);
