@@ -48,10 +48,9 @@ public class ConfigHandler {
 	public static String[] disabledClasses = {};
 
 	@Config.Comment("Override vanilla rarity weights (COMMON = 10, UNCOMMON = 5, RARE = 2, VERY_RARE = 1) or define your own rarities with their own weights here." +
-			"Pattern: ") //TODO
+			"Pattern: I:YOUR_RARITY_NAME=weight") //TODO
 	@Config.Name("Defined Rarities")
-	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){{
-	}};
+	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){};
 
 	@Config.Comment("TODO")
 	@Config.Name("Blacklists")
