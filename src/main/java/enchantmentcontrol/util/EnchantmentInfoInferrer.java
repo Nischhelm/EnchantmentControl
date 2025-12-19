@@ -18,7 +18,7 @@ import java.util.List;
 public final class EnchantmentInfoInferrer {
 
     public static void postInit(){
-        if(ConfigHandler.inferEnchantmentInfo)
+        if(ConfigHandler.dev.inferEnchantmentInfo)
             inferInfoForAllRegisteredEnchantments();
     }
 

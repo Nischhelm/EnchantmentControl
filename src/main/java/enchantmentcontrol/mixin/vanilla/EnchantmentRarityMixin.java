@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Debug(export = true)
 @Mixin(Enchantment.Rarity.class)
 public abstract class EnchantmentRarityMixin {
     @SuppressWarnings("target") @Shadow @Final @Mutable private static Enchantment.Rarity[] $VALUES;

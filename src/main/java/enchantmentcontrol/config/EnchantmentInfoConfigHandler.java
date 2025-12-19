@@ -23,9 +23,10 @@ public class EnchantmentInfoConfigHandler {
         // Legacy enchantments.json support (read once, then rename to enchantments.legacy.unused)
         readLegacyConfigs();
 
-        // Per-enchantment files (default): config/enchantmentcontrol/enchantments/<modid>/<enchid>.json
+        // Per-enchantment files (default): config/enchantmentcontrol/enchantments/modid/enchid.json
         try {
             List<EnchantmentInfo> ignored = readPerFileConfigs();
+            EnchantmentControl.LOGGER.info("Loaded {} enchantment configs from files.", ignored.size());
         } catch (Exception e){
             EnchantmentControl.LOGGER.warn("Reading enchantment configs failed!");
             e.printStackTrace(System.out);
@@ -33,7 +34,7 @@ public class EnchantmentInfoConfigHandler {
     }
 
     public static void postInit(){
-        if (!ConfigHandler.printDefaults) return;
+        if (!ConfigHandler.dev.printDefaults) return;
         try {
             writeAllCurrentEnchantmentInfos();
         } catch (IOException e) {

@@ -3,6 +3,7 @@ package enchantmentcontrol.config;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.folders.BlacklistConfig;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
+import enchantmentcontrol.config.folders.ModPackDevConfig;
 import enchantmentcontrol.config.provider.BlacklistConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import fermiumbooter.annotations.MixinConfig;
@@ -33,22 +34,9 @@ public class ConfigHandler {
 	public static String[] incompatibleGroups = {
 	};
 
-	@Config.Comment("If you really dont like one mods enchantment id (modid:enchid), you can add it here with a second entry of what you want to call it instead (modid:enchid). \n" +
-			"WARNING: this will cause permanent id remapping issues for old worlds! Only do this for new worlds or before you release a modpack, if you really need to!\n" +
-			"pattern: S:\"modid:oldenchid\"=modid:newenchid")
-	@Config.Name(EarlyConfigReader.IDREMAP_CONFIG_NAME)
-	public static Map<String, String> idRemaps = new HashMap<String, String>(){};
-
-	@Config.Comment("Enchantment classes that should not be modified at all by this mod. \n" +
-			"Use this if there are crashes when this mod tries to automatically modify some mods enchantments. \n" +
-			"You find the class name in config/enchantmentcontrol/tmp/enchclasses.dump\n" +
-			"Classes noted here need to look like net.minecraft.enchantment.EnchantmentDamage\n" +
-			"Vanilla enchants will always be targeted, so putting their classes in here won't do anything")
-	@Config.Name(EarlyConfigReader.BLACKLIST_CONFIG_NAME)
-	public static String[] disabledClasses = {};
-
-	@Config.Comment("Override vanilla rarity weights (COMMON = 10, UNCOMMON = 5, RARE = 2, VERY_RARE = 1) or define your own rarities with their own weights here." +
-			"Pattern: I:YOUR_RARITY_NAME=weight") //TODO
+	@Config.Comment("Override vanilla rarity weights (COMMON = 10, UNCOMMON = 5, RARE = 2, VERY_RARE = 1) \n" +
+			"or define your own rarities with their own weights here.\n" +
+			"Pattern: I:YOUR_RARITY_NAME=weight")
 	@Config.Name("Defined Rarities")
 	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){};
 
@@ -60,13 +48,9 @@ public class ConfigHandler {
 	@Config.Name("Item Types")
 	public static ItemTypeConfig itemTypes = new ItemTypeConfig();
 
-	@Config.Comment("If enabled, writes all currently registered enchantment infos to config/enchantmentcontrol/enchantments_out.json during PostInit. Disabled by default.")
-	@Config.Name("Print Default Enchantment Infos")
-	public static boolean printDefaults = false;
-
-	@Config.Comment("If enabled, infers info about enchantments to print out.")
-	@Config.Name("Infer Enchantment Infos")
-	public static boolean inferEnchantmentInfo = false;
+	@Config.Comment("TODO")
+	@Config.Name("Start here as modpack dev")
+	public static ModPackDevConfig dev = new ModPackDevConfig();
 
 	@Mod.EventBusSubscriber(modid = EnchantmentControl.MODID)
 	private static class EventHandler {
