@@ -12,6 +12,7 @@
     "vanilla.EnchantmentRarityMixin",
     "vanilla.EntityVillagerListEnchantedBookForEmeraldsMixin_DontDouble",
     "vanilla.IForgeRegistryEntryMixin",
+    "vanilla.VanillaBaseEnchantmentMixin",
     "vanilla.VanillaEnchantmentMixin",
     "vanilla.blacklists.ContainerEnchantmentThreadLocalMixin",
     "vanilla.blacklists.EnchantmentHelperMixin",
