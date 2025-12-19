@@ -189,9 +189,11 @@ public class EnchantmentInfo {
     }
 
     public void setEnchantabilities(int minEnch, int span, int range, @Nullable MaxEnchantabilityMode mode) {
-        if (mode == null) mode = MaxEnchantabilityMode.NORMAL;
+        setEnchantabilities(new EnchantabilityCalc(minEnch, span, range, mode == null ? MaxEnchantabilityMode.NORMAL : mode));
+    }
 
-        this.ench = new EnchantabilityCalc(minEnch, span, range, mode);
+    public void setEnchantabilities(EnchantabilityCalc calc) {
+        this.ench = calc;
     }
 
     public void setTextDisplayColor(TextFormatting displayColor) {
