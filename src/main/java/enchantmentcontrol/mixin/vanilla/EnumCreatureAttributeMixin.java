@@ -16,6 +16,7 @@ public abstract class EnumCreatureAttributeMixin {
     @Invoker("<init>") private static EnumCreatureAttribute ec_invokeInit(String internalName, int internalID){ throw new AssertionError("EnchantmentControl couldn't find constructor for EnumCreatureAttribute");}
 
     static {
+        // basically injected into <clinit> = first classload of EnumCreatureAttribute
         CreatureAttributeProvider.registerAttributes(EnumCreatureAttributeMixin::ec$addEnumCreatureAttribute);
     }
 

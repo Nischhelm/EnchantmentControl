@@ -1,6 +1,8 @@
 package enchantmentcontrol.config;
 
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.config.provider.CreatureAttributeProvider;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -15,6 +17,7 @@ public class EarlyConfigReader {
     public static final String BLACKLIST_CONFIG_NAME = "Blacklisted Enchantment Classes";
     public static final String IDREMAP_CONFIG_NAME = "Enchantment Id Remaps";
     public static final String RARITY_CONFIG_NAME = "Rarities";
+    public static final String CREAT_ATTR_CONFIG_NAME = "Creature Attributes";
 
     public static final String CONFIG_PATH = "config/enchantmentcontrol.cfg";
 

@@ -45,6 +45,17 @@ public class ConfigHandler {
 	@Config.Name("Item Types")
 	public static ItemTypeConfig itemTypes = new ItemTypeConfig();
 
+	@Config.Comment("Define custom creature attributes and their matchers.\n" +
+			"Patterns:\n" +
+			"Key: SOMECREATUREATTRIBUTENAME\n" +
+			"Value: modid, mymodid, myothermodid\n" +
+			"OR Value: mob, mymodid:someentityid, a:b\n" +
+			"OR Value: class, com.org.mymodid.entity.BaseEntity")
+	@Config.Name(EarlyConfigReader.CREAT_ATTR_CONFIG_NAME)
+	public static Map<String, String> creatureAttributes = new HashMap<String, String>(){{
+		put("DRAGON", "mob, minecraft:ender_dragon, iceandfire:firedragon, iceandfire:icedragon, iceandfire:lightningdragon, lycanitesmobs:cockatrice, lycanitesmobs:morock, lycanitesmobs:quetzodracl, lycanitesmobs:zoataur, lycanitesmobs:ignibus");
+	}};
+
 	@Config.Comment("If you're a modpack dev just starting to set up this mod, you probably want to start here.")
 	@Config.Name("First Setup")
 	public static FirstSetupConfig dev = new FirstSetupConfig();
@@ -62,7 +73,6 @@ public class ConfigHandler {
 
 				ItemTypeConfigProvider.resetCanApply();
 				BlacklistConfigProvider.resetBlacklists();
-				//TODO: reset incompat
 			}
 		}
 	}

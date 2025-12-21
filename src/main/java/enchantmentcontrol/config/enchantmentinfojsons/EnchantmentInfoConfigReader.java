@@ -7,6 +7,7 @@ import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.IEnchantmentPropertySetter;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.inventory.EntityEquipmentSlot;
 
 import java.io.*;
@@ -48,6 +49,8 @@ public class EnchantmentInfoConfigReader {
             setter.ec$setRarity(info.rarity);
             setter.ec$setSlots(info.slots.toArray(new EntityEquipmentSlot[0]));
         }
+
+        EnchantmentInfo.register(new EnchantmentInfo("somanyenchantments:lessersharpness")).sharpnessBehavior = (lvl, type) -> type == EnumCreatureAttribute.valueOf("DRAGON") ? 1000F * lvl : 0;
     }
 
     private static List<EnchantmentInfo> readListWithGson(InputStream in) throws IOException {

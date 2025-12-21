@@ -53,8 +53,9 @@ public class EnchantmentInfo {
         return byEnchId.values();
     }
 
-    public static void register(EnchantmentInfo info){
+    public static EnchantmentInfo register(EnchantmentInfo info){
         byEnchId.put(info.enchId, info);
+        return info;
     }
 
     public static void registerAll(List<EnchantmentInfo> infos){

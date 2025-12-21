@@ -10,6 +10,7 @@
     "vanilla.EnchantmentAccessor",
     "vanilla.EnchantmentHelperLvlsMixin",
     "vanilla.EnchantmentRarityMixin",
+    "vanilla.EntityLivingBaseMixin_CreatureAttribute",
     "vanilla.EntityVillagerListEnchantedBookForEmeraldsMixin_DontDouble",
     "vanilla.EnumCreatureAttributeMixin",
     "vanilla.blacklists.ContainerEnchantmentThreadLocalMixin",
