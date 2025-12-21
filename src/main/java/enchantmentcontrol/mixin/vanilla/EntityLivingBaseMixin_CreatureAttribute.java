@@ -5,11 +5,9 @@ import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.provider.CreatureAttributeProvider;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Debug(export = true)
 @Mixin(EntityLivingBase.class)
 public abstract class EntityLivingBaseMixin_CreatureAttribute {
     @ModifyReturnValue(method = "getCreatureAttribute", at = @At("RETURN"))

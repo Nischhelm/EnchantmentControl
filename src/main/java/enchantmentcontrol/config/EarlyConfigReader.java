@@ -1,8 +1,6 @@
 package enchantmentcontrol.config;
 
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.config.provider.CreatureAttributeProvider;
-import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;

@@ -29,13 +29,7 @@ public class ConfigHandler {
 			"Pattern: I:YOUR_RARITY_NAME=weight")
 	@Config.Name(EarlyConfigReader.RARITY_CONFIG_NAME)
 	@Config.RequiresMcRestart
-	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){{
-		put("COMMON", 20);
-		put("UNCOMMON", 10);
-		put("RARE", 4);
-		put("VERY_RARE", 2);
-		put("LEGENDARY", 1);
-	}};
+	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){};
 
 	@Config.Comment("Option to blacklist enchants to appear from various sources (or entirely)")
 	@Config.Name("Blacklists")
@@ -45,16 +39,18 @@ public class ConfigHandler {
 	@Config.Name("Item Types")
 	public static ItemTypeConfig itemTypes = new ItemTypeConfig();
 
-	@Config.Comment("Define custom creature attributes and their matchers.\n" +
-			"Patterns:\n" +
-			"Key: SOMECREATUREATTRIBUTENAME\n" +
-			"Value: modid, mymodid, myothermodid\n" +
-			"OR Value: mob, mymodid:someentityid, a:b\n" +
-			"OR Value: class, com.org.mymodid.entity.BaseEntity")
+	@Config.Comment("Define custom creature attributes and how to match them to entities.\n" +
+			"Pattern: S:MY_ATTR_NAME=type, string1, string2, string3, ...\n" +
+			"Available types: \n" +
+			"  modid: only check modid(s) \n" +
+			"  mob: check against 1 or more mob registry names \n" +
+			"  class: check if given class is in java class hierarchy of the mob\n" +
+			"Examples:\n" +
+			" S:LYCANITE=modid, lycanitesmobs\n" +
+			"  S:DRAGON=mob, minecraft:ender_dragon, iceandfire:firedragon, iceandfire:icedragon\n" +
+			"  S:ANIMAL=class, net.minecraft.entity.EntityAgeable")
 	@Config.Name(EarlyConfigReader.CREAT_ATTR_CONFIG_NAME)
-	public static Map<String, String> creatureAttributes = new HashMap<String, String>(){{
-		put("DRAGON", "mob, minecraft:ender_dragon, iceandfire:firedragon, iceandfire:icedragon, iceandfire:lightningdragon, lycanitesmobs:cockatrice, lycanitesmobs:morock, lycanitesmobs:quetzodracl, lycanitesmobs:zoataur, lycanitesmobs:ignibus");
-	}};
+	public static Map<String, String> creatureAttributes = new HashMap<String, String>(){};
 
 	@Config.Comment("If you're a modpack dev just starting to set up this mod, you probably want to start here.")
 	@Config.Name("First Setup")
@@ -73,6 +69,7 @@ public class ConfigHandler {
 
 				ItemTypeConfigProvider.resetCanApply();
 				BlacklistConfigProvider.resetBlacklists();
+				IncompatibleConfigProvider.applyIncompatsFromConfig();
 			}
 		}
 	}

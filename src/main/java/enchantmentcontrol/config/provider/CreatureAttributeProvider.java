@@ -49,7 +49,7 @@ public class CreatureAttributeProvider {
         for (Map.Entry<EnumCreatureAttribute, IEntityMatcher> entry : attributes.entrySet())
             if (entry.getValue().matches(entity, loc))
                 return entry.getKey();
-        return entity.getCreatureAttribute();
+        return EnumCreatureAttribute.UNDEFINED;
     }
 
     public interface IEntityMatcher { boolean matches(Entity entity, ResourceLocation loc);}
