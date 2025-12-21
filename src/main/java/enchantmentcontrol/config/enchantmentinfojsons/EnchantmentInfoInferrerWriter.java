@@ -1,6 +1,7 @@
 package enchantmentcontrol.config.enchantmentinfojsons;
 
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.mixin.vanilla.EnchantmentAccessor;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.MaxEnchantabilityMode;
@@ -23,6 +24,11 @@ public final class EnchantmentInfoInferrerWriter {
     public static void printInferred(){
         EnchantmentInfoWriter.clearDirectoryContents(new File(MAIN_DIR));
         EnchantmentInfoWriter.writeAllCurrentEnchantmentInfos(inferInfoForAllRegisteredEnchantments(), MAIN_DIR);
+
+        EnchantmentControl.CONFIG.get("general.first setup", "Print Inferred Enchantment Infos", ConfigHandler.dev.printInferred).set(false);
+        ConfigHandler.dev.printInferred = false;
+        EnchantmentControl.CONFIG.save();
+
     }
 
     public static List<EnchantmentInfo> inferInfoForAllRegisteredEnchantments() {

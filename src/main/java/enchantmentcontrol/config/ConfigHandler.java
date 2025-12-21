@@ -6,6 +6,7 @@ import enchantmentcontrol.config.folders.DebugConfig;
 import enchantmentcontrol.config.folders.FirstSetupConfig;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.config.provider.BlacklistConfigProvider;
+import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -21,12 +22,17 @@ public class ConfigHandler {
 
 	@Config.Comment("List groupings of enchantments that should be incompatible with each other")
 	@Config.Name("Incompatible Enchantment Groups")
-	public static String[] incompatibleGroups = {
-	};
+	public static String[] incompatibleGroups = {};
 
 	@Config.Comment("Override vanilla rarity weights (COMMON = 10, UNCOMMON = 5, RARE = 2, VERY_RARE = 1) \n" +
 			"or define your own rarities with their own weights here.\n" +
-			"Pattern: I:YOUR_RARITY_NAME=weight")
+			"Pattern: I:YOUR_RARITY_NAME=weight\n" +
+			"Example:\n" +
+			"  I:COMMON=20\n" +
+			"  I:UNCOMMON=10\n" +
+			"  I:RARE=4\n" +
+			"  I:VERY_RARE=2\n" +
+			"  I:LEGENDARY=1\n")
 	@Config.Name(EarlyConfigReader.RARITY_CONFIG_NAME)
 	@Config.RequiresMcRestart
 	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){};

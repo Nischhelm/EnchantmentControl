@@ -2,6 +2,8 @@ package enchantmentcontrol.mixin.modded;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.core.EnchantmentDummy;
 import enchantmentcontrol.util.EnchantmentInfo;
@@ -87,9 +89,11 @@ public abstract class EnchantmentMixin extends Enchantment { //needs to extend f
 
     @WrapMethod(method = "canApplyTogether")
     protected boolean ec_canApplyTogether(Enchantment ench, Operation<Boolean> original) {
-        EnchantmentInfo info = EnchantmentInfo.get(this);
-        if(info != null && info.incompats != null) return !info.incompats.contains(ench) && this != ench;
+        if(!ConfigHandler.dev.readIncompats) return IncompatibleConfigProvider.areCompatible(this, ench);
         return original.call(ench);
+        //EnchantmentInfo info = EnchantmentInfo.get(this);
+        //if(info != null && info.incompats != null) return !info.incompats.contains(ench) && this != ench;
+        //return original.call(ench);
     }
 
     @WrapMethod(method = "canApply")

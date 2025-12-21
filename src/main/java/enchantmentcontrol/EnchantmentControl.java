@@ -2,10 +2,12 @@ package enchantmentcontrol;
 
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.EarlyConfigReader;
-import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoConfigReader;
-import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
 import enchantmentcontrol.config.classdump.EnchantmentClassWriter;
+import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoConfigReader;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoInferrerWriter;
+import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
+import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -24,9 +26,13 @@ public class EnchantmentControl {
     public static final String NAME = "EnchantmentControl";
     public static final Logger LOGGER = LogManager.getLogger(EnchantmentControl.NAME);
     public static final String SEP = ",";
+    public static Configuration CONFIG = null;
 
 	@Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        CONFIG = new Configuration(event.getSuggestedConfigurationFile());
+        CONFIG.load();
+
         EnchantmentInfoConfigReader.preInit(); //read EnchantmentInfo's from /enchantments
     }
 
@@ -40,6 +46,8 @@ public class EnchantmentControl {
         if(ConfigHandler.dev.printInferred) EnchantmentInfoInferrerWriter.printInferred();
         if (ConfigHandler.debug.printLoaded) EnchantmentInfoWriter.printLoaded();
 
+        if(ConfigHandler.dev.readIncompats) IncompatibleConfigProvider.mapDefaultIncompatibilities();
+        IncompatibleConfigProvider.applyIncompatsFromConfig();
 
         //this just as cache clear
         EarlyConfigReader.clearLines();

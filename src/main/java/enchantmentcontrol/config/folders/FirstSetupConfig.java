@@ -14,7 +14,7 @@ public class FirstSetupConfig {
     @Config.RequiresMcRestart
     public Map<String, String> idRemaps = new HashMap<String, String>(){};
 
-    @Config.Comment("!Disable this after a one time use!\n" +
+    @Config.Comment("!Disables itself after a one time use!\n" +
             "If enabled, during startup this mod will infer info about all registered enchantments and print them out in /config/enchantmentcontrol/inferred/.\n" +
             "The created files can be used as blueprints from which to work off of.\n" +
             "To do so, copy everything to /config/enchantmentcontrol/enchantments/, then delete every file + line in file that should stay default/untouched.\n" +
@@ -23,4 +23,12 @@ public class FirstSetupConfig {
     @Config.Name("Print Inferred Enchantment Infos")
     @Config.RequiresMcRestart
     public boolean printInferred = false;
+
+    @Config.Comment("!Disables itself after a one time use!\n" +
+            "If enabled, during startup this mod will check all present incompatibilities between enchantments and print them out into the \"Incompatible Enchantment Groups\" config.\n" +
+            "Config will look correct after restart.\n" +
+            "This is done because this mod fully overwrites enchantment incompatibility, so this step should be done every time a new mod with enchantments is added to a modpack, to keep its inherent incompats.")
+    @Config.Name("Read and dump default incompats")
+    @Config.RequiresMcRestart
+    public boolean readIncompats = true;
 }
