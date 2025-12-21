@@ -8,6 +8,7 @@ import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.config.provider.BlacklistConfigProvider;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
+import enchantmentcontrol.util.ConfigRef;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -33,7 +34,7 @@ public class ConfigHandler {
 			"  I:RARE=4\n" +
 			"  I:VERY_RARE=2\n" +
 			"  I:LEGENDARY=1\n")
-	@Config.Name(EarlyConfigReader.RARITY_CONFIG_NAME)
+	@Config.Name(ConfigRef.RARITY_CONFIG_NAME)
 	@Config.RequiresMcRestart
 	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){};
 
@@ -55,7 +56,7 @@ public class ConfigHandler {
 			" S:LYCANITE=modid, lycanitesmobs\n" +
 			"  S:DRAGON=mob, minecraft:ender_dragon, iceandfire:firedragon, iceandfire:icedragon\n" +
 			"  S:ANIMAL=class, net.minecraft.entity.EntityAgeable")
-	@Config.Name(EarlyConfigReader.CREAT_ATTR_CONFIG_NAME)
+	@Config.Name(ConfigRef.CREAT_ATTR_CONFIG_NAME)
 	public static Map<String, String> creatureAttributes = new HashMap<String, String>(){};
 
 	@Config.Comment("If you're a modpack dev just starting to set up this mod, you probably want to start here.")

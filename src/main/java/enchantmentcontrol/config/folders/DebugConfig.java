@@ -1,7 +1,7 @@
 package enchantmentcontrol.config.folders;
 
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.config.EarlyConfigReader;
+import enchantmentcontrol.util.ConfigRef;
 import fermiumbooter.annotations.MixinConfig;
 import net.minecraftforge.common.config.Config;
 
@@ -12,7 +12,7 @@ public class DebugConfig {
             "You can find the class name in config/enchantmentcontrol/tmp/enchclasses.dump\n" +
             "Classes noted here need to look like net.minecraft.enchantment.EnchantmentDamage\n" +
             "Vanilla enchants will always be targeted, so putting their classes in here won't do anything")
-    @Config.Name(EarlyConfigReader.BLACKLIST_CONFIG_NAME)
+    @Config.Name(ConfigRef.BLACKLIST_CONFIG_NAME)
     @Config.RequiresMcRestart
     public String[] disabledClasses = {};
 

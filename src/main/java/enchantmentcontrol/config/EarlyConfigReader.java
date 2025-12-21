@@ -1,6 +1,7 @@
 package enchantmentcontrol.config;
 
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.util.ConfigRef;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -12,11 +13,6 @@ import java.util.*;
 import java.util.function.Function;
 
 public class EarlyConfigReader {
-    public static final String BLACKLIST_CONFIG_NAME = "Blacklisted Enchantment Classes";
-    public static final String IDREMAP_CONFIG_NAME = "Enchantment Id Remaps";
-    public static final String RARITY_CONFIG_NAME = "Rarities";
-    public static final String CREAT_ATTR_CONFIG_NAME = "Creature Attributes";
-
     public static final String CONFIG_PATH = "config/enchantmentcontrol.cfg";
 
     private static Set<String> blacklistConfig = null;
@@ -44,7 +40,7 @@ public class EarlyConfigReader {
             blacklistConfig = new HashSet<>();
             boolean isReading = false;
             for (String line : readLines()) {
-                if (line.contains("S:\""+ BLACKLIST_CONFIG_NAME +"\"")) {
+                if (line.contains("S:\""+ ConfigRef.BLACKLIST_CONFIG_NAME +"\"")) {
                     isReading = true;
                     continue;
                 }
@@ -65,14 +61,14 @@ public class EarlyConfigReader {
 
     public static Map<String, ResourceLocation> getRemapConfig(){
         if(remapConfig == null)
-            remapConfig = readConfigMap(IDREMAP_CONFIG_NAME, Function.identity(), ResourceLocation::new);
+            remapConfig = readConfigMap(ConfigRef.IDREMAP_CONFIG_NAME, Function.identity(), ResourceLocation::new);
 
         return remapConfig;
     }
 
     public static Map<String, Integer> getRarityConfig(){
         if(rarityConfig == null)
-            rarityConfig = readConfigMap(RARITY_CONFIG_NAME, Function.identity(), Integer::parseInt);
+            rarityConfig = readConfigMap(ConfigRef.RARITY_CONFIG_NAME, Function.identity(), Integer::parseInt);
 
         return rarityConfig;
     }

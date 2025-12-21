@@ -3,6 +3,7 @@ package enchantmentcontrol.config.enchantmentinfojsons;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.mixin.vanilla.EnchantmentAccessor;
+import enchantmentcontrol.util.ConfigRef;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.MaxEnchantabilityMode;
 import net.minecraft.enchantment.Enchantment;
@@ -25,7 +26,7 @@ public final class EnchantmentInfoInferrerWriter {
         EnchantmentInfoWriter.clearDirectoryContents(new File(MAIN_DIR));
         EnchantmentInfoWriter.writeAllCurrentEnchantmentInfos(inferInfoForAllRegisteredEnchantments(), MAIN_DIR);
 
-        EnchantmentControl.CONFIG.get("general.first setup", "Print Inferred Enchantment Infos", ConfigHandler.dev.printInferred).set(false);
+        EnchantmentControl.CONFIG.get("general.first setup", ConfigRef.DO_INFER_CONFIG_NAME, ConfigHandler.dev.printInferred).set(false);
         ConfigHandler.dev.printInferred = false;
         EnchantmentControl.CONFIG.save();
 

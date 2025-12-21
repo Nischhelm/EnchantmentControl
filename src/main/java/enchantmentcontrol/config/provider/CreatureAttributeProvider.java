@@ -2,6 +2,7 @@ package enchantmentcontrol.config.provider;
 
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.EarlyConfigReader;
+import enchantmentcontrol.util.ConfigRef;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,7 +16,7 @@ public class CreatureAttributeProvider {
     private static Map<EnumCreatureAttribute, IEntityMatcher> attributes = new HashMap<>(); //gets overwritten during EnumCreatureAttribute.<clinit>
 
     public static void registerAttributes(Function<String, EnumCreatureAttribute> constructor) {
-        attributes = EarlyConfigReader.readConfigMap(EarlyConfigReader.CREAT_ATTR_CONFIG_NAME, constructor, value -> {
+        attributes = EarlyConfigReader.readConfigMap(ConfigRef.CREAT_ATTR_CONFIG_NAME, constructor, value -> {
             String[] parts = value.split(",");
             if (parts.length < 2){
                 EnchantmentControl.LOGGER.warn("Invalid creature attribute definition, this creature attribute will not work: {}", value);

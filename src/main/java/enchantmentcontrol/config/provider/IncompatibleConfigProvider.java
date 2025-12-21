@@ -2,6 +2,7 @@ package enchantmentcontrol.config.provider;
 
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.util.ConfigRef;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.ResourceLocation;
 
@@ -87,7 +88,7 @@ public class IncompatibleConfigProvider {
         String[] out = defaultIncompatList.toArray(new String[0]);
 
         EnchantmentControl.CONFIG.get("general", "Incompatible Enchantment Groups", ConfigHandler.incompatibleGroups).set(out);
-        EnchantmentControl.CONFIG.get("general.first setup", "Read and dump default incompats", ConfigHandler.dev.readIncompats).set(false);
+        EnchantmentControl.CONFIG.get("general.first setup", ConfigRef.PRINT_INCOMPAT_CONFIG_NAME, ConfigHandler.dev.readIncompats).set(false);
         ConfigHandler.incompatibleGroups = out;
         ConfigHandler.dev.readIncompats = false;
         EnchantmentControl.CONFIG.save();
