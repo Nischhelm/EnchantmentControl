@@ -1,6 +1,8 @@
 package enchantmentcontrol.util;
 
 import com.google.gson.annotations.SerializedName;
+import enchantmentcontrol.util.vanillasystem.VanillaSystem;
+import enchantmentcontrol.util.vanillasystem.VanillaSystemOverride;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

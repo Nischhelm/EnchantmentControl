@@ -1,8 +1,8 @@
 package enchantmentcontrol.mixin.vanilla;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import enchantmentcontrol.util.VanillaSystem;
-import enchantmentcontrol.util.VanillaSystemOverride;
+import enchantmentcontrol.util.vanillasystem.VanillaSystem;
+import enchantmentcontrol.util.vanillasystem.VanillaSystemOverride;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;

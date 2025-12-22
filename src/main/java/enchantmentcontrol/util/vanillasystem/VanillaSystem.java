@@ -1,4 +1,4 @@
-package enchantmentcontrol.util;
+package enchantmentcontrol.util.vanillasystem;
 
 public enum VanillaSystem {
     SWEEPING("sweepingStrength"),

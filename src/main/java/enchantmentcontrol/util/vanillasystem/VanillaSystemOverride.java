@@ -1,5 +1,6 @@
-package enchantmentcontrol.util;
+package enchantmentcontrol.util.vanillasystem;
 
+import enchantmentcontrol.util.EnchantmentInfo;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
