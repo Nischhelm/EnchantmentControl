@@ -83,4 +83,6 @@ public class ItemTypeConfigProvider {
         }
         return isValid && !invertedMatches;
     }
+
+    //TODO: infer types of all current enchants and write to individual jsons during first setup
 }

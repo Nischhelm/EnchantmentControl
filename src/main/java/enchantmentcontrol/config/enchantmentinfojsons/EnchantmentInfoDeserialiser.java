@@ -3,56 +3,56 @@ package enchantmentcontrol.config.enchantmentinfojsons;
 import com.google.gson.*;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.MaxEnchantabilityMode;
+import enchantmentcontrol.util.VanillaSystem;
+import enchantmentcontrol.util.VanillaSystemOverride;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import javax.annotation.Nonnull;
+import java.util.*;
 
 public class EnchantmentInfoDeserialiser implements JsonDeserializer<EnchantmentInfo>, JsonSerializer<EnchantmentInfo> {
     @Override
     public EnchantmentInfo deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        //From JSON to EnchantmentInfo
+        //Read from JSON to EnchantmentInfo
         if (!json.isJsonObject()) return null;
-        JsonObject o = json.getAsJsonObject();
+        JsonObject jsonObj = json.getAsJsonObject();
 
-        String id = getAsString(o, "id");
+        String id = getAsString(jsonObj, "id");
         if (id == null) return null;
 
         EnchantmentInfo info = new EnchantmentInfo(id);
 
         // rarity
-        String rarityStr = getAsString(o, "rarity");
+        String rarityStr = getAsString(jsonObj, "rarity");
         if (rarityStr != null) info.setRarity(Enchantment.Rarity.valueOf(rarityStr));
 
         // booleans (with legacy aliases)
-        Boolean isTreasure = getAsBoolean(o, "isTreasure");
-        if (isTreasure == null) isTreasure = getAsBoolean(o, "treasure");
+        Boolean isTreasure = getAsBoolean(jsonObj, "isTreasure");
+        if (isTreasure == null) isTreasure = getAsBoolean(jsonObj, "treasure");
         if (isTreasure != null) info.setTreasure(isTreasure);
 
-        Boolean isCurse = getAsBoolean(o, "isCurse");
-        if (isCurse == null) isCurse = getAsBoolean(o, "curse");
+        Boolean isCurse = getAsBoolean(jsonObj, "isCurse");
+        if (isCurse == null) isCurse = getAsBoolean(jsonObj, "curse");
         if (isCurse != null) info.setCurse(isCurse);
 
-        Boolean allowedOnBooks = getAsBoolean(o, "isAllowedOnBooks");
-        if (allowedOnBooks == null) allowedOnBooks = getAsBoolean(o, "allowed_on_books");
+        Boolean allowedOnBooks = getAsBoolean(jsonObj, "isAllowedOnBooks");
+        if (allowedOnBooks == null) allowedOnBooks = getAsBoolean(jsonObj, "allowed_on_books");
         if (allowedOnBooks != null) info.setAllowedOnBooks(allowedOnBooks);
 
         // levels (with legacy aliases)
-        Integer minLvl = getAsInt(o, "minLvl");
-        if (minLvl == null) minLvl = getAsInt(o, "min_lvl");
+        Integer minLvl = getAsInt(jsonObj, "minLvl");
+        if (minLvl == null) minLvl = getAsInt(jsonObj, "min_lvl");
         if (minLvl != null) info.setMinLvl(minLvl);
 
-        Integer maxLvl = getAsInt(o, "maxLvl");
-        if (maxLvl == null) maxLvl = getAsInt(o, "max_lvl");
+        Integer maxLvl = getAsInt(jsonObj, "maxLvl");
+        if (maxLvl == null) maxLvl = getAsInt(jsonObj, "max_lvl");
         if (maxLvl != null) info.setMaxLvl(maxLvl);
 
         // enchantability
-        if (o.has("enchantability") && o.get("enchantability").isJsonObject()) {
-            JsonObject enchObj = o.getAsJsonObject("enchantability");
+        if (jsonObj.has("enchantability") && jsonObj.get("enchantability").isJsonObject()) {
+            JsonObject enchObj = jsonObj.getAsJsonObject("enchantability");
             Integer minEnch = getAsInt(enchObj, "minEnch");
             Integer lvlSpan = getAsInt(enchObj, "lvlSpan");
             Integer range = getAsInt(enchObj, "range");
@@ -64,35 +64,44 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
         }
 
         // slots (with legacy alias)
-        List<EntityEquipmentSlot> slots = readEnumList(o, "slots", EntityEquipmentSlot.class);
-        if (slots == null) slots = readEnumList(o, "equipment_slots", EntityEquipmentSlot.class);
+        List<EntityEquipmentSlot> slots = readEnumList(jsonObj, "slots", EntityEquipmentSlot.class);
+        if (slots == null) slots = readEnumList(jsonObj, "equipment_slots", EntityEquipmentSlot.class);
         if (slots != null) info.setSlots(slots);
 
         // types
-        List<String> types = readStringList(o, "types");
-        if (types == null && o.has("type") && o.get("type").isJsonPrimitive()) {
-            types = Collections.singletonList(o.get("type").getAsString());
+        List<String> types = readStringList(jsonObj, "types");
+        if (types == null && jsonObj.has("type") && jsonObj.get("type").isJsonPrimitive()) {
+            types = Collections.singletonList(jsonObj.get("type").getAsString());
         }
         if (types != null) info.setEnchTableTypes(new HashSet<>(types));
 
-        List<String> typesAnvil = readStringList(o, "typesAnvil");
+        List<String> typesAnvil = readStringList(jsonObj, "typesAnvil");
         if (typesAnvil != null) info.setAnvilTypes(new HashSet<>(typesAnvil));
 
         // displayColor
-        String colorStr = getAsString(o, "displayColor");
+        String colorStr = getAsString(jsonObj, "displayColor");
         if (colorStr != null) info.setTextDisplayColor(TextFormatting.valueOf(colorStr));
 
         // doublePrice (with legacy alias)
-        Boolean doublePrice = getAsBoolean(o, "doublePrice");
-        if (doublePrice == null) doublePrice = getAsBoolean(o, "double_price");
+        Boolean doublePrice = getAsBoolean(jsonObj, "doublePrice");
+        if (doublePrice == null) doublePrice = getAsBoolean(jsonObj, "double_price");
         if (doublePrice != null) info.setDoublePrice(doublePrice);
 
         // legacy enchantments control support
-        Boolean legacyCustom = getAsBoolean(o, "custom_evaluations");
-        String legacyMin = getAsString(o, "min_ench_eval");
-        String legacyMax = getAsString(o, "max_ench_eval");
+        Boolean legacyCustom = getAsBoolean(jsonObj, "custom_evaluations");
+        String legacyMin = getAsString(jsonObj, "min_ench_eval");
+        String legacyMax = getAsString(jsonObj, "max_ench_eval");
         if (Boolean.TRUE.equals(legacyCustom) && legacyMin != null && legacyMax != null) {
             parseLegacyEnchantmentsControlConfig(info, legacyMin, legacyMax);
+        }
+
+        // vanilla system overrides
+        if (jsonObj.has("vanilla system overrides") && jsonObj.get("vanilla system overrides").isJsonObject()) {
+            JsonObject vanillaSystems = jsonObj.getAsJsonObject("vanilla system overrides");
+            for(VanillaSystem system : VanillaSystem.values()) {
+                Float val = getAsFloat(vanillaSystems, system.toString());
+                if(val != null) info.registerVanillaSystemOverride(system, val);
+            }
         }
 
         return info;
@@ -100,7 +109,7 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
 
     @Override
     public JsonElement serialize(EnchantmentInfo info, java.lang.reflect.Type typeOfSrc, JsonSerializationContext context) {
-        //From EnchantmentInfo to JSON
+        //Write from EnchantmentInfo to JSON
         JsonObject o = new JsonObject();
 
         // id
@@ -154,7 +163,19 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
         // doublePrice
         if (info.overwritesDoublePrice) o.addProperty("doublePrice", info.doublePrice);
 
+        // vanilla system override
+        o.add("vanilla system overrides", writeVanillaOverrideEntries(info));
+
         return o;
+    }
+
+    @Nonnull
+    private static JsonObject writeVanillaOverrideEntries(EnchantmentInfo info) {
+        JsonObject vanillaSystems = new JsonObject();
+        for(Map.Entry<VanillaSystem, VanillaSystemOverride> entry: info.vanillaSystemStrengths.entrySet()){
+            vanillaSystems.addProperty(entry.getKey().toString(), entry.getValue().multiplier);
+        }
+        return vanillaSystems;
     }
 
     private static String getAsString(JsonObject o, String key) {
@@ -167,6 +188,10 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
 
     private static Integer getAsInt(JsonObject o, String key) {
         return o.has(key) && !o.get(key).isJsonNull() ? o.get(key).getAsInt() : null;
+    }
+
+    private static Float getAsFloat(JsonObject o, String key) {
+        return o.has(key) && !o.get(key).isJsonNull() ? o.get(key).getAsFloat() : null;
     }
 
     private static List<String> readStringList(JsonObject o, String key) {

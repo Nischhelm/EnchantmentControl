@@ -17,7 +17,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class EnchantmentInfo {
     // -------- STATIC LOOKUP --------
@@ -64,24 +63,9 @@ public class EnchantmentInfo {
 
     // -------- VANILLA SYSTEM OVERRIDES --------
 
-    private static final Map<String, List<EnchantmentInfo>> vanillaSystemOverriders = new HashMap<String, List<EnchantmentInfo>>(){{
-        put("sweeping", new ArrayList<>());
-        put("knockback", new ArrayList<>());
-        put("fireAspect", new ArrayList<>());
-        put("respiration", new ArrayList<>());
-        put("depthStrider", new ArrayList<>());
-        put("efficiency", new ArrayList<>());
-        put("luckOfTheSea", new ArrayList<>());
-        put("lure", new ArrayList<>());
-        put("looting", new ArrayList<>());
-        put("aquaAffinity", new ArrayList<>());
-        put("frostWalker", new ArrayList<>());
-        put("bindingCurse", new ArrayList<>());
-        put("vanishingCurse", new ArrayList<>());
-    }};
-
-    public static List<EnchantmentInfo> getOverriders(String system){
-        return vanillaSystemOverriders.get(system);
+    @Nullable
+    public VanillaSystemOverride getVanillaSystemOverride(VanillaSystem system) {
+        return vanillaSystemStrengths.getOrDefault(system, null);
     }
 
     // -------- PROPERTIES --------
@@ -156,24 +140,12 @@ public class EnchantmentInfo {
     public boolean doublePrice;
 
     public BiFunction<Integer, EnumCreatureAttribute, Float> sharpnessBehavior;
-    public TriConsumer<EntityLivingBase, Entity, Integer> arthropodBehavior;
     public BiFunction<Integer, DamageSource, Integer> protectionBehavior;
+    public TriConsumer<EntityLivingBase, Entity, Integer> arthropodBehavior;
     public TriConsumer<EntityLivingBase, Entity, Integer> thornsBehavior;
 
-                    //Input, Ench Lvl, Output
-    public BiFunction<Float, Integer, Float> sweepingStrength;
-    public BiFunction<Float, Integer, Float> knockbackStrength;
-    public BiFunction<Float, Integer, Float> fireAspectStrength;
-    public BiFunction<Float, Integer, Float> respirationStrength;
-    public BiFunction<Float, Integer, Float> depthStriderStrength;
-    public BiFunction<Float, Integer, Float> efficiencyStrength;
-    public BiFunction<Float, Integer, Float> luckOfTheSeaStrength;
-    public BiFunction<Float, Integer, Float> lureStrength;
-    public BiFunction<Float, Integer, Float> lootingStrength;
-    public Function<Integer, Boolean> hasAquaAffinity;
-    public Function<Integer, Boolean> hasFrostWalker;
-    public Function<Integer, Boolean> hasBindingCurse;
-    public Function<Integer, Boolean> hasVanishingCurse;
+                                                //Input (from other modifiers, otherwise 0), Ench Lvl, Output
+    public Map<VanillaSystem, VanillaSystemOverride> vanillaSystemStrengths = new HashMap<>();
 
     //-------- CONSTRUCTOR --------
 
@@ -243,23 +215,9 @@ public class EnchantmentInfo {
         this.overwritesDoublePrice = true;
     }
 
-    public void registerVanillaSystemOverride(String type, float perLevel){
-        vanillaSystemOverriders.get(type).add(this);
-        switch (type){
-            case "sweeping": this.sweepingStrength = (valIn, lvl) -> valIn + lvl * perLevel; break;
-            case "knockback": this.knockbackStrength = (valIn, lvl) -> valIn + lvl * perLevel; break;
-            case "fireAspect": this.fireAspectStrength = (valIn, lvl) -> valIn + lvl * perLevel; break;
-            case "respiration": this.respirationStrength = (valIn, lvl) -> valIn + lvl * perLevel; break;
-            case "depthStrider": this.depthStriderStrength = (valIn, lvl) -> valIn + lvl * perLevel; break;
-            case "efficiency": this.efficiencyStrength = (valIn, lvl) -> valIn + lvl * perLevel; break;
-            case "luckOfTheSea": this.luckOfTheSeaStrength = (valIn, lvl) -> valIn + lvl * perLevel; break;
-            case "lure": this.lureStrength = (valIn, lvl) -> valIn + lvl * perLevel; break;
-            case "looting": this.lootingStrength = (valIn, lvl) -> valIn + lvl * perLevel; break;
-            case "aquaAffinity": this.hasAquaAffinity = lvl -> lvl * perLevel >= 1; break;
-            case "frostWalker": this.hasFrostWalker = lvl -> lvl * perLevel >= 1; break;
-            case "bindingCurse": this.hasBindingCurse = lvl -> lvl * perLevel >= 1; break;
-            case "vanishingCurse": this.hasVanishingCurse = lvl -> lvl * perLevel >= 1; break;
-        }
+    public void registerVanillaSystemOverride(VanillaSystem type, float perLevel){
+        VanillaSystemOverride.getOverriders(type).add(this);
+        this.vanillaSystemStrengths.put(type, new VanillaSystemOverride(perLevel));
     }
 
     // -------- GETTERS --------
