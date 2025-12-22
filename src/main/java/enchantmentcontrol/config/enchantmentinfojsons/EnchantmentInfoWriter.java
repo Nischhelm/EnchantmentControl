@@ -35,28 +35,34 @@ public class EnchantmentInfoWriter {
             clearDirectoryContents(baseOut);
 
             for (EnchantmentInfo info : infos) {
-                String id = EnchantmentInfo.getEnchantmentId(info);
-                String[] split = id.split(":");
-                String modid = split[0];
-                String enchid = split[1];
-
-                File modDir = new File(baseOut, modid);
-                if (!modDir.exists() && !modDir.mkdirs()) {
-                    EnchantmentControl.LOGGER.warn("Could not create directory: {}", modDir.getPath());
-                }
-
-                File outFile = new File(modDir, enchid + ".json");
-
-                Gson gson = new GsonBuilder()
-                        .registerTypeAdapter(EnchantmentInfo.class, new EnchantmentInfoDeserialiser())
-                        .setPrettyPrinting()
-                        .create();
-                try (Writer w = new OutputStreamWriter(Files.newOutputStream(outFile.toPath()), StandardCharsets.UTF_8)) {
-                    gson.toJson(info, EnchantmentInfo.class, w);
-                }
+                writeSingleEnchantmentInfo(info, baseOut);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             EnchantmentControl.LOGGER.warn("Writing loaded enchantment infos failed!");
+        }
+    }
+
+    public static void writeSingleEnchantmentInfo(EnchantmentInfo info, File baseOut) {
+        String id = EnchantmentInfo.getEnchantmentId(info);
+        String[] split = id.split(":");
+        String modid = split[0];
+        String enchid = split[1];
+
+        File modDir = new File(baseOut, modid);
+        if (!modDir.exists() && !modDir.mkdirs()) {
+            EnchantmentControl.LOGGER.warn("Could not create directory: {}", modDir.getPath());
+        }
+
+        File outFile = new File(modDir, enchid + ".json");
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(EnchantmentInfo.class, new EnchantmentInfoDeserialiser())
+                .setPrettyPrinting()
+                .create();
+        try (Writer w = new OutputStreamWriter(Files.newOutputStream(outFile.toPath()), StandardCharsets.UTF_8)) {
+            gson.toJson(info, EnchantmentInfo.class, w);
+        } catch (IOException e) {
+            EnchantmentControl.LOGGER.warn("Writing enchantment info for {} failed!", id);
         }
     }
 
