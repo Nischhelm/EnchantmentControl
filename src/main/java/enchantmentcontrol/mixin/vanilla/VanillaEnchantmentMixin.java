@@ -118,18 +118,16 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
 
     @WrapMethod(method = "canApply")
     public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
-        EnchantmentInfo info = EnchantmentInfo.get(this);
-        if(info != null && info.typesAnvil != null)
-            return ItemTypeConfigProvider.canItemApply(this, info.typesAnvil, stack) || original.call(stack);
-        return original.call(stack);
+        if(ConfigHandler.dev.readTypes) return original.call(stack);
+        if(!ItemTypeConfigProvider.isSupported(this, true)) return original.call(stack);
+        return ItemTypeConfigProvider.canItemApply(this, stack, true) || original.call(stack);
     }
 
     @WrapMethod(method = "canApplyAtEnchantingTable", remap = false)
     public boolean ec_canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
-        EnchantmentInfo info = EnchantmentInfo.get(this);
-        if(info != null && info.typesEnchTable != null)
-            return ItemTypeConfigProvider.canItemApply(this, info.typesEnchTable, stack);
-        return original.call(stack);
+        if(ConfigHandler.dev.readTypes) return original.call(stack);
+        if(!ItemTypeConfigProvider.isSupported(this, false)) return original.call(stack);
+        return ItemTypeConfigProvider.canItemApply(this, stack, false);
     }
 
     // VANILLA ENCHANTMENT BEHAVIORS

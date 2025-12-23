@@ -93,18 +93,16 @@ public abstract class VanillaBaseEnchantmentMixin {
 
     @WrapMethod(method = "canApply")
     public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
-        EnchantmentInfo info = EnchantmentInfo.get((Enchantment) (Object) this);
-        if(info != null && info.typesAnvil != null)
-            return ItemTypeConfigProvider.canItemApply((Enchantment) (Object) this, info.typesAnvil, stack) || original.call(stack);
-        return original.call(stack);
+        if(ConfigHandler.dev.readTypes) return original.call(stack);
+        if(!ItemTypeConfigProvider.isSupported((Enchantment) (Object) this, true)) return original.call(stack);
+        return ItemTypeConfigProvider.canItemApply((Enchantment) (Object) this, stack, true) || original.call(stack);
     }
 
     @WrapMethod(method = "canApplyAtEnchantingTable", remap = false)
     public boolean ec_canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
-        EnchantmentInfo info = EnchantmentInfo.get((Enchantment) (Object) this);
-        if(info != null && info.typesEnchTable != null)
-            return ItemTypeConfigProvider.canItemApply((Enchantment) (Object) this, info.typesEnchTable, stack);
-        return original.call(stack);
+        if(ConfigHandler.dev.readTypes) return original.call(stack);
+        if(!ItemTypeConfigProvider.isSupported((Enchantment) (Object) this, false)) return original.call(stack);
+        return ItemTypeConfigProvider.canItemApply((Enchantment) (Object) this, stack, false);
     }
 
     // VANILLA ENCHANTMENT BEHAVIORS

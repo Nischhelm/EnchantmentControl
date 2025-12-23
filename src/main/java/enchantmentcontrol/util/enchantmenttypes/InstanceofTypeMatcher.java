@@ -9,6 +9,7 @@ import net.minecraft.launchwrapper.Launch;
 public class InstanceofTypeMatcher implements ITypeMatcher {
     private final String name;
     private final Class<? extends Item> clazz;
+    private final Item fakeItem;
 
     @SuppressWarnings("unchecked")
     public InstanceofTypeMatcher(String in) {
@@ -24,11 +25,13 @@ public class InstanceofTypeMatcher implements ITypeMatcher {
         }
         this.name = nametmp;
         this.clazz = classtmp;
+        this.fakeItem = null;
     }
 
-    public InstanceofTypeMatcher(String name, Class<? extends Item> clazz) {
+    public InstanceofTypeMatcher(String name, Class<? extends Item> clazz, Item fakeItem) {
         this.name = name;
         this.clazz = clazz;
+        this.fakeItem = fakeItem;
     }
 
     public boolean isValid() {
@@ -42,5 +45,11 @@ public class InstanceofTypeMatcher implements ITypeMatcher {
     @Override
     public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName) {
         return this.clazz.isAssignableFrom(item.getClass());
+    }
+
+    @Override
+    public ItemStack getFakeStack() {
+        if(this.fakeItem == null) return null;
+        return new ItemStack(this.fakeItem);
     }
 }

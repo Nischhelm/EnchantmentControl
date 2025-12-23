@@ -11,14 +11,14 @@ import java.util.*;
 public class IncompatibleConfigProvider {
     private static final Map<Enchantment, Set<Enchantment>> incompatibleEnchantments = new HashMap<>();
 
-    public static void applyIncompatsFromConfig(){
+    public static void onResetConfig(){
         for(Enchantment ench: Enchantment.REGISTRY) {
             incompatibleEnchantments.put(ench, getIncompatibleEnchantmentsFromConfig(ench));
         }
     }
 
     public static boolean areCompatible(Enchantment ench, Enchantment other){
-        return !incompatibleEnchantments.getOrDefault(ench, new HashSet<>()).contains(other);
+        return !incompatibleEnchantments.get(ench).contains(other);
     }
 
     private static Set<Enchantment> getIncompatibleEnchantmentsFromConfig(Enchantment thisEnch) {
@@ -49,7 +49,7 @@ public class IncompatibleConfigProvider {
         return incompatEnchs;
     }
 
-    public static void mapDefaultIncompatibilities(){
+    public static void writeDefaultIncompatibilities(){
         int n = Enchantment.REGISTRY.getKeys().size();
         boolean[][] incompatMatrix = new boolean[n][n];
 
@@ -91,8 +91,7 @@ public class IncompatibleConfigProvider {
         EnchantmentControl.CONFIG.get("general.first setup", ConfigRef.PRINT_INCOMPAT_CONFIG_NAME, ConfigHandler.dev.readIncompats).set(false);
         ConfigHandler.incompatibleGroups = out;
         ConfigHandler.dev.readIncompats = false;
-        EnchantmentControl.CONFIG.save();
-
+        EnchantmentControl.configNeedsSaving = true;
     }
 
     public static List<Set<Integer>> findMaximalIncompatibilityGroups(boolean[][] incompatMatrix) {

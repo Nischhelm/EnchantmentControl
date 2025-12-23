@@ -7,6 +7,7 @@ import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoConfigReade
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoInferrerWriter;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
+import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -27,8 +28,9 @@ public class EnchantmentControl {
     public static final Logger LOGGER = LogManager.getLogger(EnchantmentControl.NAME);
     public static final String SEP = ",";
     public static Configuration CONFIG = null;
+    public static boolean configNeedsSaving = false;
 
-	@Mod.EventHandler
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         CONFIG = new Configuration(event.getSuggestedConfigurationFile());
         CONFIG.load();
@@ -46,8 +48,17 @@ public class EnchantmentControl {
         if(ConfigHandler.dev.printInferred) EnchantmentInfoInferrerWriter.printInferred();
         if (ConfigHandler.debug.printLoaded) EnchantmentInfoWriter.printLoaded();
 
-        if(ConfigHandler.dev.readIncompats) IncompatibleConfigProvider.mapDefaultIncompatibilities();
-        IncompatibleConfigProvider.applyIncompatsFromConfig();
+        //Incompatibilities
+        if(ConfigHandler.dev.readIncompats) IncompatibleConfigProvider.writeDefaultIncompatibilities();
+        IncompatibleConfigProvider.onResetConfig();
+
+        //Item Types
+        ItemTypeConfigProvider.readItemTypesFromConfig();
+        //TODO: doesnt fill in first setup
+        if(ConfigHandler.dev.readTypes) ItemTypeConfigProvider.writeDefaultItemTypes();
+        ItemTypeConfigProvider.readItemTypeMappingsFromConfig();
+
+        if(configNeedsSaving) CONFIG.save();
 
         //this just as cache clear
         EarlyConfigReader.clearLines();

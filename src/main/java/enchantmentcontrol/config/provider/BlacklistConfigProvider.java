@@ -17,7 +17,7 @@ public class BlacklistConfigProvider {
     private static List<Enchantment> enchantTableEnchantsBlacklist = null;
     private static List<String> registryEnchantsBlacklist = null;
 
-    public static void resetBlacklists(){
+    public static void onResetConfig(){
         randomLevelEnchantsBlacklist = null;
         randomEnchantsBlacklist = null;
         librarianEnchantsBlacklist = null;

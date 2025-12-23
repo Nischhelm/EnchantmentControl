@@ -146,9 +146,6 @@ public class EnchantmentInfo {
     public TriConsumer<EntityLivingBase, Entity, Integer> arthropodBehavior;
     public TriConsumer<EntityLivingBase, Entity, Integer> thornsBehavior;
 
-                                                //Input (from other modifiers, otherwise 0), Ench Lvl, Output
-    public Map<VanillaSystem, VanillaSystemOverride> vanillaSystemStrengths = new HashMap<>();
-
     //-------- CONSTRUCTOR --------
 
     public EnchantmentInfo(@Nonnull String id) {
@@ -216,6 +213,9 @@ public class EnchantmentInfo {
         this.doublePrice = doublePrice;
         this.overwritesDoublePrice = true;
     }
+
+    //Input (from other modifiers, otherwise 0), Ench Lvl, Output
+    public Map<VanillaSystem, VanillaSystemOverride> vanillaSystemStrengths = new HashMap<>();
 
     public void registerVanillaSystemOverride(VanillaSystem type, float perLevel){
         VanillaSystemOverride.getOverriders(type).add(this);

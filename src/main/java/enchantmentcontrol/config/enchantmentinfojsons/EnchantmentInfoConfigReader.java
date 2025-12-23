@@ -7,6 +7,7 @@ import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.IEnchantmentPropertySetter;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EntityEquipmentSlot;
 
 import java.io.*;
@@ -43,10 +44,11 @@ public class EnchantmentInfoConfigReader {
     public static void applyManualOverrides(){
         for(EnchantmentInfo info : EnchantmentInfo.getAll()){
             if(info.rarity == null && info.slots == null) continue;
-            IEnchantmentPropertySetter setter = (IEnchantmentPropertySetter) EnchantmentInfo.getEnchantmentObject(info);
-            if(setter == null) continue;
-            setter.ec$setRarity(info.rarity);
-            setter.ec$setSlots(info.slots.toArray(new EntityEquipmentSlot[0]));
+            Enchantment ench = EnchantmentInfo.getEnchantmentObject(info);
+            if(!(ench instanceof IEnchantmentPropertySetter)) return;
+            IEnchantmentPropertySetter setter = (IEnchantmentPropertySetter) ench;
+            if(info.rarity != null) setter.ec$setRarity(info.rarity);
+            if(info.slots != null) setter.ec$setSlots(info.slots.toArray(new EntityEquipmentSlot[0]));
         }
     }
 

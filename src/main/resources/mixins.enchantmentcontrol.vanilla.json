@@ -18,5 +18,8 @@
     "vanilla.blacklists.EnchantRandomlyMixin",
     "vanilla.blacklists.EntityVillagerListEnchantedBookForEmeraldsMixin",
     "vanilla.blacklists.ForgeEnchantmentRegistryMixin"
+  ],
+  "client": [
+    "vanilla.EntityRendererMixin"
   ]
 }

@@ -3,18 +3,19 @@ package enchantmentcontrol.util.enchantmenttypes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Loader;
 
-public class CustomTypeMatcher implements ITypeMatcher.UsesItemLoc {
+public class ModidMatcher implements ITypeMatcher {
     private final String name;
-    private final String regex;
+    private final String modid;
 
-    public CustomTypeMatcher(String name, String regex) {
+    public ModidMatcher(String name, String modid) {
         this.name = name;
-        this.regex = regex;
+        this.modid = modid;
     }
 
     public boolean isValid() {
-        return !this.name.isEmpty() && !this.regex.isEmpty();
+        return Loader.isModLoaded( this.modid);
     }
 
     public String getName() {
@@ -23,6 +24,6 @@ public class CustomTypeMatcher implements ITypeMatcher.UsesItemLoc {
 
     @Override
     public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName) {
-        return itemName.matches(this.regex);
+        return item.getRegistryName() != null && item.getRegistryName().getNamespace().equals(this.modid);
     }
 }

@@ -8,4 +8,5 @@ public final class ConfigRef {
 
     public static final String DO_INFER_CONFIG_NAME = "Print Inferred Enchantment Infos";
     public static final String PRINT_INCOMPAT_CONFIG_NAME = "Print Default Incompatibilities";
+    public static final String PRINT_TYPES_CONFIG_NAME = "Print Default Item Types";
 }

@@ -10,7 +10,9 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class EnchantmentInfoDeserialiser implements JsonDeserializer<EnchantmentInfo>, JsonSerializer<EnchantmentInfo> {
     @Override
@@ -69,14 +71,15 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
         if (slots != null) info.setSlots(slots);
 
         // types
-        List<String> types = readStringList(jsonObj, "types");
-        if (types == null && jsonObj.has("type") && jsonObj.get("type").isJsonPrimitive()) {
-            types = Collections.singletonList(jsonObj.get("type").getAsString());
-        }
-        if (types != null) info.setEnchTableTypes(new HashSet<>(types));
-
-        List<String> typesAnvil = readStringList(jsonObj, "typesAnvil");
-        if (typesAnvil != null) info.setAnvilTypes(new HashSet<>(typesAnvil));
+        //TODO: read of legacy type field of enchcontrol
+//        List<String> types = readStringList(jsonObj, "types");
+//        if (types == null && jsonObj.has("type") && jsonObj.get("type").isJsonPrimitive()) {
+//            types = Collections.singletonList(jsonObj.get("type").getAsString());
+//        }
+//        if (types != null) info.setEnchTableTypes(new HashSet<>(types));
+//
+//        List<String> typesAnvil = readStringList(jsonObj, "typesAnvil");
+//        if (typesAnvil != null) info.setAnvilTypes(new HashSet<>(typesAnvil));
 
         // displayColor
         String colorStr = getAsString(jsonObj, "displayColor");
@@ -146,16 +149,16 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
         }
 
         // types
-        if (info.typesEnchTable != null) {
-            JsonArray types = new JsonArray();
-            for (String t : info.typesEnchTable) types.add(new JsonPrimitive(t));
-            o.add("types", types);
-        }
-        if (info.typesAnvil != null) {
-            JsonArray typesAnvil = new JsonArray();
-            for (String t : info.typesAnvil) typesAnvil.add(new JsonPrimitive(t));
-            o.add("typesAnvil", typesAnvil);
-        }
+//        if (info.typesEnchTable != null) {
+//            JsonArray types = new JsonArray();
+//            for (String t : info.typesEnchTable) types.add(new JsonPrimitive(t));
+//            o.add("types", types);
+//        }
+//        if (info.typesAnvil != null) {
+//            JsonArray typesAnvil = new JsonArray();
+//            for (String t : info.typesAnvil) typesAnvil.add(new JsonPrimitive(t));
+//            o.add("typesAnvil", typesAnvil);
+//        }
 
         // displayColor
         if (info.displayColor != null) o.addProperty("displayColor", info.displayColor.name());

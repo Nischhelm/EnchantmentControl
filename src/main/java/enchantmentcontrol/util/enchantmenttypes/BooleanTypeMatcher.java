@@ -14,10 +14,6 @@ public class BooleanTypeMatcher implements ITypeMatcher {
         this.result = result;
     }
 
-    public boolean isValid() {
-        return !this.name.isEmpty();
-    }
-
     public String getName() {
         return this.name;
     }

@@ -47,6 +47,7 @@ public class CreatureAttributeProvider {
 
     public static EnumCreatureAttribute getAttribute(EntityLivingBase entity) {
         ResourceLocation loc = EntityList.getKey(entity);
+        if(loc == null) return EnumCreatureAttribute.UNDEFINED;
         for (Map.Entry<EnumCreatureAttribute, IEntityMatcher> entry : attributes.entrySet())
             if (entry.getValue().matches(entity, loc))
                 return entry.getKey();

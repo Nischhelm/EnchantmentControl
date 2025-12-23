@@ -10,7 +10,7 @@ public class DebugConfig {
     @Config.Comment("Enchantment classes that should not be modified at all by this mod. \n" +
             "Use this if there are crashes when this mod tries to automatically modify some mods enchantments. \n" +
             "You can find the class name in config/enchantmentcontrol/tmp/enchclasses.dump\n" +
-            "Classes noted here need to look like net.minecraft.enchantment.EnchantmentDamage\n" +
+            "Class names noted here need to look like net.minecraft.enchantment.EnchantmentDamage\n" +
             "Vanilla enchants will always be targeted, so putting their classes in here won't do anything")
     @Config.Name(ConfigRef.BLACKLIST_CONFIG_NAME)
     @Config.RequiresMcRestart
@@ -20,12 +20,6 @@ public class DebugConfig {
     @Config.Name("Print Loaded Enchantment Infos")
     @Config.RequiresMcRestart
     public boolean printLoaded = false;
-
-    @Config.Comment("This is just a safety switch if you really dislike the idea of this mod having a mixin straight into item registration (IForgeRegistryEntry.Impl.setRegistryName) and you dont use the enchantment id remapping feature anyway. It will save a few startup milliseconds for sure.")
-    @Config.Name("Enable Registry Remapping (MixinToggle)")
-    @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.registryremap.json", defaultValue = true)
-    public boolean enableRegistryRemap = true;
 
     @Config.Comment("Disable this to remove EnchantmentControls main feature which hooks into all registered enchantments code to modify how they behave. \n" +
             "Some features will still work. This is mainly meant for testing if this mods black magic mixins is responsible for a crash (hope not)")

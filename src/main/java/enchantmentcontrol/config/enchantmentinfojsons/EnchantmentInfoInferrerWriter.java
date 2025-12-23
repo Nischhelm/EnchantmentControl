@@ -13,13 +13,12 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Builds EnchantmentInfo by inspecting Enchantment objects and writes those to file as an approximate start point.
  */
-public final class EnchantmentInfoInferrerWriter {
+public class EnchantmentInfoInferrerWriter {
     public static final String MAIN_DIR = "config/enchantmentcontrol/inferred";
 
     public static void printInferred(){
@@ -28,8 +27,7 @@ public final class EnchantmentInfoInferrerWriter {
 
         EnchantmentControl.CONFIG.get("general.first setup", ConfigRef.DO_INFER_CONFIG_NAME, ConfigHandler.dev.printInferred).set(false);
         ConfigHandler.dev.printInferred = false;
-        EnchantmentControl.CONFIG.save();
-
+        EnchantmentControl.configNeedsSaving = true;
     }
 
     public static List<EnchantmentInfo> inferInfoForAllRegisteredEnchantments() {
@@ -47,15 +45,16 @@ public final class EnchantmentInfoInferrerWriter {
         EnchantmentInfo info = new EnchantmentInfo(ench.getRegistryName().toString());
 
         info.rarity = ench.getRarity();
-        info.setMinLvl(ench.getMinLevel());
+        if(ConfigHandler.dev.printInferredExpanded) info.setMinLvl(ench.getMinLevel());
         info.setMaxLvl(ench.getMaxLevel());
         info.setCurse(ench.isCurse());
         info.setTreasure(ench.isTreasureEnchantment());
-        info.setDoublePrice(ench.isTreasureEnchantment()); //just copying behavior
-        info.setAllowedOnBooks(ench.isAllowedOnBooks());
-        info.setEnchantabilities(probeEnchantability(ench));
-        info.typesEnchTable = ench.type == null ? null : Collections.singleton(ench.type.toString());
-        info.slots = Arrays.asList(((EnchantmentAccessor) ench).getSlots());
+        if(ConfigHandler.dev.printInferredExpanded) {
+            info.setDoublePrice(ench.isTreasureEnchantment()); //just copying behavior
+            info.setAllowedOnBooks(ench.isAllowedOnBooks());
+            info.setEnchantabilities(probeEnchantability(ench));
+            info.slots = Arrays.asList(((EnchantmentAccessor) ench).getSlots());
+        }
 
         TextFormatting fmt = probeDisplayColor(ench); // Display color (only for unusual, not for default none or RED if curse)
         if (!(info.isCurse && fmt == TextFormatting.RED)) info.setTextDisplayColor(fmt);
