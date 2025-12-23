@@ -24,7 +24,7 @@ public abstract class ForgeEnchantmentRegistryMixin<V extends IForgeRegistryEntr
 
         //Prevent registration of config defined enchants
         if (BlacklistConfigProvider.getRegistryEnchantsBlacklist().contains(loc.toString())) {
-            EnchantmentControl.LOGGER.info("preventing registration of enchantment {}", loc.toString());
+            EnchantmentControl.LOGGER.info("Preventing registration of enchantment {}", loc.toString());
             ci.cancel();
         }
     }

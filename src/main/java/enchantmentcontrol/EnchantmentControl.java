@@ -54,7 +54,6 @@ public class EnchantmentControl {
 
         //Item Types
         ItemTypeConfigProvider.readItemTypesFromConfig();
-        //TODO: doesnt fill in first setup
         if(ConfigHandler.dev.readTypes) ItemTypeConfigProvider.writeDefaultItemTypes();
         ItemTypeConfigProvider.readItemTypeMappingsFromConfig();
 

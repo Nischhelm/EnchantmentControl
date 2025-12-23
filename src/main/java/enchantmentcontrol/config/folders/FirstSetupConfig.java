@@ -74,5 +74,5 @@ public class FirstSetupConfig {
     })
     @Config.Name(ConfigRef.PRINT_TYPES_CONFIG_NAME)
     @Config.RequiresMcRestart
-    public boolean readTypes;
+    public boolean readTypes = true;
 }

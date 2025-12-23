@@ -1,6 +1,5 @@
 package enchantmentcontrol.util.enchantmenttypes;
 
-import enchantmentcontrol.EnchantmentControl;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,18 +11,14 @@ public class InstanceofTypeMatcher implements ITypeMatcher {
     private final Item fakeItem;
 
     @SuppressWarnings("unchecked")
-    public InstanceofTypeMatcher(String in) {
-        String[] split = in.split(EnchantmentControl.SEP);
-        String nametmp;
+    public InstanceofTypeMatcher(String name, String className) {
         Class<? extends Item> classtmp;
         try {
-            nametmp = split[0].trim();
-            classtmp = (Class<? extends Item>) Launch.classLoader.findClass(split[1].trim());
+            classtmp = (Class<? extends Item>) Launch.classLoader.findClass(className);
         } catch (Exception e) {
-            nametmp = "";
             classtmp = null;
         }
-        this.name = nametmp;
+        this.name = name;
         this.clazz = classtmp;
         this.fakeItem = null;
     }

@@ -75,7 +75,7 @@ public class EnchantmentInfoWriter {
                 clearDirectoryContents(f);
             }
             if (!f.delete()) {
-                EnchantmentControl.LOGGER.debug("Could not delete {} while clearing {}", f.getPath(), dir.getPath());
+                EnchantmentControl.LOGGER.warn("Could not delete {} while clearing {}", f.getPath(), dir.getPath());
             }
         }
     }

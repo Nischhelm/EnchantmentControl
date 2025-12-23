@@ -6,7 +6,6 @@ import enchantmentcontrol.util.ConfigRef;
 import enchantmentcontrol.util.enchantmenttypes.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
@@ -50,36 +49,25 @@ public class ItemTypeConfigProvider {
 
         for (String s : ConfigHandler.itemTypes.customTypes) {
             String[] split = s.split(EnchantmentControl.SEP);
+
             String type;
             if (split.length < 2) {
                 EnchantmentControl.LOGGER.warn("Invalid custom item type definition, skipping: {}", s);
                 continue;
-            } else if(split.length == 2) type = "regex_def";
+            } else if(split.length == 2) type = "regex_default";
             else type = split[1].trim();
+
+            String name = split[0].trim();
 
             ITypeMatcher matcher;
             switch (type) {
-                case "class" :
-                    matcher = new InstanceofTypeMatcher(split[2].trim());
-                    if(matcher.isValid()) typeMatchers.put(split[0].trim(), matcher);
-                    break;
-                case "modid" :
-                    matcher = new ModidMatcher(split[0].trim(), split[2].trim());
-                    if(matcher.isValid()) typeMatchers.put(split[0].trim(), matcher);
-                    break;
-                case "items" :
-                    matcher = new ListMatcher(split);
-                    if (matcher.isValid()) typeMatchers.put(split[0].trim(), matcher);
-                    break;
-                case "regex" :
-                    matcher = new CustomTypeMatcher(split[0].trim(), split[2].trim());
-                    if (matcher.isValid()) typeMatchers.put(split[0].trim(), matcher);
-                    break;
-                default:
-                    matcher = new CustomTypeMatcher(split[0].trim(), split[1].trim());
-                    if (matcher.isValid()) typeMatchers.put(split[0].trim(), matcher);
-                    break;
+                case "class" : matcher = new InstanceofTypeMatcher(name, split[2].trim()); break;
+                case "modid" : matcher = new ModidMatcher(name, split[2].trim()); break;
+                case "items" : matcher = new ListMatcher(Arrays.copyOfRange(split, 2, split.length)); break;
+                case "regex" : matcher = new CustomTypeMatcher(name, split[2].trim()); break;
+                default      : matcher = new CustomTypeMatcher(name, split[1].trim()); //split[1] cause this is the default where no type was named
             }
+            if (matcher.isValid()) typeMatchers.put(name, matcher);
         }
     }
 
@@ -151,9 +139,6 @@ public class ItemTypeConfigProvider {
 
             if(!inverted) isValid = isValid || matches;
             else invertedMatches = invertedMatches || matches;
-        }
-        if(enchantment == Enchantments.RESPIRATION && item == Items.IRON_CHESTPLATE){
-            EnchantmentControl.LOGGER.info("Trying sharp on iron hoe {} {} {}", isValid, invertedMatches, matchers.size());
         }
         return isValid && !invertedMatches;
     }
