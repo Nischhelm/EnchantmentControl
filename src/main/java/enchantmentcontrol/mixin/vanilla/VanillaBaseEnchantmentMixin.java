@@ -20,10 +20,12 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class VanillaBaseEnchantmentMixin {
     @Shadow public abstract String getName();
 
+    @Shadow
+    public abstract boolean canApplyAtEnchantingTable(ItemStack stack);
+
     @WrapMethod(method = "getMinLevel")
     public int ec_getMinLevel(Operation<Integer> original) {
         EnchantmentInfo info = EnchantmentInfo.get((Enchantment) (Object) this);
-        EnchantmentControl.LOGGER.debug("Enchantment: {} has min level: {}", this.getName(), info==null ? "no info" : !info.overwritesMinLvl? "doesnt overwrite" : info.minLvl);
         if(info != null && info.overwritesMinLvl) return info.minLvl;
         return original.call();
     }
@@ -31,7 +33,6 @@ public abstract class VanillaBaseEnchantmentMixin {
     @WrapMethod(method = "getMaxLevel")
     public int ec_getMaxLevel(Operation<Integer> original) {
         EnchantmentInfo info = EnchantmentInfo.get((Enchantment) (Object) this);
-        EnchantmentControl.LOGGER.debug("Enchantment: {} has max level: {}", this.getName(), info==null ? "no info" : !info.overwritesMaxLvl? "doesnt overwrite" : info.maxLvl);
         if(info != null && info.overwritesMaxLvl) return info.maxLvl;
         return original.call();
     }
@@ -95,7 +96,7 @@ public abstract class VanillaBaseEnchantmentMixin {
     public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
         if(ConfigHandler.dev.readTypes) return original.call(stack);
         if(!ItemTypeConfigProvider.isSupported((Enchantment) (Object) this, true)) return original.call(stack);
-        return ItemTypeConfigProvider.canItemApply((Enchantment) (Object) this, stack, true) || original.call(stack);
+        return ItemTypeConfigProvider.canItemApply((Enchantment) (Object) this, stack, true) || this.canApplyAtEnchantingTable(stack);
     }
 
     @WrapMethod(method = "canApplyAtEnchantingTable", remap = false)

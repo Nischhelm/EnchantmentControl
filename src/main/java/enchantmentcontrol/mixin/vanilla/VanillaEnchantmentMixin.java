@@ -118,13 +118,15 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
 
     @WrapMethod(method = "canApply")
     public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
+        System.out.println("Checking Anvil apply for enchantment " + this.getRegistryName().toString() + " and stack " + stack.getItem().getRegistryName().toString());
         if(ConfigHandler.dev.readTypes) return original.call(stack);
         if(!ItemTypeConfigProvider.isSupported(this, true)) return original.call(stack);
-        return ItemTypeConfigProvider.canItemApply(this, stack, true) || original.call(stack);
+        return ItemTypeConfigProvider.canItemApply(this, stack, true) || this.canApplyAtEnchantingTable(stack);
     }
 
     @WrapMethod(method = "canApplyAtEnchantingTable", remap = false)
     public boolean ec_canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
+        System.out.println("Checking general apply for enchantment " + this.getRegistryName().toString() + " and stack " + stack.getItem().getRegistryName().toString());
         if(ConfigHandler.dev.readTypes) return original.call(stack);
         if(!ItemTypeConfigProvider.isSupported(this, false)) return original.call(stack);
         return ItemTypeConfigProvider.canItemApply(this, stack, false);

@@ -17,12 +17,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
 @Debug(export = true)
 @Mixin(targets = {"net.minecraft.enchantment.Enchantment"}, value = EnchantmentDummy.class) //needs to be two separate Enchantment classes for the refmaps to not write the owner class in front of the searge method names
 @SuppressWarnings({"MixinSuperClass"})
 //copy of vanilla.VanillaBaseEnchantmentMixin and vanilla.VanillaEnchantmentMixin just for all modded enchantments and their intermediaries
 public abstract class EnchantmentMixin extends Enchantment { //needs to extend for refmaps to work
+    @Shadow
+    public abstract boolean canApplyAtEnchantingTable(ItemStack stack);
+
     protected EnchantmentMixin(Rarity rarityIn, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {
         super(rarityIn, typeIn, slots);
     }
@@ -100,7 +104,7 @@ public abstract class EnchantmentMixin extends Enchantment { //needs to extend f
     public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
         if(ConfigHandler.dev.readTypes) return original.call(stack);
         if(!ItemTypeConfigProvider.isSupported(this, true)) return original.call(stack);
-        return ItemTypeConfigProvider.canItemApply(this, stack, true) || original.call(stack);
+        return ItemTypeConfigProvider.canItemApply(this, stack, true) || this.canApplyAtEnchantingTable(stack);
     }
 
     @WrapMethod(method = "canApplyAtEnchantingTable", remap = false)

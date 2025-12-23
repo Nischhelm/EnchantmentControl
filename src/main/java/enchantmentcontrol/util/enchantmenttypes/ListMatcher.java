@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 
 public class ListMatcher implements ITypeMatcher.UsesItemLoc {
     protected final Set<String> ids;
-    public ListMatcher(String[] ids) {
+    protected final String name;
+    public ListMatcher(String name, String[] ids) {
+        this.name = name;
         this.ids = Arrays.stream(ids).map(String::trim).collect(Collectors.toSet());
     }
 
@@ -22,5 +24,10 @@ public class ListMatcher implements ITypeMatcher.UsesItemLoc {
     @Override
     public boolean isValid(){
         return !ids.isEmpty();
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 }

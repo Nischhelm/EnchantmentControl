@@ -12,9 +12,11 @@ public class ItemTypeConfig {
             "  items, mymod:mysword",
             "  items, minecraft:iron_sword, mymod:mysword, ...",
             "  class, some.org.somemodid.item.ItemSpecialSword",
+            "  enum (no arguments)",
             "Where ",
             "- class will search the given class in the inheritance chain of the item class of the current item",
             "- regex uses regular expressions and has to match the full modid:itemid",
+            "- enum uses an EnumEnchantmentType that another mod has created. This matchers name needs to match that enum name",
             "- and items is an arbitrarily long list"
     })
     @Config.Name("Custom Item Types")

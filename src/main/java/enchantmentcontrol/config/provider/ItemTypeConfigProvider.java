@@ -6,6 +6,7 @@ import enchantmentcontrol.util.ConfigRef;
 import enchantmentcontrol.util.enchantmenttypes.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
@@ -26,14 +27,14 @@ public class ItemTypeConfigProvider {
     }
 
     public static void readItemTypesFromConfig(){
-        typeMatchers.put("ANY_TYPE", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ALL));
+        typeMatchers.put("ANY_TYPE", new EnumEnchantmentTypeMatcher("ANY_TYPE", EnumEnchantmentType.ALL));
         typeMatchers.put("ARMOR", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR));
         typeMatchers.put("ARMOR_HEAD", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_HEAD));
         typeMatchers.put("ARMOR_CHEST", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_CHEST));
         typeMatchers.put("ARMOR_LEGS", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_LEGS));
         typeMatchers.put("ARMOR_FEET", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_FEET));
-        typeMatchers.put("SWORD", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.WEAPON));
-        typeMatchers.put("TOOL", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.DIGGER));
+        typeMatchers.put("SWORD", new EnumEnchantmentTypeMatcher("SWORD", EnumEnchantmentType.WEAPON));
+        typeMatchers.put("TOOL", new EnumEnchantmentTypeMatcher("TOOL", EnumEnchantmentType.DIGGER));
         typeMatchers.put("FISHING_ROD", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.FISHING_ROD));
         typeMatchers.put("BREAKABLE", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.BREAKABLE));
         typeMatchers.put("BOW", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.BOW));
@@ -63,8 +64,9 @@ public class ItemTypeConfigProvider {
             switch (type) {
                 case "class" : matcher = new InstanceofTypeMatcher(name, split[2].trim()); break;
                 case "modid" : matcher = new ModidMatcher(name, split[2].trim()); break;
-                case "items" : matcher = new ListMatcher(Arrays.copyOfRange(split, 2, split.length)); break;
+                case "items" : matcher = new ListMatcher(name, Arrays.copyOfRange(split, 2, split.length)); break;
                 case "regex" : matcher = new CustomTypeMatcher(name, split[2].trim()); break;
+                case "enum"  : matcher = new EnumEnchantmentTypeMatcher(EnumEnchantmentType.valueOf(name)); break;
                 default      : matcher = new CustomTypeMatcher(name, split[1].trim()); //split[1] cause this is the default where no type was named
             }
             if (matcher.isValid()) typeMatchers.put(name, matcher);

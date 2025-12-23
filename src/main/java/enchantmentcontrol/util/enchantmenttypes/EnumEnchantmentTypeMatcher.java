@@ -9,9 +9,15 @@ import net.minecraft.item.ItemStack;
 
 public class EnumEnchantmentTypeMatcher implements ITypeMatcher {
     private final EnumEnchantmentType type;
+    private final String name;
+
+    public EnumEnchantmentTypeMatcher(String name, EnumEnchantmentType type){
+        this.name = name;
+        this.type = type;
+    }
 
     public EnumEnchantmentTypeMatcher(EnumEnchantmentType type){
-        this.type = type;
+        this(type.toString(), type);
     }
 
     @Override
@@ -47,5 +53,10 @@ public class EnumEnchantmentTypeMatcher implements ITypeMatcher {
         }
         if(item != null) return new ItemStack(item);
         return null;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 }
