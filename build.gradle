@@ -46,6 +46,8 @@ minecraft {
 repositories {
     flatDir { dirs 'libs' }
     maven { url = 'https://www.cursemaven.com' }
+    maven { url = "https://maven.k-4u.nl" }
+    maven { url = 'https://maven.blamejared.com' }
 }
 
 dependencies {
@@ -58,6 +60,10 @@ dependencies {
 
     implementation fg.deobf("curse.maven:fermiumbooter-${fermiumbooter_version}")
     compileOnly fg.deobf("curse.maven:so-many-enchantments-${sme_version}")
+
+    compileOnly fg.deobf("CraftTweaker2:CraftTweaker2-${crafttweaker_version}")
+    compileOnly fg.deobf("CraftTweaker2:ZenScript:${zs_version}")
+    compileOnly fg.deobf("CraftTweaker2:CraftTweaker2-API:${zs_version}")
 }
 
 mixin {

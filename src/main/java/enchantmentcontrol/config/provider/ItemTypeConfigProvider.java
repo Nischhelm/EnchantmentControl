@@ -6,7 +6,6 @@ import enchantmentcontrol.util.ConfigRef;
 import enchantmentcontrol.util.enchantmenttypes.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
@@ -71,6 +70,10 @@ public class ItemTypeConfigProvider {
             }
             if (matcher.isValid()) typeMatchers.put(name, matcher);
         }
+    }
+
+    public static void registerCustomTypeMatcher(ITypeMatcher matcher){
+        typeMatchers.put(matcher.getName(), matcher);
     }
 
     public static void readItemTypeMappingsFromConfig() {
@@ -153,7 +156,7 @@ public class ItemTypeConfigProvider {
         Map<Enchantment, Set<String>> enchantToTypeMatchersAnvil = new HashMap<>();
 
         typeMatchers.keySet().forEach(k -> validMatchers.put(k, new ArrayList<>()));
-        //anvil config doesnt get init with all types so it stays shorter
+        //anvil config doesn't get init with all types so it stays shorter
 
         for (Map.Entry<String, ITypeMatcher> entry : typeMatchers.entrySet()) {
             ItemStack fakeStack = entry.getValue().getFakeStack();
