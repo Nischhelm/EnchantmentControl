@@ -96,7 +96,7 @@ public class ItemTypeConfigProvider {
                 EnchantmentControl.LOGGER.warn("Could not find given item type while reading enchants per item type {}", typeName);
                 continue;
             }
-            if(inverted) matcher = new InvertedTypeMatcher(matcher); //TODO: does that work? uniqueness and shit
+            if(inverted) matcher = new InvertedTypeMatcher(matcher);
 
             for(String enchName : split[1].split(EnchantmentControl.SEP)){
                 enchName = enchName.trim();

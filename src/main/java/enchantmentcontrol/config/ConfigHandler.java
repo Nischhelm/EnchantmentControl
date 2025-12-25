@@ -1,10 +1,7 @@
 package enchantmentcontrol.config;
 
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.config.folders.BlacklistConfig;
-import enchantmentcontrol.config.folders.DebugConfig;
-import enchantmentcontrol.config.folders.FirstSetupConfig;
-import enchantmentcontrol.config.folders.ItemTypeConfig;
+import enchantmentcontrol.config.folders.*;
 import enchantmentcontrol.config.provider.BlacklistConfigProvider;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
@@ -76,6 +73,10 @@ public class ConfigHandler {
 	@Config.Comment("Debug Options")
 	@Config.Name("Debug")
 	public static DebugConfig debug = new DebugConfig();
+
+	@Config.Comment("Options for Anvil Mechanics")
+	@Config.Name("Anvil Mechanics")
+	public static AnvilConfig anvil = new AnvilConfig();
 
 	@Mod.EventBusSubscriber(modid = EnchantmentControl.MODID)
 	private static class EventHandler {

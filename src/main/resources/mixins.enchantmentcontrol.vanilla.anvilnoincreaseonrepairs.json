@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "enchantmentcontrol.mixin",
+  "refmap": "mixins.enchantmentcontrol.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.8",
+  "mixins": [
+    "vanilla.anvil.ContainerRepairMixin_NoPriceIncrease"
+  ]
+}
