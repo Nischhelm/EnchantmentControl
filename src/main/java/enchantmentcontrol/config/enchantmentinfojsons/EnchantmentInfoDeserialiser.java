@@ -70,16 +70,9 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
         if (slots == null) slots = readEnumList(jsonObj, "equipment_slots", EntityEquipmentSlot.class);
         if (slots != null) info.setSlots(slots);
 
-        // types
-        //TODO: read of legacy type field of enchcontrol
-//        List<String> types = readStringList(jsonObj, "types");
-//        if (types == null && jsonObj.has("type") && jsonObj.get("type").isJsonPrimitive()) {
-//            types = Collections.singletonList(jsonObj.get("type").getAsString());
-//        }
-//        if (types != null) info.setEnchTableTypes(new HashSet<>(types));
-//
-//        List<String> typesAnvil = readStringList(jsonObj, "typesAnvil");
-//        if (typesAnvil != null) info.setAnvilTypes(new HashSet<>(typesAnvil));
+        // type (also used by enchcontrol, kinda unnecessary)
+        String type = getAsString(jsonObj, "type");
+        if (type != null) info.setType(type);
 
         // displayColor
         String colorStr = getAsString(jsonObj, "displayColor");
@@ -148,17 +141,8 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
             o.add("slots", slots);
         }
 
-        // types
-//        if (info.typesEnchTable != null) {
-//            JsonArray types = new JsonArray();
-//            for (String t : info.typesEnchTable) types.add(new JsonPrimitive(t));
-//            o.add("types", types);
-//        }
-//        if (info.typesAnvil != null) {
-//            JsonArray typesAnvil = new JsonArray();
-//            for (String t : info.typesAnvil) typesAnvil.add(new JsonPrimitive(t));
-//            o.add("typesAnvil", typesAnvil);
-//        }
+        // type
+        if (info.type != null) o.addProperty("type", info.type.name());
 
         // displayColor
         if (info.displayColor != null) o.addProperty("displayColor", info.displayColor.name());

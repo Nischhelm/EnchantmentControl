@@ -45,15 +45,17 @@ public class EnchantmentInfoInferrerWriter {
         EnchantmentInfo info = new EnchantmentInfo(ench.getRegistryName().toString());
 
         info.rarity = ench.getRarity();
-        if(ConfigHandler.dev.printInferredExpanded) info.setMinLvl(ench.getMinLevel());
         info.setMaxLvl(ench.getMaxLevel());
         info.setCurse(ench.isCurse());
         info.setTreasure(ench.isTreasureEnchantment());
+
         if(ConfigHandler.dev.printInferredExpanded) {
+            info.setMinLvl(ench.getMinLevel());
             info.setDoublePrice(ench.isTreasureEnchantment()); //just copying behavior
             info.setAllowedOnBooks(ench.isAllowedOnBooks());
             info.setEnchantabilities(probeEnchantability(ench));
             info.slots = Arrays.asList(((EnchantmentAccessor) ench).getSlots());
+            info.type = ench.type;
         }
 
         TextFormatting fmt = probeDisplayColor(ench); // Display color (only for unusual, not for default none or RED if curse)

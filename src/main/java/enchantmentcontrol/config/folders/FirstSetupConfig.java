@@ -42,14 +42,15 @@ public class FirstSetupConfig {
     @Config.Comment({
             "Advanced",
             "",
-            "When inferring cfg jsons from existing enchants, enabling this will also infer info that is usually not interesting to modify.",
+            "When inferring cfg jsons from existing enchants, enabling this will also infer info that is usually not interesting or otherwise problematic to modify.",
             "This will additionally give info for",
+            " - type - the rigid base type (EnumEnchantmentType) to check if the enchant can go on an item. Modifying this in tandem with the config lists isn't advised",
             " - slots - rarely used system in what slot an enchant has to be in to be used",
             " - minLvl - basically always 1",
             " - doublePrice - to modify librarian price doubling independent of treasure property",
             " - enchantability - to modify at which lvl which enchant is available on enchanting table and connected systems",
             " - isAllowedOnBooks - a vanilla property, only used specifically when enchanting books with lvls, where those disallowed will never be rolled",
-            "Every option that is not set in a json will automatically behave as default."
+            "Every option that is not existing in a json will keep the enchantment unmodified there, so reduction is advised."
     })
     @Config.Name("Print Inferred Expanded")
     public boolean printInferredExpanded = false;

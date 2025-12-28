@@ -42,7 +42,7 @@ public class EnchantmentControl {
     public void postInit(FMLPostInitializationEvent event) {
         EnchantmentClassWriter.postInit(); //write /tmp/enchclasses.dump for next startup (sad that this is after late mixin load. classgraph could fix that if i could get it to work. then i wouldn't even need a custom file)
 
-        EnchantmentInfoConfigReader.applyManualOverrides(); //apply manual overrides for rarity and slots
+        EnchantmentInfoConfigReader.applyManualOverrides(); //apply manual overrides for rarity, slots and json-sourced type
 
         //infer info from existing enchantment objects (can be used for testing and development, it creates the best fitting approximation of an enchant). these are not loaded
         if(ConfigHandler.dev.printInferred) EnchantmentInfoInferrerWriter.printInferred();

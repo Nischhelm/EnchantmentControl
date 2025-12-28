@@ -1,9 +1,11 @@
 package enchantmentcontrol.util;
 
 import com.google.gson.annotations.SerializedName;
+import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.util.vanillasystem.VanillaSystem;
 import enchantmentcontrol.util.vanillasystem.VanillaSystemOverride;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
@@ -17,7 +19,10 @@ import org.apache.logging.log4j.util.TriConsumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 public class EnchantmentInfo {
@@ -129,11 +134,8 @@ public class EnchantmentInfo {
         }
     }
 
-    public Set<Enchantment> incompats;
-    @SerializedName("typesAnvil")
-    public Set<String> typesAnvil;
-    @SerializedName("types")
-    public Set<String> typesEnchTable;
+    @SerializedName("type")
+    public EnumEnchantmentType type;
     @SerializedName("slots")
     public List<EntityEquipmentSlot> slots;
 
@@ -196,12 +198,12 @@ public class EnchantmentInfo {
         this.rarity = rarity;
     }
 
-    public void setEnchTableTypes(Set<String> types) {
-        this.typesEnchTable = types;
-    }
-
-    public void setAnvilTypes(Set<String> types) {
-        this.typesAnvil = types;
+    public void setType(String type) {
+        try {
+            this.type = EnumEnchantmentType.valueOf(type);
+        } catch (Exception e) {
+            EnchantmentControl.LOGGER.error("Invalid enchantment type {} when reading json for : {}", type, this.enchId);
+        }
     }
 
     public void setSlots(List<EntityEquipmentSlot> slots) {

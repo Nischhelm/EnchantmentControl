@@ -42,6 +42,7 @@ public class EnchantmentInfoConfigReader {
             IEnchantmentPropertySetter setter = (IEnchantmentPropertySetter) ench;
             if(info.rarity != null) setter.ec$setRarity(info.rarity);
             if(info.slots != null) setter.ec$setSlots(info.slots.toArray(new EntityEquipmentSlot[0]));
+            if(info.type != null) ench.type = info.type;
         }
     }
 
