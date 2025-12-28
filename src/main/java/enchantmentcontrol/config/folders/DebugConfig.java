@@ -32,7 +32,7 @@ public class DebugConfig {
 
     @Config.Comment("Disable this to remove EnchantmentControls main feature which hooks into all registered enchantments code to modify how they behave. \n" +
             "Some features will still work. This is mainly meant for testing if this mods black magic mixins is responsible for a crash (hope not)")
-    @Config.Name("Enable Enchantment Injection (MixinToggle)")
+    @Config.Name("(MixinToggle) Enable Enchantment Injection")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(
             earlyMixin = "mixins.enchantmentcontrol.vanilla.main.json",

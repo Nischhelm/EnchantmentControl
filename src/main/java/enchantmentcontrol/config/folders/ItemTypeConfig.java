@@ -59,7 +59,6 @@ public class ItemTypeConfig {
                 "Enchantments listed here will run against what is set in \"Allow Modded Enchantment Behaviors\":",
                 " - If modded behaviors are generally allowed, enchants listed here will not have their modded behavior allowed",
                 " - If modded behaviors are generally disallowed, enchants listed here will have their modded behavior be allowed anyway",
-                "" //TODO: auto fill blacklist with general disable
         })
         @Config.Name("Blacklist")
         public String[] blacklist = {};
@@ -97,8 +96,7 @@ public class ItemTypeConfig {
         @Config.Comment({
                 "Enchantments listed here will run against what is set in \"Allow Modded Enchantment Behaviors\":",
                 " - If modded behaviors are generally allowed, enchants listed here will not have their modded behavior allowed",
-                " - If modded behaviors are generally disallowed, enchants listed here will have their modded behavior be allowed anyway",
-                "" //TODO: auto fill blacklist
+                " - If modded behaviors are generally disallowed, enchants listed here will have their modded behavior be allowed anyway"
         })
         @Config.Name("Blacklist")
         public String[] blacklist = {};

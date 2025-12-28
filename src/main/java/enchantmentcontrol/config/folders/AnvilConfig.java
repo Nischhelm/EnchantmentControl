@@ -5,7 +5,7 @@ import net.minecraftforge.common.config.Config;
 
 public class AnvilConfig {
     @Config.Comment("Removes the \"Too Expensive\" system of anvils")
-    @Config.Name("Never Too Expensive (MixinToggle)")
+    @Config.Name("(MixinToggle) Never Too Expensive")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilnoexpensive.json", defaultValue = false)
     @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompat with No Expensive") //TODO other incompats
@@ -13,7 +13,7 @@ public class AnvilConfig {
     public boolean enableNoExpensive = false;
 
     @Config.Comment("If enabled, using the anvil on an item without modifying its enchantments (repair with item or material, renames) will not increase its anvil use cost")
-    @Config.Name("No Cost Increase On Repairs (MixinToggle)")
+    @Config.Name("(MixinToggle) No Cost Increase On Repairs")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilnoincreaseonrepairs.json", defaultValue = false)
     //TODO incompats
@@ -21,7 +21,7 @@ public class AnvilConfig {
     public boolean noCostIncreaseOnRepairs = false;
 
     @Config.Comment("Main toggle for the Anvil Use Cost: Scaling Type, Combination Type and Scaling Factor in this config to be applicable")
-    @Config.Name("Change Cost Scaling (MixinToggle)")
+    @Config.Name("(MixinToggle) Change Cost Scaling")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilscaling.json", defaultValue = false)
     @SuppressWarnings("unused")

@@ -11,7 +11,7 @@ import java.util.Map;
 @MixinConfig(name = EnchantmentControl.MODID)
 public class FirstSetupConfig {
     @Config.Comment("Enable if you want to remap enchantment ids. Warning: See Warning in \""+ConfigRef.IDREMAP_CONFIG_NAME+"\"")
-    @Config.Name("Enable Registry Remapping (MixinToggle)")
+    @Config.Name("(MixinToggle) Enable Registry Remapping")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.registryremap.json", defaultValue = false)
     public boolean enableRegistryRemap = false;
