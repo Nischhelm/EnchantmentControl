@@ -63,7 +63,7 @@ public class FirstSetupConfig {
     })
     @Config.Name(ConfigRef.PRINT_INCOMPAT_CONFIG_NAME)
     @Config.RequiresMcRestart
-    public boolean readIncompats = true;
+    public boolean printIncompats = true;
 
     @Config.Comment({
             "!Disables itself after a one time use!",

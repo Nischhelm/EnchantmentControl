@@ -49,7 +49,7 @@ public class IncompatibleConfigProvider {
         return incompatEnchs;
     }
 
-    public static void writeDefaultIncompatibilities(){
+    public static void printDefaultIncompatibilities(){
         int n = Enchantment.REGISTRY.getKeys().size();
         boolean[][] incompatMatrix = new boolean[n][n];
 
@@ -87,10 +87,10 @@ public class IncompatibleConfigProvider {
 
         String[] out = defaultIncompatList.toArray(new String[0]);
 
-        EnchantmentControl.CONFIG.get("general", "Incompatible Enchantment Groups", ConfigHandler.incompatibleGroups).set(out);
-        EnchantmentControl.CONFIG.get("general.first setup", ConfigRef.PRINT_INCOMPAT_CONFIG_NAME, ConfigHandler.dev.readIncompats).set(false);
+        EnchantmentControl.CONFIG.get("general", ConfigRef.INCOMPAT_CFG_NAME, ConfigHandler.incompatibleGroups).set(out);
+        EnchantmentControl.CONFIG.get("general.first setup", ConfigRef.PRINT_INCOMPAT_CONFIG_NAME, ConfigHandler.dev.printIncompats).set(false);
         ConfigHandler.incompatibleGroups = out;
-        ConfigHandler.dev.readIncompats = false;
+        ConfigHandler.dev.printIncompats = false;
         EnchantmentControl.configNeedsSaving = true;
     }
 

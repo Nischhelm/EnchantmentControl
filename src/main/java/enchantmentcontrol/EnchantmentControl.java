@@ -49,7 +49,7 @@ public class EnchantmentControl {
         if (ConfigHandler.debug.printLoaded) EnchantmentInfoWriter.printLoaded();
 
         //Incompatibilities
-        if(ConfigHandler.dev.readIncompats) IncompatibleConfigProvider.writeDefaultIncompatibilities();
+        if(ConfigHandler.dev.printIncompats) IncompatibleConfigProvider.printDefaultIncompatibilities();
         IncompatibleConfigProvider.onResetConfig();
 
         //Item Types

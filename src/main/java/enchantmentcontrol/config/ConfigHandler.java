@@ -29,7 +29,7 @@ public class ConfigHandler {
 			"Warning: this mod takes full control of enchantments incompatibilities with each other",
 			"  so run the first setup every time you add mods that have enchants, then compare with what you set up to stay up to date"
 	})
-	@Config.Name("Incompatible Groups")
+	@Config.Name(ConfigRef.INCOMPAT_CFG_NAME)
 	public static String[] incompatibleGroups = {};
 
 	@Config.Comment({
