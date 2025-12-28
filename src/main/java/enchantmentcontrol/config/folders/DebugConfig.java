@@ -21,6 +21,15 @@ public class DebugConfig {
     @Config.RequiresMcRestart
     public boolean printLoaded = false;
 
+    @Config.Comment({
+            "If enabled, using \"Print Default Item Types\" will also print all enchants that have custom behavior for general or anvil item application.",
+            " Prints go to each blacklist. Will also automatically turn them into whitelists by untoggling \"Allow Modded Behavior\"",
+            "This option exists to make it easier for the few wanting full control over item types to see which enchantments have overriding behavior to account for"
+    })
+    @Config.Name("Print Item Type Blacklists")
+    @Config.RequiresMcRestart
+    public boolean printItemTypeBlacklists = false;
+
     @Config.Comment("Disable this to remove EnchantmentControls main feature which hooks into all registered enchantments code to modify how they behave. \n" +
             "Some features will still work. This is mainly meant for testing if this mods black magic mixins is responsible for a crash (hope not)")
     @Config.Name("Enable Enchantment Injection (MixinToggle)")

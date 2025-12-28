@@ -53,9 +53,9 @@ public class EnchantmentControl {
         IncompatibleConfigProvider.onResetConfig();
 
         //Item Types
-        ItemTypeConfigProvider.readItemTypesFromConfig();
-        if(ConfigHandler.dev.readTypes) ItemTypeConfigProvider.writeDefaultItemTypes();
-        ItemTypeConfigProvider.readItemTypeMappingsFromConfig();
+        ItemTypeConfigProvider.initRegisteredItemTypesFromConfig();
+        if(ConfigHandler.dev.printTypes) ItemTypeConfigProvider.printDefaultItemTypes();
+        ItemTypeConfigProvider.initItemTypeConfig();
 
         if(configNeedsSaving) CONFIG.save();
 

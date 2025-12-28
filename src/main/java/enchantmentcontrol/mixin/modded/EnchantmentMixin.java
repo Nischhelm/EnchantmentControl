@@ -17,15 +17,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
 @Debug(export = true)
 @Mixin(targets = {"net.minecraft.enchantment.Enchantment"}, value = EnchantmentDummy.class) //needs to be two separate Enchantment classes for the refmaps to not write the owner class in front of the searge method names
 @SuppressWarnings({"MixinSuperClass"})
 //copy of vanilla.VanillaBaseEnchantmentMixin and vanilla.VanillaEnchantmentMixin just for all modded enchantments and their intermediaries
 public abstract class EnchantmentMixin extends Enchantment { //needs to extend for refmaps to work
-    @Shadow
-    public abstract boolean canApplyAtEnchantingTable(ItemStack stack);
 
     protected EnchantmentMixin(Rarity rarityIn, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {
         super(rarityIn, typeIn, slots);
@@ -93,7 +90,7 @@ public abstract class EnchantmentMixin extends Enchantment { //needs to extend f
 
     @WrapMethod(method = "canApplyTogether")
     protected boolean ec_canApplyTogether(Enchantment ench, Operation<Boolean> original) {
-        if(!ConfigHandler.dev.readIncompats) return IncompatibleConfigProvider.areCompatible(this, ench);
+        if(!ConfigHandler.dev.printIncompats) return IncompatibleConfigProvider.areCompatible(this, ench);
         return original.call(ench);
         //EnchantmentInfo info = EnchantmentInfo.get(this);
         //if(info != null && info.incompats != null) return !info.incompats.contains(ench) && this != ench;
@@ -102,15 +99,21 @@ public abstract class EnchantmentMixin extends Enchantment { //needs to extend f
 
     @WrapMethod(method = "canApply")
     public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
-        if(ConfigHandler.dev.readTypes) return original.call(stack);
-        if(!ItemTypeConfigProvider.isSupported(this, true)) return original.call(stack);
+        if(ConfigHandler.dev.printTypes){
+            ItemTypeConfigProvider.probeAnvil = true;
+            return original.call(stack);
+        }
+        if(ItemTypeConfigProvider.shouldYieldToModdedBehavior(this, true)) return original.call(stack);
         return ItemTypeConfigProvider.canItemApply(this, stack, true) || this.canApplyAtEnchantingTable(stack);
     }
 
     @WrapMethod(method = "canApplyAtEnchantingTable", remap = false)
     public boolean ec_canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
-        if(ConfigHandler.dev.readTypes) return original.call(stack);
-        if(!ItemTypeConfigProvider.isSupported(this, false)) return original.call(stack);
+        if(ConfigHandler.dev.printTypes){
+            ItemTypeConfigProvider.probe = true;
+            return original.call(stack);
+        }
+        if(ItemTypeConfigProvider.shouldYieldToModdedBehavior(this, false)) return original.call(stack);
         return ItemTypeConfigProvider.canItemApply(this, stack, false);
     }
 

@@ -109,7 +109,7 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
 
     @WrapMethod(method = "canApplyTogether")
     protected boolean ec_canApplyTogether(Enchantment ench, Operation<Boolean> original) {
-        if(!ConfigHandler.dev.readIncompats) return IncompatibleConfigProvider.areCompatible(this, ench);
+        if(!ConfigHandler.dev.printIncompats) return IncompatibleConfigProvider.areCompatible(this, ench);
         return original.call(ench);
         //EnchantmentInfo info = EnchantmentInfo.get(this);
         //if(info != null && info.incompats != null) return !info.incompats.contains(ench) && this != ench;
@@ -118,15 +118,21 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
 
     @WrapMethod(method = "canApply")
     public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
-        if(ConfigHandler.dev.readTypes) return original.call(stack);
-        if(!ItemTypeConfigProvider.isSupported(this, true)) return original.call(stack);
-        return ItemTypeConfigProvider.canItemApply(this, stack, true) || this.canApplyAtEnchantingTable(stack);
+        if(ConfigHandler.dev.printTypes){
+            ItemTypeConfigProvider.probeAnvil = true;
+            return original.call(stack);
+        }
+        if(ItemTypeConfigProvider.shouldYieldToModdedBehavior(this, true)) return original.call(stack);
+        return ItemTypeConfigProvider.canItemApply(this, stack, true) || original.call(stack);
     }
 
     @WrapMethod(method = "canApplyAtEnchantingTable", remap = false)
     public boolean ec_canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
-        if(ConfigHandler.dev.readTypes) return original.call(stack);
-        if(!ItemTypeConfigProvider.isSupported(this, false)) return original.call(stack);
+        if(ConfigHandler.dev.printTypes){
+            ItemTypeConfigProvider.probe = true;
+            return original.call(stack);
+        }
+        if(ItemTypeConfigProvider.shouldYieldToModdedBehavior(this, false)) return original.call(stack);
         return ItemTypeConfigProvider.canItemApply(this, stack, false);
     }
 

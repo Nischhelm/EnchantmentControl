@@ -13,39 +13,48 @@ import net.minecraft.util.ResourceLocation;
 import java.util.*;
 
 public class ItemTypeConfigProvider {
-    private static final HashMap<String, ITypeMatcher> typeMatchers = new HashMap<>();
-
-    public static void onResetConfig(){
-        typeMatchers.clear();
-        enchantToTypeMatchers.clear();
-        enchantToTypeMatchersAnvil.clear();
-        supportedEnchantments.clear();
-        supportedEnchantmentsAnvil.clear();
-        readItemTypesFromConfig();
-        readItemTypeMappingsFromConfig();
+    private static final HashMap<String, ITypeMatcher> registeredMatchers = new HashMap<>();
+    public static ITypeMatcher getMatcher(String name){
+        return registeredMatchers.get(name);
     }
 
-    public static void readItemTypesFromConfig(){
-        typeMatchers.put("ANY_TYPE", new EnumEnchantmentTypeMatcher("ANY_TYPE", EnumEnchantmentType.ALL));
-        typeMatchers.put("ARMOR", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR));
-        typeMatchers.put("ARMOR_HEAD", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_HEAD));
-        typeMatchers.put("ARMOR_CHEST", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_CHEST));
-        typeMatchers.put("ARMOR_LEGS", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_LEGS));
-        typeMatchers.put("ARMOR_FEET", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_FEET));
-        typeMatchers.put("SWORD", new EnumEnchantmentTypeMatcher("SWORD", EnumEnchantmentType.WEAPON));
-        typeMatchers.put("TOOL", new EnumEnchantmentTypeMatcher("TOOL", EnumEnchantmentType.DIGGER));
-        typeMatchers.put("FISHING_ROD", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.FISHING_ROD));
-        typeMatchers.put("BREAKABLE", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.BREAKABLE));
-        typeMatchers.put("BOW", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.BOW));
-        typeMatchers.put("WEARABLE", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.WEARABLE));
+    public static void onResetConfig(){
+        registeredMatchers.clear();
+        itemTypes.clear();
+        itemTypesAnvil.clear();
+        blacklistedEnchantments.clear();
+        blacklistedEnchantmentsAnvil.clear();
+        initRegisteredItemTypesFromConfig();
+        initItemTypeConfig();
+    }
 
-        typeMatchers.put("ANY", new BooleanTypeMatcher("ANY", true));
-        typeMatchers.put("AXE", new InstanceofTypeMatcher("AXE", ItemAxe.class, Items.IRON_AXE));
-        typeMatchers.put("PICKAXE", new InstanceofTypeMatcher("PICKAXE", ItemPickaxe.class, Items.IRON_PICKAXE));
-        typeMatchers.put("HOE", new InstanceofTypeMatcher("HOE", ItemHoe.class, Items.IRON_HOE));
-        typeMatchers.put("SHOVEL", new InstanceofTypeMatcher("SHOVEL", ItemSpade.class, Items.IRON_SHOVEL));
-        typeMatchers.put("SHIELD", new InstanceofTypeMatcher("SHIELD", ItemShield.class, Items.SHIELD));
-        typeMatchers.put("NONE", new BooleanTypeMatcher("NONE", false));
+    public static void registerCustomTypeMatcher(ITypeMatcher matcher){
+        registeredMatchers.put(matcher.getName(), matcher);
+    }
+
+    // ---------------- INIT ----------------
+
+    public static void initRegisteredItemTypesFromConfig(){
+        registeredMatchers.put("ANY_TYPE", new EnumEnchantmentTypeMatcher("ANY_TYPE", EnumEnchantmentType.ALL));
+        registeredMatchers.put("ARMOR", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR));
+        registeredMatchers.put("ARMOR_HEAD", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_HEAD));
+        registeredMatchers.put("ARMOR_CHEST", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_CHEST));
+        registeredMatchers.put("ARMOR_LEGS", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_LEGS));
+        registeredMatchers.put("ARMOR_FEET", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_FEET));
+        registeredMatchers.put("SWORD", new EnumEnchantmentTypeMatcher("SWORD", EnumEnchantmentType.WEAPON));
+        registeredMatchers.put("TOOL", new EnumEnchantmentTypeMatcher("TOOL", EnumEnchantmentType.DIGGER));
+        registeredMatchers.put("FISHING_ROD", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.FISHING_ROD));
+        registeredMatchers.put("BREAKABLE", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.BREAKABLE));
+        registeredMatchers.put("BOW", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.BOW));
+        registeredMatchers.put("WEARABLE", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.WEARABLE));
+
+        registeredMatchers.put("ANY", new BooleanTypeMatcher("ANY", true));
+        registeredMatchers.put("AXE", new InstanceofTypeMatcher("AXE", ItemAxe.class, Items.IRON_AXE));
+        registeredMatchers.put("PICKAXE", new InstanceofTypeMatcher("PICKAXE", ItemPickaxe.class, Items.IRON_PICKAXE));
+        registeredMatchers.put("HOE", new InstanceofTypeMatcher("HOE", ItemHoe.class, Items.IRON_HOE));
+        registeredMatchers.put("SHOVEL", new InstanceofTypeMatcher("SHOVEL", ItemSpade.class, Items.IRON_SHOVEL));
+        registeredMatchers.put("SHIELD", new InstanceofTypeMatcher("SHIELD", ItemShield.class, Items.SHIELD));
+        registeredMatchers.put("NONE", new BooleanTypeMatcher("NONE", false));
 
         for (String s : ConfigHandler.itemTypes.customTypes) {
             String[] split = s.split(EnchantmentControl.SEP);
@@ -68,20 +77,21 @@ public class ItemTypeConfigProvider {
                 case "enum"  : matcher = new EnumEnchantmentTypeMatcher(EnumEnchantmentType.valueOf(name)); break;
                 default      : matcher = new CustomTypeMatcher(name, split[1].trim()); //split[1] cause this is the default where no type was named
             }
-            if (matcher.isValid()) typeMatchers.put(name, matcher);
+            if (matcher.isValid()) registeredMatchers.put(name, matcher);
         }
     }
 
-    public static void registerCustomTypeMatcher(ITypeMatcher matcher){
-        typeMatchers.put(matcher.getName(), matcher);
+    public static void initItemTypeConfig() {
+        initItemTypes(ConfigHandler.itemTypes.general.itemTypes, itemTypes);
+        initItemTypes(ConfigHandler.itemTypes.anvil.itemTypes, itemTypesAnvil);
+
+        initBlacklist(ConfigHandler.itemTypes.general.blacklist, blacklistedEnchantments);
+        initBlacklist(ConfigHandler.itemTypes.anvil.blacklist, blacklistedEnchantmentsAnvil);
     }
 
-    public static void readItemTypeMappingsFromConfig() {
-        initEnchantmentToMatchersMap(ConfigHandler.itemTypes.itemTypes, supportedEnchantments, enchantToTypeMatchers);
-        initEnchantmentToMatchersMap(ConfigHandler.itemTypes.itemTypesAnvil, supportedEnchantmentsAnvil, enchantToTypeMatchersAnvil);
-    }
-
-    private static void initEnchantmentToMatchersMap(String[] config, Set<Enchantment> suppEnch, Map<Enchantment, Set<ITypeMatcher>> mapOut){
+    private static final Map<Enchantment, Set<ITypeMatcher>> itemTypes = new HashMap<>();
+    private static final Map<Enchantment, Set<ITypeMatcher>> itemTypesAnvil = new HashMap<>();
+    private static void initItemTypes(String[] config, Map<Enchantment, Set<ITypeMatcher>> mapOut){
         for(String s : config){
             String[] split = s.split("=");
             if(split.length < 2) continue;
@@ -91,7 +101,7 @@ public class ItemTypeConfigProvider {
             boolean inverted = typeName.startsWith("!");
             if(inverted) typeName = typeName.substring(1);
 
-            ITypeMatcher matcher = typeMatchers.get(typeName);
+            ITypeMatcher matcher = registeredMatchers.get(typeName);
             if(matcher == null){
                 EnchantmentControl.LOGGER.warn("Could not find given item type while reading enchants per item type {}", typeName);
                 continue;
@@ -105,19 +115,33 @@ public class ItemTypeConfigProvider {
                     EnchantmentControl.LOGGER.warn("Could not find enchantment {} while reading enchants per item type {}", enchName, typeName);
                     continue;
                 }
-                suppEnch.add(ench);
                 mapOut.computeIfAbsent(ench, k -> new HashSet<>()).add(matcher);
             }
         }
     }
 
-    private static final Set<Enchantment> supportedEnchantments = new HashSet<>();
-    private static final Set<Enchantment> supportedEnchantmentsAnvil = new HashSet<>();
-    private static final Map<Enchantment, Set<ITypeMatcher>> enchantToTypeMatchers = new HashMap<>();
-    private static final Map<Enchantment, Set<ITypeMatcher>> enchantToTypeMatchersAnvil = new HashMap<>();
+    private static final Set<Enchantment> blacklistedEnchantments = new HashSet<>();
+    private static final Set<Enchantment> blacklistedEnchantmentsAnvil = new HashSet<>();
+    private static void initBlacklist(String[] cfg, Set<Enchantment> set) {
+        Arrays.stream(cfg)
+                .map(String::trim)
+                .map(Enchantment::getEnchantmentByLocation)
+                .filter(Objects::nonNull)
+                .forEach(set::add);
+    }
 
-    public static boolean isSupported(Enchantment enchantment, boolean forAnvil){
-        return forAnvil ? supportedEnchantmentsAnvil.contains(enchantment) : supportedEnchantments.contains(enchantment);
+    // ---------------- RUNTIME ----------------
+
+    public static boolean shouldYieldToModdedBehavior(Enchantment enchantment, boolean forAnvil){
+        //config allows modded behavior in general
+        boolean isGenerallyAllowed = forAnvil ? ConfigHandler.itemTypes.anvil.allowCustomEnchantments : ConfigHandler.itemTypes.general.allowCustomEnchantments;
+        //or allows for this specific enchantment
+        boolean enchantIsBlacklisted = (forAnvil ? blacklistedEnchantmentsAnvil : blacklistedEnchantments).contains(enchantment);
+
+        //blacklisted usually false so
+        // allowed + not blacklisted -> only runs original code (true)
+        // not allowed + not blacklisted -> skips original code (false)
+        return isGenerallyAllowed != enchantIsBlacklisted; //even if this returns true we might still run canItemApply in Enchantment.canApply/At
     }
 
     public static boolean canItemApply(Enchantment enchantment, ItemStack stack, boolean forAnvil){
@@ -126,7 +150,8 @@ public class ItemTypeConfigProvider {
         boolean invertedMatches = false;
         String itemName = null;
 
-        Set<ITypeMatcher> matchers = forAnvil ? enchantToTypeMatchersAnvil.get(enchantment) : enchantToTypeMatchers.get(enchantment);
+        //Each enchantment has a set of matchers which items can try to match against
+        Set<ITypeMatcher> matchers = (forAnvil ? itemTypesAnvil : itemTypes).get(enchantment);
         if(matchers == null) return false;
 
         for(ITypeMatcher typeMatcher: matchers){
@@ -145,48 +170,81 @@ public class ItemTypeConfigProvider {
             if(!inverted) isValid = isValid || matches;
             else invertedMatches = invertedMatches || matches;
         }
+
+        //Any inverted match makes this directly return false
         return isValid && !invertedMatches;
     }
 
-    //This is just inference to try to match the original state during first setup
-    public static void writeDefaultItemTypes() {
-        Map<String, List<Enchantment>> validMatchers = new HashMap<>();
-        Map<String, List<Enchantment>> validMatchersAnvil = new HashMap<>();
-        Map<Enchantment, Set<String>> enchantToTypeMatchers = new HashMap<>();
-        Map<Enchantment, Set<String>> enchantToTypeMatchersAnvil = new HashMap<>();
+    // ---------------- FIRST SETUP ----------------
 
-        typeMatchers.keySet().forEach(k -> validMatchers.put(k, new ArrayList<>()));
+    //This is just inference to try to match the original state during first setup
+    public static void printDefaultItemTypes() {
+        if(ConfigHandler.debug.printItemTypeBlacklists)
+            printDefaultBlacklist();
+
+        Map<String, Set<Enchantment>> byName = new HashMap<>();
+        Map<String, Set<Enchantment>> byNameAnvil = new HashMap<>();
+        Map<Enchantment, Set<String>> byEnchantment = new HashMap<>(); //byEnchantment view of the map only exists to make the simplification easier
+        Map<Enchantment, Set<String>> byEnchantmentAnvil = new HashMap<>();
+
+        registeredMatchers.keySet().forEach(k -> byName.put(k, new LinkedHashSet<>())); //each matcher name gets at least an empty line MATCHER =
         //anvil config doesn't get init with all types so it stays shorter
 
-        for (Map.Entry<String, ITypeMatcher> entry : typeMatchers.entrySet()) {
+        //Note down each enchants original type
+        for (Enchantment ench : Enchantment.REGISTRY) {
+            if (ench.type == null) continue;
+            List<ITypeMatcher> matchers = EnumEnchantmentTypeMatcher.byEnum(ench.type);
+            matchers.forEach(matcher -> {
+                byName.computeIfAbsent(matcher.getName(), k -> new HashSet<>()).add(ench);
+                byEnchantment.computeIfAbsent(ench, k -> new HashSet<>()).add(matcher.getName());
+            });
+        }
+
+        //Try to be smart, at least a little bit
+        for (Map.Entry<String, ITypeMatcher> entry : registeredMatchers.entrySet()) {
             ItemStack fakeStack = entry.getValue().getFakeStack();
-            if(fakeStack == null) continue;
-            Item item = fakeStack.getItem();
-            ResourceLocation loc = item.getRegistryName();
-            if(loc == null) continue;
+            if (fakeStack == null) continue; //the following only infers types using fake stacks
+
+            Set<Enchantment> matchingEnchants = byName.get(entry.getKey());
+
             for (Enchantment ench : Enchantment.REGISTRY) {
-                if(ench.canApplyAtEnchantingTable(fakeStack)){
-                    validMatchers.get(entry.getKey()).add(ench);
-                    enchantToTypeMatchers.computeIfAbsent(ench, k -> new HashSet<>()).add(entry.getKey());
-                }
-                else if(ench.canApply(fakeStack)){
-                    validMatchersAnvil.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).add(ench);
-                    enchantToTypeMatchersAnvil.computeIfAbsent(ench, k -> new HashSet<>()).add(entry.getKey());
+                if (matchingEnchants.contains(ench)) continue; //already included by the original type check
+                if (ench.canApplyAtEnchantingTable(fakeStack)) {
+                    matchingEnchants.add(ench);
+                    byEnchantment.computeIfAbsent(ench, k -> new HashSet<>()).add(entry.getKey());
+                } else if (ench.canApply(fakeStack)) {
+                    byNameAnvil.computeIfAbsent(entry.getKey(), k -> new LinkedHashSet<>()).add(ench);
+                    byEnchantmentAnvil.computeIfAbsent(ench, k -> new HashSet<>()).add(entry.getKey());
                 }
             }
         }
+        simplify(byName, byEnchantment);
+        simplify(byNameAnvil, byEnchantmentAnvil);
 
-        simplify(validMatchers, enchantToTypeMatchers);
+        //Write that down
+
         List<String> out = new ArrayList<>();
-        validMatchers.forEach((matcherName, enchs) -> out.add(matcherName + " = " + String.join(EnchantmentControl.SEP + " ", enchs.stream().map(Enchantment::getRegistryName).filter(Objects::nonNull).map(ResourceLocation::toString).toArray(String[]::new))));
+        byName.forEach((matcherName, enchs) ->
+                out.add(
+                        matcherName + " = "
+                        + String.join(
+                        EnchantmentControl.SEP + " ",
+                                enchs.stream()
+                                    .map(Enchantment::getRegistryName)
+                                    .filter(Objects::nonNull)
+                                    .map(ResourceLocation::toString)
+                                    .toArray(String[]::new)
+                        )
+                )
+        );
         String[] outarr = out.toArray(new String[0]);
-        EnchantmentControl.CONFIG.get("general.item types", "Item Types", ConfigHandler.itemTypes.itemTypes).set(outarr);
-        ConfigHandler.itemTypes.itemTypes = outarr;
+        EnchantmentControl.CONFIG.get("general.item types.general", "Item Types", ConfigHandler.itemTypes.general.itemTypes).set(outarr);
+        ConfigHandler.itemTypes.general.itemTypes = outarr;
 
-        simplify(validMatchersAnvil, enchantToTypeMatchersAnvil);
+        //Also for anvil
 
         List<String> outAnv = new ArrayList<>();
-        validMatchersAnvil.forEach((matcherName, enchs) -> {
+        byNameAnvil.forEach((matcherName, enchs) -> {
                 if(enchs.isEmpty()) return;
                 outAnv.add(
                         matcherName + " = " + String.join(
@@ -201,30 +259,76 @@ public class ItemTypeConfigProvider {
             }
         );
         String[] outarrAnv = outAnv.toArray(new String[0]);
-        EnchantmentControl.CONFIG.get("general.item types", "Item Types Anvil", ConfigHandler.itemTypes.itemTypesAnvil).set(outarrAnv);
-        ConfigHandler.itemTypes.itemTypesAnvil = outarrAnv;
+        EnchantmentControl.CONFIG.get("general.item types.anvil", "Item Types", ConfigHandler.itemTypes.anvil.itemTypes).set(outarrAnv);
+        ConfigHandler.itemTypes.anvil.itemTypes = outarrAnv;
 
-        EnchantmentControl.CONFIG.get("general.first setup", ConfigRef.PRINT_TYPES_CONFIG_NAME, ConfigHandler.dev.readTypes).set(false);
-        ConfigHandler.dev.readTypes = false;
+        //Reset print toggle
+
+        EnchantmentControl.CONFIG.get("general.first setup", ConfigRef.PRINT_TYPES_CONFIG_NAME, ConfigHandler.dev.printTypes).set(false);
+        ConfigHandler.dev.printTypes = false;
         EnchantmentControl.configNeedsSaving = true;
     }
 
-    private static void simplify(Map<String, List<Enchantment>> validMatchers, Map<Enchantment, Set<String>> enchantToTypeMatchers) {
-        for(Map.Entry<Enchantment, Set<String>> entry : enchantToTypeMatchers.entrySet()){
+    private static void simplify(Map<String, Set<Enchantment>> byName, Map<Enchantment, Set<String>> byEnch) {
+        for(Map.Entry<Enchantment, Set<String>> entry : byEnch.entrySet()){
             //All ARMOR types -> only ARMOR
             if(entry.getValue().contains("ARMOR_HEAD") && entry.getValue().contains("ARMOR_CHEST") && entry.getValue().contains("ARMOR_LEGS") &&  entry.getValue().contains("ARMOR_FEET")){
-                validMatchers.get("ARMOR_HEAD").remove(entry.getKey());
-                validMatchers.get("ARMOR_CHEST").remove(entry.getKey());
-                validMatchers.get("ARMOR_LEGS").remove(entry.getKey());
-                validMatchers.get("ARMOR_FEET").remove(entry.getKey());
-                validMatchers.computeIfAbsent("ARMOR", k -> new ArrayList<>()).add(entry.getKey());
+                byName.get("ARMOR_HEAD").remove(entry.getKey());
+                byName.get("ARMOR_CHEST").remove(entry.getKey());
+                byName.get("ARMOR_LEGS").remove(entry.getKey());
+                byName.get("ARMOR_FEET").remove(entry.getKey());
+                byName.computeIfAbsent("ARMOR", k -> new HashSet<>()).add(entry.getKey());
             }
             //Both PICKAXE and SHOVEL -> only TOOL
             if(entry.getValue().contains("PICKAXE") && entry.getValue().contains("SHOVEL")){
-                validMatchers.get("PICKAXE").remove(entry.getKey());
-                validMatchers.get("SHOVEL").remove(entry.getKey());
-                //already added to TOOL
+                byName.get("PICKAXE").remove(entry.getKey());
+                byName.get("SHOVEL").remove(entry.getKey());
+                byName.computeIfAbsent("TOOL", k -> new HashSet<>()).add(entry.getKey());
             }
+            if(entry.getValue().contains("ANY")) removeFromAllExcept(byName, entry.getKey(), "ANY");
+            else if(entry.getValue().contains("ANY_TYPE")) removeFromAllExcept(byName, entry.getKey(), "ANY_TYPE");
+            else if(entry.getValue().contains("BREAKABLE")) removeFromAllExcept(byName, entry.getKey(), "BREAKABLE");
+            else if(entry.getValue().contains("WEARABLE")) removeFromAllExcept(byName, entry.getKey(), "WEARABLE");
         }
     }
+
+    private static void removeFromAllExcept(Map<String, Set<Enchantment>> validMatchers, Enchantment enchantment, String matcherName){
+        validMatchers.forEach((k,v) -> {
+            if(k.equals(matcherName)) return;
+            v.remove(enchantment);
+        });
+    }
+
+    public static boolean probe = false;
+    public static boolean probeAnvil = false;
+    private static void printDefaultBlacklist() {
+        List<String> blacklist = new ArrayList<>();
+        List<String> blacklistAnvil = new ArrayList<>();
+
+        for(Enchantment enchantment : Enchantment.REGISTRY){
+            ResourceLocation loc = enchantment.getRegistryName();
+            if(loc == null) continue;
+
+            probe = false;
+            enchantment.canApplyAtEnchantingTable(ItemStack.EMPTY);
+            if(probe) blacklist.add(loc.toString());
+
+            probeAnvil = false;
+            enchantment.canApply(ItemStack.EMPTY);
+            if(probeAnvil) blacklistAnvil.add(loc.toString());
+        }
+
+        String[] outarr = blacklist.toArray(new String[0]);
+        EnchantmentControl.CONFIG.get("general.item types.general", "Blacklist", ConfigHandler.itemTypes.general.blacklist).set(outarr);
+        ConfigHandler.itemTypes.general.blacklist = outarr;
+        EnchantmentControl.CONFIG.get("general.item types.general", "Allow Modded Enchantment Behaviors", ConfigHandler.itemTypes.general.allowCustomEnchantments).set(false);
+        ConfigHandler.itemTypes.general.allowCustomEnchantments = false;
+
+        String[] outarrAnv = blacklistAnvil.toArray(new String[0]);
+        EnchantmentControl.CONFIG.get("general.item types.anvil", "Blacklist", ConfigHandler.itemTypes.anvil.blacklist).set(outarrAnv);
+        ConfigHandler.itemTypes.anvil.blacklist = outarrAnv;
+        EnchantmentControl.CONFIG.get("general.item types.anvil", "Allow Modded Enchantment Behaviors", ConfigHandler.itemTypes.anvil.allowCustomEnchantments).set(false);
+        ConfigHandler.itemTypes.anvil.allowCustomEnchantments = false;
+    }
 }
+

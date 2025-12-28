@@ -68,11 +68,14 @@ public class FirstSetupConfig {
     @Config.Comment({
             "!Disables itself after a one time use!",
             "",
-            "If enabled, during startup this mod will check various (not all!) item applicabilities for all registered enchantments and print them out into the \"Item Types\" config.",
+            "If enabled, during startup this mod will check what items every enchant allows using their type and print the result out into the two \"Item Types\" configs.",
             "Config will look correct after restart.",
-            "This is done to make it easier to work off of default item types for people wanting to modify what enchantment can go on which items."
+            "This mod overrides the default type system, so removing an enchant from the \"Item Types\" lists will actually disallow it, except if there is allowed custom overriding code interfering.",
+            "Note: this system tries to be intelligent and helpful and infers a bit more info than it needs to (example: anvil section could be empty as that's all fully custom behavior, so removing these entries wont do anything).",
+            "It is not able to find and translate every single modded behavior, and might even mistranslate rare modded application rules.",
+            "So if you want full control (\"Allow Modded Enchantment Behaviors ..\" = false) you will have to figure out those rules and translate them to custom item types yourself."
     })
     @Config.Name(ConfigRef.PRINT_TYPES_CONFIG_NAME)
     @Config.RequiresMcRestart
-    public boolean readTypes = true;
+    public boolean printTypes = true;
 }

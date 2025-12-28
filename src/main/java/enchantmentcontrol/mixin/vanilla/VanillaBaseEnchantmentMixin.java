@@ -13,15 +13,9 @@ import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(Enchantment.class) //copy of VanillaEnchantmentMixin and modded.EnchantmentMixin just for net.minecraft.enchantment.Enchantment
 public abstract class VanillaBaseEnchantmentMixin {
-    @Shadow public abstract String getName();
-
-    @Shadow
-    public abstract boolean canApplyAtEnchantingTable(ItemStack stack);
-
     @WrapMethod(method = "getMinLevel")
     public int ec_getMinLevel(Operation<Integer> original) {
         EnchantmentInfo info = EnchantmentInfo.get((Enchantment) (Object) this);
@@ -84,7 +78,7 @@ public abstract class VanillaBaseEnchantmentMixin {
 
     @WrapMethod(method = "canApplyTogether")
     protected boolean ec_canApplyTogether(Enchantment ench, Operation<Boolean> original) {
-        if(!ConfigHandler.dev.readIncompats) return IncompatibleConfigProvider.areCompatible((Enchantment) (Object)this, ench);
+        if(!ConfigHandler.dev.printIncompats) return IncompatibleConfigProvider.areCompatible((Enchantment) (Object)this, ench);
         return original.call(ench);
         //EnchantmentInfo info = EnchantmentInfo.get(this);
         //if(info != null && info.incompats != null) return !info.incompats.contains(ench) && this != ench;
@@ -93,16 +87,18 @@ public abstract class VanillaBaseEnchantmentMixin {
 
     @WrapMethod(method = "canApply")
     public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
-        if(ConfigHandler.dev.readTypes) return original.call(stack);
-        if(!ItemTypeConfigProvider.isSupported((Enchantment) (Object) this, true)) return original.call(stack);
-        return ItemTypeConfigProvider.canItemApply((Enchantment) (Object) this, stack, true) || this.canApplyAtEnchantingTable(stack);
+        if(ConfigHandler.dev.printTypes) return original.call(stack);
+        Enchantment thisEnch = (Enchantment) (Object) this;
+        //if(ItemTypeConfigProvider.isOriginalCodePrioritised(thisEnch, true, false)) return original.call(stack);
+        return ItemTypeConfigProvider.canItemApply(thisEnch, stack, true) || original.call(stack);
     }
 
     @WrapMethod(method = "canApplyAtEnchantingTable", remap = false)
     public boolean ec_canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
-        if(ConfigHandler.dev.readTypes) return original.call(stack);
-        if(!ItemTypeConfigProvider.isSupported((Enchantment) (Object) this, false)) return original.call(stack);
-        return ItemTypeConfigProvider.canItemApply((Enchantment) (Object) this, stack, false);
+        if(ConfigHandler.dev.printTypes) return original.call(stack);
+        Enchantment thisEnch = (Enchantment) (Object) this;
+        //if(ItemTypeConfigProvider.isOriginalCodePrioritised(thisEnch, false, false)) return original.call(stack);
+        return ItemTypeConfigProvider.canItemApply(thisEnch, stack, false);
     }
 
     // VANILLA ENCHANTMENT BEHAVIORS

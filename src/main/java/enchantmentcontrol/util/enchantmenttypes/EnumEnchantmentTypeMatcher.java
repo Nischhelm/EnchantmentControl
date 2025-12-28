@@ -1,19 +1,45 @@
 package enchantmentcontrol.util.enchantmenttypes;
 
 import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import java.util.*;
+
 public class EnumEnchantmentTypeMatcher implements ITypeMatcher {
+    private static final Map<EnumEnchantmentType, EnumEnchantmentTypeMatcher> enchantToTypeMatchers = new HashMap<>();
+    public static List<ITypeMatcher> byEnum(EnumEnchantmentType type){
+        if(type.ordinal() > 11){ //not vanilla enum
+            switch (type.name()) {
+                //SME 0.5.5 first tries in making lists of types
+                case "Combat Shield": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("SHIELD"));
+                case "Tool Pickaxe": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("PICKAXE"));
+                case "Tool Hoe": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("HOE"));
+                case "Damageable": return byEnum(EnumEnchantmentType.BREAKABLE);
+                case "Combat Tool": return byEnum(EnumEnchantmentType.DIGGER);
+                case "Combat Sword": return Collections.singletonList(enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON));
+                case "Combat Axe": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("AXE"));
+                case "None": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("NONE"));
+                case "All": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("ANY"));
+                case "All Tools": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.DIGGER), enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON));
+                case "Combat": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON), ItemTypeConfigProvider.getMatcher("AXE"));
+                case "Combat Weapon": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.BOW), enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON), ItemTypeConfigProvider.getMatcher("AXE"));
+            }
+        }
+        return Collections.singletonList(enchantToTypeMatchers.computeIfAbsent(type, EnumEnchantmentTypeMatcher::new));
+    }
+
     private final EnumEnchantmentType type;
     private final String name;
 
     public EnumEnchantmentTypeMatcher(String name, EnumEnchantmentType type){
         this.name = name;
         this.type = type;
+        enchantToTypeMatchers.put(type, this);
     }
 
     public EnumEnchantmentTypeMatcher(EnumEnchantmentType type){
@@ -30,7 +56,7 @@ public class EnumEnchantmentTypeMatcher implements ITypeMatcher {
         if(ConfigHandler.itemTypes.allowCustomItems) {
             EnumEnchantmentType tmpType = enchantment.type;
             enchantment.type = this.type;
-            boolean doesMatch = item.canApplyAtEnchantingTable(stack, enchantment); //TODO: are there really no weird edge cases here?
+            boolean doesMatch = item.canApplyAtEnchantingTable(stack, enchantment);
             enchantment.type = tmpType;
 
             return doesMatch;
@@ -53,6 +79,10 @@ public class EnumEnchantmentTypeMatcher implements ITypeMatcher {
         }
         if(item != null) return new ItemStack(item);
         return null;
+    }
+
+    public EnumEnchantmentType getType() {
+        return this.type;
     }
 
     @Override

@@ -51,7 +51,7 @@ public class ConfigHandler {
 	@Config.Name("Blacklists")
 	public static BlacklistConfig blacklists = new BlacklistConfig();
 
-	@Config.Comment("Options for custom item type matchers to use in enchantment applicability")
+	@Config.Comment("What enchantment goes on which item?")
 	@Config.Name("Item Types")
 	public static ItemTypeConfig itemTypes = new ItemTypeConfig();
 
