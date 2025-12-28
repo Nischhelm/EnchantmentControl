@@ -60,7 +60,9 @@ public class FirstSetupConfig {
             "",
             "If enabled, during startup this mod will check all present incompatibilities between enchantments and print them out into the \"Incompatible Enchantment Groups\" config.",
             "Config will look correct after restart.",
-            "This is done because this mod fully overwrites enchantment incompatibility, so this step should be done every time a new mod with enchantments is added to a modpack, to keep its inherent incompats."
+            "This is done because this mod fully overwrites enchantment incompatibility, so this step should be re-done every time a new mod with enchantments is added to a modpack, to keep its inherent incompats.",
+            "",
+            "WARNING: this will overwrite your current \"Incompatible Groups\" setup on restart!"
     })
     @Config.Name(ConfigRef.PRINT_INCOMPAT_CONFIG_NAME)
     @Config.RequiresMcRestart
@@ -74,7 +76,10 @@ public class FirstSetupConfig {
             "This mod overrides the default type system, so removing an enchant from the \"Item Types\" lists will actually disallow it, except if there is allowed custom overriding code interfering.",
             "Note: this system tries to be intelligent and helpful and infers a bit more info than it needs to (example: anvil section could be empty as that's all fully custom behavior, so removing these entries wont do anything).",
             "It is not able to find and translate every single modded behavior, and might even mistranslate rare modded application rules.",
-            "So if you want full control (\"Allow Modded Enchantment Behaviors ..\" = false) you will have to figure out those rules and translate them to custom item types yourself."
+            "So if you want full control (\"Allow Modded Enchantment Behaviors ..\" = false) you will have to figure out those rules and translate them to custom item types yourself.",
+            "This step should be re-done every time a new mod with enchantments is added to a modpack, to keep its inherent types.",
+            "",
+            "WARNING: enabling this will overwrite your current \"Item Types\" setup on restart!"
     })
     @Config.Name(ConfigRef.PRINT_TYPES_CONFIG_NAME)
     @Config.RequiresMcRestart

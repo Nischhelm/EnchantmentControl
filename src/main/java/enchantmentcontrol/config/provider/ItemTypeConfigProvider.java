@@ -110,6 +110,7 @@ public class ItemTypeConfigProvider {
 
             for(String enchName : split[1].split(EnchantmentControl.SEP)){
                 enchName = enchName.trim();
+                if(enchName.isEmpty()) continue;
                 Enchantment ench = Enchantment.getEnchantmentByLocation(enchName);
                 if(ench == null){
                     EnchantmentControl.LOGGER.warn("Could not find enchantment {} while reading enchants per item type {}", enchName, typeName);

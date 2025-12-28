@@ -79,6 +79,7 @@ public class EnchantmentInfo {
 
     @SerializedName("id")
     private final String enchId;
+    public final String modId;
 
     public boolean overwritesIsTreasure = false;
     @SerializedName("isTreasure")
@@ -152,6 +153,7 @@ public class EnchantmentInfo {
 
     public EnchantmentInfo(@Nonnull String id) {
         this.enchId = id;
+        this.modId = id.substring(0, id.indexOf(':')); //unsafe if ppl change the id to smth else than modid:enchid
     }
 
     //-------- SETTERS --------

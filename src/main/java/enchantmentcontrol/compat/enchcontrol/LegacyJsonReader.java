@@ -28,11 +28,11 @@ public class LegacyJsonReader {
     }
 
     public static List<EnchantmentInfo> readLegacyConfigs() {
-        EnchantmentControl.LOGGER.info("Reading legacy enchantments.json...");
         List<EnchantmentInfo> infos = new ArrayList<>();
 
         File legacyFile = new File(LEGACY_PATH);
         if (legacyFile.exists() && legacyFile.isFile()) {
+            EnchantmentControl.LOGGER.info("Reading legacy enchantments.json...");
             try (InputStream in = Files.newInputStream(legacyFile.toPath())) {
                 EnchantmentControl.LOGGER.info("Legacy enchantments.json found, parsing...");
                 infos.addAll(EnchantmentInfoConfigReader.readListWithGson(in));

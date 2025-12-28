@@ -69,7 +69,6 @@ public class EnchantmentInfoConfigReader {
     private static List<EnchantmentInfo> readPerFileConfigs() {
         File base = new File(MAIN_DIR);
         if (!base.exists() && !base.mkdir()) return new ArrayList<>(); // nothing to read but create the folder
-        //TODO: paste readme/example if creating folder for first time?
 
         List<EnchantmentInfo> infos = new ArrayList<>();
         readPerFileDirRecursive(base, infos);

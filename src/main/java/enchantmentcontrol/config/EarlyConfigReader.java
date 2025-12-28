@@ -88,9 +88,9 @@ public class EarlyConfigReader {
             }
             if (!isReading) continue; //unimportant lines
 
-            if (line.contains("}")) break; //end of bracket
-
             found = true;
+
+            if (line.contains("}")) break; //end of bracket
 
             String[] split = line.split("=");
             if (split.length != 2) {

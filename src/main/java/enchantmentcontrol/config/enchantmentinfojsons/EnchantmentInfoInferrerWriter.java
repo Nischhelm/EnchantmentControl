@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Builds EnchantmentInfo by inspecting Enchantment objects and writes those to file as an approximate start point.
@@ -23,7 +24,18 @@ public class EnchantmentInfoInferrerWriter {
 
     public static void printInferred(){
         EnchantmentInfoWriter.clearDirectoryContents(new File(MAIN_DIR));
-        EnchantmentInfoWriter.writeAllCurrentEnchantmentInfos(inferInfoForAllRegisteredEnchantments(), MAIN_DIR);
+        List<EnchantmentInfo> infos = inferInfoForAllRegisteredEnchantments();
+        EnchantmentInfoWriter.writeAllCurrentEnchantmentInfos(infos, MAIN_DIR);
+
+        //Create empty folders for each mod in /enchantments/
+        File baseOut = new File(EnchantmentInfoConfigReader.MAIN_DIR);
+        if (!baseOut.exists() && !baseOut.mkdirs())
+            EnchantmentControl.LOGGER.warn("Could not create directory: {}", baseOut.getPath());
+        for(String modid : infos.stream().map(info -> info.modId).collect(Collectors.toSet())){ //make one empty folder per mod
+            File modDir = new File(baseOut, modid);
+            if (!modDir.exists() && !modDir.mkdirs())
+                EnchantmentControl.LOGGER.warn("Could not create directory: {}", modDir.getPath());
+        }
 
         EnchantmentControl.CONFIG.get("general.first setup", ConfigRef.DO_INFER_CONFIG_NAME, ConfigHandler.dev.printInferred).set(false);
         ConfigHandler.dev.printInferred = false;
