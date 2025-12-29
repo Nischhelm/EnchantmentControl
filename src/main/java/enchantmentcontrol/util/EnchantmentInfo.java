@@ -152,6 +152,7 @@ public class EnchantmentInfo {
     @SerializedName("doublePrice")
     public boolean doublePrice;
 
+    //TODO: do i do anything with this? maybe delete or implement some default behavior
     public BiFunction<Integer, EnumCreatureAttribute, Float> sharpnessBehavior;
     public BiFunction<Integer, DamageSource, Integer> protectionBehavior;
     public TriConsumer<EntityLivingBase, Entity, Integer> arthropodBehavior;

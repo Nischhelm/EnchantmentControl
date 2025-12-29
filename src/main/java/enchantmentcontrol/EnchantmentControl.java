@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
         modid = EnchantmentControl.MODID,
         version = EnchantmentControl.VERSION,
         name = EnchantmentControl.NAME,
-        dependencies = "required-after:fermiumbooter@[1.3.2,)"
+        dependencies = "required-after:fermiumbooter@[1.3.2,);before:contenttweaker"
 )
 public class EnchantmentControl {
     public static final String MODID = "enchantmentcontrol";

@@ -2,6 +2,8 @@ package enchantmentcontrol.compat.crafttweaker;
 
 import com.teamacronymcoders.contenttweaker.modules.vanilla.enchantments.EnchantmentBuilder;
 import crafttweaker.annotations.ZenRegister;
+import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.config.EarlyConfigReader;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.util.EnchantmentInfo;
@@ -10,6 +12,7 @@ import enchantmentcontrol.util.enchantmenttypes.ITypeMatcher;
 import enchantmentcontrol.util.vanillasystem.VanillaSystem;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import stanhebben.zenscript.annotations.ZenExpansion;
 import stanhebben.zenscript.annotations.ZenGetter;
@@ -26,7 +29,15 @@ public class CT_EnchantmentInfo {
     private static final Map<EnchantmentBuilder, EnchantmentInfo> map = new HashMap<>();
 
     public static void onBuilderCreate(EnchantmentBuilder builder, String name){
-        map.put(builder, new EnchantmentInfo(builder.domain, name));
+        String id = builder.domain + ":" + name;
+
+        ResourceLocation remap = EarlyConfigReader.getRemap(id);
+        if(remap != null) id = remap.toString();
+
+        EnchantmentInfo info = EnchantmentInfo.get(id);
+        if(info == null) info = new EnchantmentInfo(builder.domain, name); //if no json
+
+        map.put(builder, info);
     }
 
     public static void onBuilderRegister(EnchantmentBuilder builder, Enchantment enchant){
@@ -34,25 +45,29 @@ public class CT_EnchantmentInfo {
 
         //if renamed
         if(!info.modId.equals(builder.domain)) {
+            EnchantmentControl.LOGGER.warn("Modifying enchantment domain via CT. This is not recommended and can lead to crashes! Use the id remap config of EnchantmentControl instead.");
             info.modId = builder.domain;
             info.enchId = builder.name;
             info.id = builder.domain + ":" + builder.name;
         }
 
-        info.slots = Arrays.stream(builder.applicableSlots).map(isl -> (EntityEquipmentSlot) isl.getInternal()).collect(Collectors.toList());
-        info.rarity = enchant.getRarity();
-        info.type = enchant.type;
-        info.isTreasure = enchant.isTreasureEnchantment();
-        info.isCurse = enchant.isCurse();
-        info.isAllowedOnBooks = enchant.isAllowedOnBooks();
-        info.minLvl = enchant.getMinLevel();
-        info.maxLvl = enchant.getMaxLevel();
+        //If jsons control it too, the jsons win
+        if(info.slots != null) info.slots = Arrays.stream(builder.applicableSlots).map(isl -> (EntityEquipmentSlot) isl.getInternal()).collect(Collectors.toList());
+        if(info.rarity != null) info.rarity = enchant.getRarity();
+        if(info.type != null) info.type = enchant.type;
+        if(!info.overwritesIsTreasure) info.isTreasure = enchant.isTreasureEnchantment();
+        if(!info.overwritesIsCurse) info.isCurse = enchant.isCurse();
+        if(!info.overwritesIsAllowedOnBooks) info.isAllowedOnBooks = enchant.isAllowedOnBooks();
+        if(!info.overwritesMinLvl) info.minLvl = enchant.getMinLevel();
+        if(!info.overwritesMaxLvl) info.maxLvl = enchant.getMaxLevel();
         EnchantmentInfo.register(info, enchant);
     }
 
     @ZenSetter("displayColor")
     public static void setDisplayColor(EnchantmentBuilder builder, String color){
-        map.get(builder).displayColor = TextFormatting.valueOf(color);
+        EnchantmentInfo info = map.get(builder);
+        if(info.displayColor == null)
+            info.displayColor = TextFormatting.valueOf(color);
     }
 
     @ZenGetter("displayColor")
@@ -62,7 +77,9 @@ public class CT_EnchantmentInfo {
 
     @ZenSetter("doublePrice")
     public static void setIsDoublePrice(EnchantmentBuilder builder, boolean doublePrice){
-        map.get(builder).doublePrice = doublePrice;
+        EnchantmentInfo info = map.get(builder);
+        if(!info.overwritesDoublePrice)
+            info.doublePrice = doublePrice;
     }
 
     @ZenGetter("doublePrice")
@@ -72,12 +89,16 @@ public class CT_EnchantmentInfo {
 
     @ZenMethod
     public static void setEnchantabilityCalc(EnchantmentBuilder builder, int minEnch, int lvlSpan, int range){
-        map.get(builder).ench = new EnchantmentInfo.EnchantabilityCalc(minEnch, lvlSpan, range, MaxEnchantabilityMode.NORMAL);
+        EnchantmentInfo info = map.get(builder);
+        if(info.ench == null)
+            info.ench = new EnchantmentInfo.EnchantabilityCalc(minEnch, lvlSpan, range, MaxEnchantabilityMode.NORMAL);
     }
 
     @ZenMethod
     public static void setEnchantabilityCalc(EnchantmentBuilder builder, int minEnch, int lvlSpan, int range, String mode){
-        map.get(builder).ench = new EnchantmentInfo.EnchantabilityCalc(minEnch, lvlSpan, range, MaxEnchantabilityMode.valueOf(mode));
+        EnchantmentInfo info = map.get(builder);
+        if(info.ench == null)
+            info.ench = new EnchantmentInfo.EnchantabilityCalc(minEnch, lvlSpan, range, MaxEnchantabilityMode.valueOf(mode));
     }
 
     @ZenGetter("enchMin")
@@ -102,12 +123,18 @@ public class CT_EnchantmentInfo {
 
     @ZenMethod
     public static void setVanillaOverride(EnchantmentBuilder builder, String system, float multi){
-        map.get(builder).registerVanillaSystemOverride(VanillaSystem.valueOf(system), multi);
+        EnchantmentInfo info = map.get(builder);
+        VanillaSystem systemEnum = VanillaSystem.valueOf(system);
+        if(!info.vanillaSystemStrengths.containsKey(systemEnum))
+            info.registerVanillaSystemOverride(systemEnum, multi);
     }
 
     @ZenMethod
     public static void setVanillaOverride(EnchantmentBuilder builder, String system, CT_SystemOverride override){
-        map.get(builder).registerVanillaSystemOverride(VanillaSystem.valueOf(system), override);
+        EnchantmentInfo info = map.get(builder);
+        VanillaSystem systemEnum = VanillaSystem.valueOf(system);
+        if(!info.vanillaSystemStrengths.containsKey(systemEnum))
+            info.registerVanillaSystemOverride(systemEnum, override);
     }
 
     @ZenMethod

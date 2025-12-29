@@ -10,10 +10,23 @@ import crafttweaker.entity.IEntityEquipmentSlot;
 import crafttweaker.player.IPlayer;
 import mods.enchantmentcontrol.EnchantmentHelper;
 
+/*
+Note: This script shows all the options you have.
+Some are not recommended, some are not needed.
+Most can be done via the jsons.
+The only things that are truly CT-only are
+- creating new enchantments
+- sharpness, protection, thorns and BoA behaviors
+- custom vanilla system overrides that aren't just linear
+To create an enchant without those you can just run
+    EnchantmentBuilder.create("myenchant").register();
+The rest can then be done via jsons
+*/
+
 val builder as EnchantmentBuilder = EnchantmentBuilder.create("myenchant");
 
 //builder.name = "myenchant"; //Already set through create(), changing it later is probably a bad idea. for remapping, check enchantmentcontrol config
-builder.domain = "enchantmentcontrol"; //default "contenttweaker"
+//builder.domain = "contenttweaker"; //Not recommended to use, use registry id remap config instead
 
 //builder.minLevel = 1; //usually not needed, 1 by default
 builder.maxLevel = 5;
