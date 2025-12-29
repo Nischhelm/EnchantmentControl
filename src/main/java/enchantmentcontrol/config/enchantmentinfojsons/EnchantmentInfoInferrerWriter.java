@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * Builds EnchantmentInfo by inspecting Enchantment objects and writes those to file as an approximate start point.
  */
 public class EnchantmentInfoInferrerWriter {
-    public static final String MAIN_DIR = "config/enchantmentcontrol/inferred";
+    public static final String MAIN_DIR = "config/enchantmentcontrol/inferred-inactive";
 
     public static void printInferred(){
         EnchantmentInfoWriter.clearDirectoryContents(new File(MAIN_DIR));

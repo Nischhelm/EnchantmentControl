@@ -9,7 +9,7 @@ import java.util.*;
 public class EnchantmentClassReader {
     public static final Map<String, String> mapIdToClass = new HashMap<>();
 
-    public static final String DUMP_PATH = "config/enchantmentcontrol/tmp/enchclasses.dump";
+    public static final String DUMP_PATH = "config/enchantmentcontrol/data/enchclasses.dat";
 
     public static List<String> read(){
         Path enchclasses_path = Paths.get(DUMP_PATH);
@@ -17,6 +17,7 @@ public class EnchantmentClassReader {
             Files.createDirectories(enchclasses_path.getParent());
 
             for(String line : Files.readAllLines(enchclasses_path)){
+                if(line.startsWith("!!")) continue;
                 String[] split = line.split(";");
                 String enchid = split[0].trim();
                 String classPath = split[1].trim();

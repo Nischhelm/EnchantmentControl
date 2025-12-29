@@ -19,6 +19,8 @@ public class EnchantmentClassWriter {
         //Write current mappings ench_id; org.some.mod.has.EnchClass
         List<String> lines = new ArrayList<>();
 
+        lines.add("!! This file is used by EnchantmentControl internally and automatically. Not a config !!");
+
         //Class names in use, directly referenced by an Enchantment Object or (at least!) inside the inheritance chain
         Set<String> usedDirectly = new HashSet<>();
         Set<String> usedIndirectly = new HashSet<>();
