@@ -7,12 +7,12 @@
   "minVersion": "0.8",
   "mixins": [
     "vanilla.BaseEnchantmentMixin",
-    "vanilla.EnchantmentAccessor",
     "vanilla.EnchantmentHelperLvlsMixin",
     "vanilla.EnchantmentRarityMixin",
     "vanilla.EntityLivingBaseMixin_CreatureAttribute",
     "vanilla.EntityVillagerListEnchantedBookForEmeraldsMixin_DontDouble",
     "vanilla.EnumCreatureAttributeMixin",
+    "vanilla.accessor.EnchantmentAccessor",
     "vanilla.blacklists.ContainerEnchantmentThreadLocalMixin",
     "vanilla.blacklists.EnchantmentHelperMixin",
     "vanilla.blacklists.EnchantRandomlyMixin",
@@ -20,6 +20,8 @@
     "vanilla.blacklists.ForgeEnchantmentRegistryMixin"
   ],
   "client": [
-    "vanilla.EntityRendererMixin"
+    "vanilla.EntityRendererMixin",
+    "vanilla.accessor.I18nAccessor",
+    "vanilla.accessor.LocaleAccessor"
   ]
 }

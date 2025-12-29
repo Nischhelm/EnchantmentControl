@@ -1,4 +1,4 @@
-package enchantmentcontrol.mixin.vanilla;
+package enchantmentcontrol.mixin.vanilla.accessor;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EntityEquipmentSlot;

@@ -3,6 +3,8 @@ package enchantmentcontrol;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.EarlyConfigReader;
 import enchantmentcontrol.config.classdump.EnchantmentClassWriter;
+import enchantmentcontrol.config.descriptions.DescriptionReader;
+import enchantmentcontrol.config.descriptions.EmptyDescriptionWriter;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoConfigReader;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoInferrerWriter;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
@@ -12,6 +14,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,6 +44,10 @@ public class EnchantmentControl {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         EnchantmentClassWriter.postInit(); //write /tmp/enchclasses.dump for next startup (sad that this is after late mixin load. classgraph could fix that if i could get it to work. then i wouldn't even need a custom file)
+        if(event.getSide() == Side.CLIENT) {
+            DescriptionReader.init();
+            EmptyDescriptionWriter.postInit();
+        }
 
         EnchantmentInfoConfigReader.applyManualOverrides(); //apply manual overrides for rarity, slots and json-sourced type
 
