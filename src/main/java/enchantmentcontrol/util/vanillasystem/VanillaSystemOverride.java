@@ -24,7 +24,6 @@ public class VanillaSystemOverride implements ISystemOverride {
 
     @Override
     public Float apply(Float valIn, Integer lvl) {
-        //Regular implementation readable via json config. more complicated implementations via CT TODO
         return valIn + lvl * multiplier;
     }
 
