@@ -1,14 +1,6 @@
 #loader contenttweaker
 
 import mods.contenttweaker.enchantments.EnchantmentBuilder;
-import mods.contenttweaker.enchantments.CalcDamageByCreature;
-import mods.contenttweaker.enchantments.CalcModifierDamage;
-import mods.contenttweaker.enchantments.OnUserHurt;
-import mods.contenttweaker.enchantments.OnEntityDamaged;
-// import mods.contenttweaker.enchantments.CalcCanApply;
-// import mods.contenttweaker.enchantments.CalcCanApplyTogether;
-// import mods.contenttweaker.enchantments.CalcEnchantability;
-// import mods.contenttweaker.enchantments.CalcTranslatedName;
 import crafttweaker.item.IItemStack;
 import crafttweaker.enchantments.IEnchantmentDefinition;
 import crafttweaker.damage.IDamageSource;
@@ -16,7 +8,6 @@ import crafttweaker.entity.IEntityLivingBase;
 import crafttweaker.entity.IEntity;
 import crafttweaker.entity.IEntityEquipmentSlot;
 import crafttweaker.player.IPlayer;
-import mods.enchantmentcontrol.VanillaSystemOverride;
 import mods.enchantmentcontrol.EnchantmentHelper;
 
 val builder as EnchantmentBuilder = EnchantmentBuilder.create("myenchant");
@@ -65,13 +56,13 @@ builder.setIncompatibleTo(["minecraft:mending", "minecraft:unbreaking"] as strin
 //Only queried for enchants on the mainhand held item when hurting an entity. custom creatureattributes can be used
 builder.calcDamageByCreature = function (ench as IEnchantmentDefinition, lvl as int, creature as string) as float {
     return creature == "ANIMAL" ? 2.5F * lvl : 0.0F; // return how much dmg to add
-} as CalcDamageByCreature;
+};
 
 //Reduce dmg for sources (Protection behavior). Each point returned is 4% dmg reduction (basic prot returns lvl, so up to 4 points = 16% DR). max useful return value is 20 = 80% DR
 //Only queried for enchants on items on worn armor pieces
 builder.calcModifierDamage = function (ench as IEnchantmentDefinition, lvl as int, source as IDamageSource) as int {
     return source.isMagicDamage() ? 1 : 0; // return how many points (4% DR) to reduce the dmg by
-} as CalcModifierDamage;
+};
 
 //What to do when being hurt by an enemy
 //This happens very late in the dmg calc after the attacked entity already was hurt
@@ -93,10 +84,10 @@ builder.onUserHurt = function (ench as IEnchantmentDefinition, user as IEntityLi
 
     val stack as IItemStack = EnchantmentHelper.getRandomEnchantedItem(<enchantment:minecraft:thorns>, user);
     if (!isNull(stack) && !stack.isEmpty) stack.damageItem(rngSuccess ? 3 : 1, user); //dura dmg
-} as OnUserHurt;
+};
 
 //What to do after hurting an enemy
-//Queried for all equipped gear!
+//Queried for all equipped gear! Mainhand of players twice for some reason
 //happens right after onUserHurt for equipment on the attacking entity
 //Vanilla uses this to apply slowness to arthropods when using BoA.
 builder.onEntityDamaged = function (ench as IEnchantmentDefinition, user as IEntityLivingBase, target as IEntity, lvl as int) {
@@ -110,7 +101,7 @@ builder.onEntityDamaged = function (ench as IEnchantmentDefinition, user as IEnt
         if (targetbase.creatureAttribute == "ARTHROPOD")
             targetbase.addPotionEffect(<potion:minecraft:slowness>.makePotionEffect(20 + target.world.random.nextInt(10 * lvl), 3));
     }
-} as OnEntityDamaged;
+};
 
 //Vanilla System Override
 /*
@@ -132,13 +123,13 @@ builder.onEntityDamaged = function (ench as IEnchantmentDefinition, user as IEnt
 builder.setVanillaOverride("EFFICIENCY", 0.5F); // return currentSum + 0.5F * enchLvl
 builder.setVanillaOverride("RESPIRATION", function(currentSum as float, enchLvl as int) as float {
     return currentSum + 0.5F * enchLvl; //how many system points per lvl of the enchant to give, modifying the current point sum, so returning 0 would cancel other enchants input
-} as VanillaSystemOverride);
+});
 
 // ---- Not recommended but possible ----
 //prob use displayColor instead
 /*builder.calcTranslatedName = function(ench as IEnchantmentDefinition, lvl as int) as string{
     return "";
-} as CalcTranslatedName;*/
+};*/
 
 //use setEnchantabilityCalc instead
 /*builder.calcEnchantabilityMax = function (ench as IEnchantmentDefinition, lvl as int) as int{
@@ -146,7 +137,7 @@ builder.setVanillaOverride("RESPIRATION", function(currentSum as float, enchLvl 
 } as CalcEnchantability;
 builder.calcEnchantabilityMin = function (ench as IEnchantmentDefinition, lvl as int) as int{
     return 0;
-} as CalcEnchantability;*/
+};*/
 
 //use item type (general+anvil) config lists instead
 /*builder.canApply = function (ench as IEnchantmentDefinition, stack as IItemStack) as bool{
@@ -154,11 +145,11 @@ builder.calcEnchantabilityMin = function (ench as IEnchantmentDefinition, lvl as
 } as CalcCanApply;
 builder.canApplyAtEnchantmentTable = function (ench as IEnchantmentDefinition, stack as IItemStack) as bool{
     return false;
-} as CalcCanApply;*/
+};*/
 
 //use incompatible groups config lists instead
 /*builder.canApplyTogether = function (enchThis as IEnchantmentDefinition, enchOther as IEnchantmentDefinition) as bool{
     return false;
-} as CalcCanApplyTogether;*/
+};*/
 
 builder.register();
