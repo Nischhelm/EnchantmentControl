@@ -10,9 +10,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmptyDescriptionWriter {
-    public static void postInit(){
-        Path configPath = Paths.get(DescriptionReader.PATH);
+public class EmptyEnchantmentWriter {
+    public static void write(String path){
+        Path configPath = Paths.get(path);
         if(Files.exists(configPath)) return;
 
         //Write empty line per enchant

@@ -13,6 +13,8 @@
     "vanilla.EntityVillagerListEnchantedBookForEmeraldsMixin_DontDouble",
     "vanilla.EnumCreatureAttributeMixin",
     "vanilla.accessor.EnchantmentAccessor",
+    "vanilla.accessor.I18nAccessor_translation",
+    "vanilla.accessor.LanguageMapAccessor",
     "vanilla.blacklists.ContainerEnchantmentThreadLocalMixin",
     "vanilla.blacklists.EnchantmentHelperMixin",
     "vanilla.blacklists.EnchantRandomlyMixin",

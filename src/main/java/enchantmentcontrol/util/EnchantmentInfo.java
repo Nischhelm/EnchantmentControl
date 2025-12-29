@@ -53,7 +53,7 @@ public class EnchantmentInfo {
         return toEnchObj.get(info);
     }
     public static String getEnchantmentId(EnchantmentInfo info){
-        return info.enchId;
+        return info.id;
     }
 
     public static Collection<EnchantmentInfo> getAll(){
@@ -61,7 +61,13 @@ public class EnchantmentInfo {
     }
 
     public static EnchantmentInfo register(EnchantmentInfo info){
-        byEnchId.put(info.enchId, info);
+        byEnchId.put(info.id, info);
+        return info;
+    }
+    public static EnchantmentInfo register(EnchantmentInfo info, Enchantment ench){
+        byEnchId.put(info.id, info);
+        byEnchObj.put(ench, info);
+        toEnchObj.put(info, ench);
         return info;
     }
 
@@ -79,8 +85,9 @@ public class EnchantmentInfo {
     // -------- PROPERTIES --------
 
     @SerializedName("id")
-    private final String enchId;
-    public final String modId;
+    public String id;
+    public String modId;
+    public String enchId;
 
     public boolean overwritesIsTreasure = false;
     @SerializedName("isTreasure")
@@ -153,8 +160,16 @@ public class EnchantmentInfo {
     //-------- CONSTRUCTOR --------
 
     public EnchantmentInfo(@Nonnull String id) {
-        this.enchId = id;
-        this.modId = id.substring(0, id.indexOf(':')); //unsafe if ppl change the id to smth else than modid:enchid
+        this.id = id;
+        String[] split = id.split(":");
+        this.modId = split[0].trim();
+        this.enchId = split[1].trim(); //unsafe
+    }
+
+    public EnchantmentInfo(@Nonnull String modid, @Nonnull String enchid) {
+        this.id = modid + ":" + enchid;
+        this.modId = modid;
+        this.enchId = enchid;
     }
 
     //-------- SETTERS --------
@@ -205,7 +220,7 @@ public class EnchantmentInfo {
         try {
             this.type = EnumEnchantmentType.valueOf(type);
         } catch (Exception e) {
-            EnchantmentControl.LOGGER.error("Invalid enchantment type {} when reading json for : {}", type, this.enchId);
+            EnchantmentControl.LOGGER.error("Invalid enchantment type {} when reading json for : {}", type, this.id);
         }
     }
 

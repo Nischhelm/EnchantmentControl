@@ -1,16 +1,19 @@
 package enchantmentcontrol;
 
+import enchantmentcontrol.compat.crafttweaker.CT_EnchantmentInfo;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.EarlyConfigReader;
 import enchantmentcontrol.config.classdump.EnchantmentClassWriter;
 import enchantmentcontrol.config.descriptions.DescriptionReader;
-import enchantmentcontrol.config.descriptions.EmptyDescriptionWriter;
+import enchantmentcontrol.config.descriptions.EmptyEnchantmentWriter;
+import enchantmentcontrol.config.descriptions.NamesReader;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoConfigReader;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoInferrerWriter;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -46,7 +49,9 @@ public class EnchantmentControl {
         EnchantmentClassWriter.postInit(); //write /tmp/enchclasses.dump for next startup (sad that this is after late mixin load. classgraph could fix that if i could get it to work. then i wouldn't even need a custom file)
         if(event.getSide() == Side.CLIENT) {
             DescriptionReader.init();
-            EmptyDescriptionWriter.postInit();
+            EmptyEnchantmentWriter.write(DescriptionReader.PATH);
+            NamesReader.init();
+            EmptyEnchantmentWriter.write(NamesReader.PATH);
         }
 
         EnchantmentInfoConfigReader.applyManualOverrides(); //apply manual overrides for rarity, slots and json-sourced type
@@ -63,6 +68,8 @@ public class EnchantmentControl {
         ItemTypeConfigProvider.initRegisteredItemTypesFromConfig();
         if(ConfigHandler.dev.printTypes) ItemTypeConfigProvider.printDefaultItemTypes();
         ItemTypeConfigProvider.initItemTypeConfig();
+
+        if(Loader.isModLoaded("contenttweaker")) CT_EnchantmentInfo.postInit();
 
         if(configNeedsSaving) CONFIG.save();
 

@@ -89,8 +89,8 @@ public class ItemTypeConfigProvider {
         initBlacklist(ConfigHandler.itemTypes.anvil.blacklist, blacklistedEnchantmentsAnvil);
     }
 
-    private static final Map<Enchantment, Set<ITypeMatcher>> itemTypes = new HashMap<>();
-    private static final Map<Enchantment, Set<ITypeMatcher>> itemTypesAnvil = new HashMap<>();
+    public static final Map<Enchantment, Set<ITypeMatcher>> itemTypes = new HashMap<>();
+    public static final Map<Enchantment, Set<ITypeMatcher>> itemTypesAnvil = new HashMap<>();
     private static void initItemTypes(String[] config, Map<Enchantment, Set<ITypeMatcher>> mapOut){
         for(String s : config){
             String[] split = s.split("=");

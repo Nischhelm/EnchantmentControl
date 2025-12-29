@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.*;
 
 public class IncompatibleConfigProvider {
-    private static final Map<Enchantment, Set<Enchantment>> incompatibleEnchantments = new HashMap<>();
+    public static final Map<Enchantment, Set<Enchantment>> incompatibleEnchantments = new HashMap<>();
 
     public static void onResetConfig(){
         for(Enchantment ench: Enchantment.REGISTRY) {
