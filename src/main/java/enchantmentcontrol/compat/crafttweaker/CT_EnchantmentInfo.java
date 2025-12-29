@@ -2,7 +2,6 @@ package enchantmentcontrol.compat.crafttweaker;
 
 import com.teamacronymcoders.contenttweaker.modules.vanilla.enchantments.EnchantmentBuilder;
 import crafttweaker.annotations.ZenRegister;
-import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.mixin.modded.contenttweaker.EnchantmentBuilderAccessor;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.MaxEnchantabilityMode;
@@ -40,6 +39,7 @@ public class CT_EnchantmentInfo {
         info.isAllowedOnBooks = builder.allowedOnBooks;
         info.minLvl = builder.minLevel;
         info.maxLvl = builder.maxLevel;
+        EnchantmentInfo.register(info);
     }
 
     @ZenSetter("displayColor")

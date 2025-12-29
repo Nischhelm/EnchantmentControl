@@ -2,7 +2,6 @@ package enchantmentcontrol.config.descriptions;
 
 import enchantmentcontrol.mixin.vanilla.accessor.I18nAccessor;
 import enchantmentcontrol.mixin.vanilla.accessor.LocaleAccessor;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
