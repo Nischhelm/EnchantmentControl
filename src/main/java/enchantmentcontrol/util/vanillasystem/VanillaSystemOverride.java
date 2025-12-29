@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-public class VanillaSystemOverride implements BiFunction<Float, Integer, Float> {
+public class VanillaSystemOverride implements ISystemOverride {
 
     public final float multiplier;
 

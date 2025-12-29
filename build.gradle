@@ -60,6 +60,7 @@ dependencies {
 
     implementation fg.deobf("curse.maven:fermiumbooter-${fermiumbooter_version}")
     compileOnly fg.deobf("curse.maven:so-many-enchantments-${sme_version}")
+    compileOnly fg.deobf("curse.maven:contenttweaker-${contenttweaker_version}")
 
     compileOnly fg.deobf("CraftTweaker2:CraftTweaker2-${crafttweaker_version}")
     compileOnly fg.deobf("CraftTweaker2:ZenScript:${zs_version}")

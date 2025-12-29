@@ -1,6 +1,7 @@
 package enchantmentcontrol.core;
 
 import fermiumbooter.FermiumRegistryAPI;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.spongepowered.asm.launch.MixinBootstrap;
 
@@ -12,6 +13,7 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 		MixinBootstrap.init();
 
 		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.json");
+		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.contenttweaker.json", () -> Loader.isModLoaded("contenttweaker"));
 	}
 
 	@Override

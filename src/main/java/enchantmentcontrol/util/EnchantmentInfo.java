@@ -2,6 +2,7 @@ package enchantmentcontrol.util;
 
 import com.google.gson.annotations.SerializedName;
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.util.vanillasystem.ISystemOverride;
 import enchantmentcontrol.util.vanillasystem.VanillaSystem;
 import enchantmentcontrol.util.vanillasystem.VanillaSystemOverride;
 import net.minecraft.enchantment.Enchantment;
@@ -71,7 +72,7 @@ public class EnchantmentInfo {
     // -------- VANILLA SYSTEM OVERRIDES --------
 
     @Nullable
-    public VanillaSystemOverride getVanillaSystemOverride(VanillaSystem system) {
+    public ISystemOverride getVanillaSystemOverride(VanillaSystem system) {
         return vanillaSystemStrengths.getOrDefault(system, null);
     }
 
@@ -219,11 +220,15 @@ public class EnchantmentInfo {
     }
 
     //Input (from other modifiers, otherwise 0), Ench Lvl, Output
-    public Map<VanillaSystem, VanillaSystemOverride> vanillaSystemStrengths = new HashMap<>();
+    public Map<VanillaSystem, ISystemOverride> vanillaSystemStrengths = new HashMap<>();
 
     public void registerVanillaSystemOverride(VanillaSystem type, float perLevel){
         VanillaSystemOverride.getOverriders(type).add(this);
         this.vanillaSystemStrengths.put(type, new VanillaSystemOverride(perLevel));
+    }
+    public void registerVanillaSystemOverride(VanillaSystem type, ISystemOverride override){
+        VanillaSystemOverride.getOverriders(type).add(this);
+        this.vanillaSystemStrengths.put(type, override);
     }
 
     // -------- GETTERS --------

@@ -3,6 +3,7 @@ package enchantmentcontrol.config.enchantmentinfojsons;
 import com.google.gson.*;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.MaxEnchantabilityMode;
+import enchantmentcontrol.util.vanillasystem.ISystemOverride;
 import enchantmentcontrol.util.vanillasystem.VanillaSystem;
 import enchantmentcontrol.util.vanillasystem.VanillaSystemOverride;
 import net.minecraft.enchantment.Enchantment;
@@ -159,8 +160,9 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
     @Nonnull
     private static JsonObject writeVanillaOverrideEntries(EnchantmentInfo info) {
         JsonObject vanillaSystems = new JsonObject();
-        for(Map.Entry<VanillaSystem, VanillaSystemOverride> entry: info.vanillaSystemStrengths.entrySet()){
-            vanillaSystems.addProperty(entry.getKey().toString(), entry.getValue().multiplier);
+        for(Map.Entry<VanillaSystem, ISystemOverride> entry: info.vanillaSystemStrengths.entrySet()){
+            if(!(entry.getValue() instanceof VanillaSystemOverride)) continue;
+            vanillaSystems.addProperty(entry.getKey().toString(), ((VanillaSystemOverride)entry.getValue()).multiplier);
         }
         return vanillaSystems;
     }
