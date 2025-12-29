@@ -1,6 +1,6 @@
 package enchantmentcontrol.mixin.vanilla;
 
-import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.config.EarlyConfigReader;
 import enchantmentcontrol.config.provider.RarityProvider;
 import net.minecraft.enchantment.Enchantment;
 import org.spongepowered.asm.mixin.*;
@@ -26,7 +26,7 @@ public abstract class EnchantmentRarityMixin {
 
     @Inject(method = "<init>(Ljava/lang/String;II)V", at = @At("TAIL"))
     private void ec_overrideRarityWeights(String internalName, int internalId, int weight, CallbackInfo ci){
-        this.weight = ConfigHandler.rarityWeights.getOrDefault(internalName, weight);
+        this.weight = EarlyConfigReader.getRarityConfig().getOrDefault(internalName, weight);
     }
 
     @Unique
