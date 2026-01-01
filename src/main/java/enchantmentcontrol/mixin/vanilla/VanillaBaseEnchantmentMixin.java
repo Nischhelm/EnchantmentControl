@@ -80,16 +80,12 @@ public abstract class VanillaBaseEnchantmentMixin {
     protected boolean ec_canApplyTogether(Enchantment ench, Operation<Boolean> original) {
         if(!ConfigHandler.dev.printIncompats) return IncompatibleConfigProvider.areCompatible((Enchantment) (Object)this, ench);
         return original.call(ench);
-        //EnchantmentInfo info = EnchantmentInfo.get(this);
-        //if(info != null && info.incompats != null) return !info.incompats.contains(ench) && this != ench;
-        //return original.call(ench);
     }
 
     @WrapMethod(method = "canApply")
     public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
         if(ConfigHandler.dev.printTypes) return original.call(stack);
         Enchantment thisEnch = (Enchantment) (Object) this;
-        //if(ItemTypeConfigProvider.isOriginalCodePrioritised(thisEnch, true, false)) return original.call(stack);
         return ItemTypeConfigProvider.canItemApply(thisEnch, stack, true) || original.call(stack);
     }
 
@@ -97,7 +93,6 @@ public abstract class VanillaBaseEnchantmentMixin {
     public boolean ec_canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
         if(ConfigHandler.dev.printTypes) return original.call(stack);
         Enchantment thisEnch = (Enchantment) (Object) this;
-        //if(ItemTypeConfigProvider.isOriginalCodePrioritised(thisEnch, false, false)) return original.call(stack);
         return ItemTypeConfigProvider.canItemApply(thisEnch, stack, false);
     }
 

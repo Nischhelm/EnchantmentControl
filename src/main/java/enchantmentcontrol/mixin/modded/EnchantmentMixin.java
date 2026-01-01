@@ -15,10 +15,9 @@ import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Debug(export = true)
+//@Debug(export = true)
 @Mixin(targets = {"net.minecraft.enchantment.Enchantment"}, value = EnchantmentDummy.class) //needs to be two separate Enchantment classes for the refmaps to not write the owner class in front of the searge method names
 @SuppressWarnings({"MixinSuperClass"})
 //copy of vanilla.VanillaBaseEnchantmentMixin and vanilla.VanillaEnchantmentMixin just for all modded enchantments and their intermediaries
@@ -92,9 +91,6 @@ public abstract class EnchantmentMixin extends Enchantment { //needs to extend f
     protected boolean ec_canApplyTogether(Enchantment ench, Operation<Boolean> original) {
         if(!ConfigHandler.dev.printIncompats) return IncompatibleConfigProvider.areCompatible(this, ench);
         return original.call(ench);
-        //EnchantmentInfo info = EnchantmentInfo.get(this);
-        //if(info != null && info.incompats != null) return !info.incompats.contains(ench) && this != ench;
-        //return original.call(ench);
     }
 
     @WrapMethod(method = "canApply")

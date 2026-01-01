@@ -9,14 +9,16 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.util.Annotations;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
 
-public class EnchantmentControlClassTransformer implements IClassTransformer {
+public class EarlyEnchantmentClassTransformer implements IClassTransformer {
     private static final String mixinDesc = Type.getDescriptor(Mixin.class);
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
-        if (!name.equals("enchantmentcontrol.mixin.modded.EnchantmentMixin")) return basicClass;
+        //This class modifies the @Mixin annotation of VanillaEnchantmentMixin to include all early enchantments
+        if(!name.equals("enchantmentcontrol.mixin.vanilla.VanillaEnchantmentMixin")) return basicClass;
 
         //Modify
         ClassNode classNode = new ClassNode(Opcodes.ASM5) {
@@ -33,10 +35,9 @@ public class EnchantmentControlClassTransformer implements IClassTransformer {
 
             @Override
             public void visitEnd() {
-                List<String> modifiedEnchClasses = EnchantmentClassReader.read();
-                modifiedEnchClasses.removeIf(s -> s.startsWith("net.minecraft.enchantment"));
+                Set<String> modifiedEnchClasses = EnchantmentClassReader.getEarlyClasses(); // already doesnt contain early enchants
                 EarlyConfigReader.getClassBlacklistConfig().forEach(modifiedEnchClasses::remove);
-                Annotations.setValue(this.node, "targets", modifiedEnchClasses);
+                Annotations.setValue(this.node, "targets", new ArrayList<>(modifiedEnchClasses));
             }
         };
         new ClassReader(basicClass).accept(classNode, 0);

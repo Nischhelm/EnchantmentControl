@@ -5,42 +5,43 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
+import enchantmentcontrol.core.EnchantmentDummy;
 import enchantmentcontrol.util.EnchantmentInfo;
-import net.minecraft.enchantment.*;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Debug(export = true)
-@Mixin(value = {
-        EnchantmentArrowDamage.class,
-        EnchantmentArrowFire.class,
-        EnchantmentArrowInfinite.class,
-        EnchantmentArrowKnockback.class,
-        EnchantmentBindingCurse.class,
-        EnchantmentDamage.class,
-        EnchantmentDigging.class,
-        EnchantmentDurability.class,
-        EnchantmentFireAspect.class,
-        EnchantmentFishingSpeed.class,
-        EnchantmentFrostWalker.class,
-        EnchantmentKnockback.class,
-        EnchantmentLootBonus.class,
-        EnchantmentMending.class,
-        EnchantmentOxygen.class,
-        EnchantmentProtection.class,
-        EnchantmentSweepingEdge.class,
-        EnchantmentThorns.class,
-        EnchantmentUntouching.class,
-        EnchantmentVanishingCurse.class,
-        EnchantmentWaterWalker.class,
-        EnchantmentWaterWorker.class
-})
+//@Debug(export = true)
+@Mixin(targets = {
+        "net.minecraft.enchantment.EnchantmentArrowDamage",
+        "net.minecraft.enchantment.EnchantmentArrowFire",
+        "net.minecraft.enchantment.EnchantmentArrowInfinite",
+        "net.minecraft.enchantment.EnchantmentArrowKnockback",
+        "net.minecraft.enchantment.EnchantmentBindingCurse",
+        "net.minecraft.enchantment.EnchantmentDamage",
+        "net.minecraft.enchantment.EnchantmentDigging",
+        "net.minecraft.enchantment.EnchantmentDurability",
+        "net.minecraft.enchantment.EnchantmentFireAspect",
+        "net.minecraft.enchantment.EnchantmentFishingSpeed",
+        "net.minecraft.enchantment.EnchantmentFrostWalker",
+        "net.minecraft.enchantment.EnchantmentKnockback",
+        "net.minecraft.enchantment.EnchantmentLootBonus",
+        "net.minecraft.enchantment.EnchantmentMending",
+        "net.minecraft.enchantment.EnchantmentOxygen",
+        "net.minecraft.enchantment.EnchantmentProtection",
+        "net.minecraft.enchantment.EnchantmentSweepingEdge",
+        "net.minecraft.enchantment.EnchantmentThorns",
+        "net.minecraft.enchantment.EnchantmentUntouching",
+        "net.minecraft.enchantment.EnchantmentVanishingCurse",
+        "net.minecraft.enchantment.EnchantmentWaterWalker",
+        "net.minecraft.enchantment.EnchantmentWaterWorker"
+}, value = EnchantmentDummy.class)
 @SuppressWarnings({"MixinAnnotationTarget", "UnresolvedMixinReference"})
 public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of VanillaBaseEnchantmentMixin and modded.EnchantmentMixin just for all vanilla enchantments
     protected VanillaEnchantmentMixin(Rarity rarityIn, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {
@@ -111,9 +112,6 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
     protected boolean ec_canApplyTogether(Enchantment ench, Operation<Boolean> original) {
         if(!ConfigHandler.dev.printIncompats) return IncompatibleConfigProvider.areCompatible(this, ench);
         return original.call(ench);
-        //EnchantmentInfo info = EnchantmentInfo.get(this);
-        //if(info != null && info.incompats != null) return !info.incompats.contains(ench) && this != ench;
-        //return original.call(ench);
     }
 
     @WrapMethod(method = "canApply")

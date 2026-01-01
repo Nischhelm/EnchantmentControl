@@ -82,7 +82,6 @@ public class EnchantmentInfoInferrerWriter {
             // Search the start of the name for a textformatting flag
             for (TextFormatting fmt : TextFormatting.values()) if (name.startsWith(fmt.toString())) return fmt;
         } catch (Throwable ignored) {
-            //This might happen on server?
             EnchantmentControl.LOGGER.warn("Failed to probe display color for {}", ench.getRegistryName());
         }
         return null;
