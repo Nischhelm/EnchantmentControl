@@ -1,6 +1,7 @@
 package enchantmentcontrol.compat.crafttweaker;
 
 import com.teamacronymcoders.contenttweaker.modules.vanilla.enchantments.EnchantmentBuilder;
+import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.EarlyConfigReader;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 @ZenRegister
 @ZenExpansion("mods.contenttweaker.enchantments.EnchantmentBuilder")
+@ModOnly("contenttweaker")
 @SuppressWarnings("unused")
 public class CT_EnchantmentInfo {
     private static final Map<EnchantmentBuilder, EnchantmentInfo> map = new HashMap<>();
