@@ -53,11 +53,15 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 				.rejectPackages("com.google.common.*")
 				.rejectPackages("com.mojang.*")
 				.rejectPackages("org.objectweb.asm.*")
+				.rejectPackages("io.github.classgraph.classpath.*")
 				.rejectPackages("nonapi.io.github.classgraph.classpath.*")
 				.rejectPackages("com.llamalad7.mixinextras.*")
 				.scan()
 		) {
 			for (ClassInfo routeClassInfo : scanResult.getSubclasses("net.minecraft.enchantment.Enchantment")) {
+				enchantmentClasses.add(routeClassInfo.getName());
+			}
+			for (ClassInfo routeClassInfo : scanResult.getSubclasses("alk")) { //Obfuscated class name of net.minecraft.enchantment.Enchantment
 				enchantmentClasses.add(routeClassInfo.getName());
 			}
 		}

@@ -5,7 +5,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
-import enchantmentcontrol.core.EnchantmentDummy;
 import enchantmentcontrol.util.EnchantmentInfo;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -41,7 +40,7 @@ import org.spongepowered.asm.mixin.Mixin;
         "net.minecraft.enchantment.EnchantmentVanishingCurse",
         "net.minecraft.enchantment.EnchantmentWaterWalker",
         "net.minecraft.enchantment.EnchantmentWaterWorker"
-}, value = EnchantmentDummy.class)
+})
 @SuppressWarnings({"MixinAnnotationTarget", "UnresolvedMixinReference"})
 public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of VanillaBaseEnchantmentMixin and modded.EnchantmentMixin just for all vanilla enchantments
     protected VanillaEnchantmentMixin(Rarity rarityIn, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {

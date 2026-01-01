@@ -37,6 +37,7 @@ public class EarlyEnchantmentClassTransformer implements IClassTransformer {
             public void visitEnd() {
                 Set<String> modifiedEnchClasses = EnchantmentClassReader.getEarlyClasses(); // already doesnt contain early enchants
                 EarlyConfigReader.getClassBlacklistConfig().forEach(modifiedEnchClasses::remove);
+                System.out.println("EnchantmentControl modifying " + modifiedEnchClasses.size() + " early enchantment classes");
                 Annotations.setValue(this.node, "targets", new ArrayList<>(modifiedEnchClasses));
             }
         };

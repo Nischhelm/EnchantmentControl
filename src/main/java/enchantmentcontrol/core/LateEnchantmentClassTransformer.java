@@ -44,6 +44,7 @@ public class LateEnchantmentClassTransformer implements IClassTransformer {
                 Set<String> modifiedEnchClasses = new HashSet<>(EnchantmentControlPlugin.enchantmentClasses);
                 modifiedEnchClasses.removeAll(EnchantmentControlPlugin.actuallyEarlyEnchants);
                 EarlyConfigReader.getClassBlacklistConfig().forEach(modifiedEnchClasses::remove);
+                System.out.println("EnchantmentControl modifying " + modifiedEnchClasses.size() + " late enchantment classes");
                 Annotations.setValue(this.node, "targets", new ArrayList<>(modifiedEnchClasses));
             }
         };

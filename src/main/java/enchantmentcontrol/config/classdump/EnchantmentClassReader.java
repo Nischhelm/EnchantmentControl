@@ -25,7 +25,9 @@ public class EnchantmentClassReader {
                     classesEarly.add(line);
                 }
             }
-            catch(IOException ignored) {}
+            catch(IOException exception) {
+                System.out.println("EnchantmentControl failed to read earlyclasses.dat");
+            }
         }
 
         return classesEarly;
