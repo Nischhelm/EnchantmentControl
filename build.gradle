@@ -4,6 +4,7 @@ plugins {
     id 'net.minecraftforge.gradle' version "${forge_gradle_version}"
     id 'org.spongepowered.mixin' version "${mixin_gradle_version}"
     id 'wtf.gofancy.fancygradle' version "${fancy_gradle_version}"
+    id 'com.github.johnrengelman.shadow' version "${shadow_gradle_version}"
 }
 
 version = mod_version
@@ -65,6 +66,8 @@ dependencies {
     compileOnly fg.deobf("CraftTweaker2:CraftTweaker2-${crafttweaker_version}")
     compileOnly fg.deobf("CraftTweaker2:ZenScript:${zs_version}")
     compileOnly fg.deobf("CraftTweaker2:CraftTweaker2-API:${zs_version}")
+
+    shadow 'io.github.classgraph:classgraph:4.8.184'
 }
 
 mixin {
@@ -102,6 +105,19 @@ processResources {
     }
 }
 
+shadowJar {
+    configurations = [project.configurations.shadow]
+    mergeServiceFiles()
+
+    exclude "META-INF/versions/9/module-info*" //idk why this even exists, can and needs to be deleted
+
+    archiveClassifier.set('1.12.2')
+}
+
+reobf {
+    shadowJar {}
+}
+
 jar {
     manifest {
         def attr = [:]
@@ -126,17 +142,18 @@ jar {
 
 //This task is only for copying output.jar into run/mods/ so when running indev fermiumbooter finds the jar to check for @MixinConfig annotations
 tasks.register("copyReobfJar", Copy) {
-    dependsOn("reobfJar")
+    dependsOn("reobfShadowJar")
 
-    from(layout.buildDirectory.file("reobfJar/output.jar"))
+    from(layout.buildDirectory.file("reobfShadowJar/output.jar"))
     into(layout.projectDirectory.dir("run/mods"))
     rename("output.jar", "${mod_name}-${mod_version}.jar")
 }
 
 afterEvaluate {
-    tasks.matching { it.name.startsWith("reobfJar") }.configureEach {
+    tasks.matching { it.name.startsWith("reobfShadowJar") }.configureEach {
         finalizedBy("copyReobfJar")
     }
 }
 
-jar.finalizedBy('reobfJar')
+build.dependsOn(shadowJar)
+jar.finalizedBy('reobfShadowJar')
