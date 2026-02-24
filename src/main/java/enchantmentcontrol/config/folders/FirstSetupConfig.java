@@ -24,7 +24,7 @@ public class FirstSetupConfig {
     })
     @Config.Name(ConfigRef.IDREMAP_CONFIG_NAME)
     @Config.RequiresMcRestart
-    public Map<String, String> idRemaps = new HashMap<String, String>(){};
+    public Map<String, String> idRemaps = new HashMap<>();
 
     @Config.Comment({
             "!Disables itself after a one time use!",

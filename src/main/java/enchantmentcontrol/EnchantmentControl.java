@@ -12,6 +12,9 @@ import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoInferrerWri
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
+import enchantmentcontrol.mixin.vanilla.accessor.ConfigManagerAccessor;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -20,6 +23,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
 
 @Mod(
         modid = EnchantmentControl.MODID,
@@ -38,8 +43,7 @@ public class EnchantmentControl {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        CONFIG = new Configuration(event.getSuggestedConfigurationFile());
-        CONFIG.load();
+        CONFIG = ConfigManagerAccessor.getConfigMap().get(new File(Loader.instance().getConfigDir(), MODID + ".cfg").getAbsolutePath());
 
         EnchantmentInfoConfigReader.preInit(); //read EnchantmentInfo's from /enchantments
     }
@@ -71,7 +75,7 @@ public class EnchantmentControl {
 
         if(Loader.isModLoaded("contenttweaker")) CT_EnchantmentInfo.postInit();
 
-        if(configNeedsSaving) CONFIG.save();
+        if(configNeedsSaving) ConfigManager.sync(MODID, Config.Type.INSTANCE);
 
         //this just as cache clear
         EarlyConfigReader.clearLines();

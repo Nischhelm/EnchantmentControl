@@ -45,7 +45,7 @@ public class ConfigHandler {
 	})
 	@Config.Name(ConfigRef.RARITY_CONFIG_NAME)
 	@Config.RequiresMcRestart
-	public static Map<String, Integer> rarityWeights = new HashMap<String, Integer>(){};
+	public static Map<String, Integer> rarityWeights = new HashMap<>();
 
 	@Config.Comment("Option to blacklist enchants to appear from various sources (or entirely)")
 	@Config.Name("Blacklists")
@@ -68,7 +68,7 @@ public class ConfigHandler {
 			"  S:ANIMAL=class, net.minecraft.entity.EntityAgeable"
 	})
 	@Config.Name(ConfigRef.CREAT_ATTR_CONFIG_NAME)
-	public static Map<String, String> creatureAttributes = new HashMap<String, String>(){};
+	public static Map<String, String> creatureAttributes = new HashMap<>();
 
 	@Config.Comment("Debug Options")
 	@Config.Name("Debug")
