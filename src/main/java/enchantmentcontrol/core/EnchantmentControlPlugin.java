@@ -46,6 +46,7 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 		try (ScanResult scanResult = new ClassGraph()
 				//.verbose()               // Log to stderr
 				.enableClassInfo()
+				.enableAnnotationInfo()
 				.rejectPackages("java.*")
 				.rejectPackages("enchantmentcontrol.*")
 				.rejectPackages("org.spongepowered.*")
@@ -63,6 +64,9 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 			}
 			for (ClassInfo routeClassInfo : scanResult.getSubclasses("alk")) { //Obfuscated class name of net.minecraft.enchantment.Enchantment
 				enchantmentClasses.add(routeClassInfo.getName());
+			}
+			for (ClassInfo routeClassInfo : scanResult.getClassesWithAnnotation("org.spongepowered.asm.mixin.Mixin")) {
+				enchantmentClasses.remove(routeClassInfo.getName());
 			}
 		}
 	}
