@@ -7,7 +7,6 @@ public final class ConfigRef {
     public static final String REGISTRY_BLACKLIST_CONFIG_NAME = "Registered Enchantment Blacklist";
     public static final String CUSTOM_NUMERIC_IDS_CONFIG_NAME = "Enchantment Numeric Id Remaps";
     public static final String CREAT_ATTR_CONFIG_NAME = "Creature Attributes";
-    public static final String INCOMPAT_CFG_NAME = "Incompatible Groups";
 
     public static final String DO_INFER_CONFIG_NAME = "Print Inferred Enchantment Infos";
     public static final String PRINT_INCOMPAT_CONFIG_NAME = "Print Default Incompatibilities";

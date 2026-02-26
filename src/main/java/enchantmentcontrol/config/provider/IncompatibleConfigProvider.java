@@ -2,49 +2,31 @@ package enchantmentcontrol.config.provider;
 
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.util.ConfigRef;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class IncompatibleConfigProvider {
     public static final Map<Enchantment, Set<Enchantment>> incompatibleEnchantments = new HashMap<>();
+    public static final List<Set<Enchantment>> incompatibleGroups = new ArrayList<>();
 
     public static void onResetConfig(){
-        for(Enchantment ench: Enchantment.REGISTRY) {
-            incompatibleEnchantments.put(ench, getIncompatibleEnchantmentsFromConfig(ench));
-        }
+        ConfigHandler.incompatibleGroups.values().forEach(group -> incompatibleGroups.add(group.stream().map(Enchantment::getEnchantmentByLocation).filter(Objects::nonNull).collect(Collectors.toSet())));
+        Enchantment.REGISTRY.forEach(ench -> incompatibleEnchantments.put(
+                ench,
+                incompatibleGroups.stream()
+                        .filter(group -> group.contains(ench))
+                        .reduce(new HashSet<>(), (groupsCollected, addedGroup) -> {
+                            groupsCollected.addAll(addedGroup);
+                            groupsCollected.remove(ench);
+                            return groupsCollected;
+                        })
+        ));
     }
 
     public static boolean areCompatible(Enchantment ench, Enchantment other){
         return !incompatibleEnchantments.getOrDefault(ench, new HashSet<>()).contains(other);
-    }
-
-    private static Set<Enchantment> getIncompatibleEnchantmentsFromConfig(Enchantment thisEnch) {
-        Set<Enchantment> incompatEnchs = new HashSet<>();
-
-        if(thisEnch == null) return incompatEnchs;
-        ResourceLocation regName = thisEnch.getRegistryName();
-        if(regName == null) return incompatEnchs;
-
-        for(String configLine : ConfigHandler.incompatibleGroups) {
-            if(configLine.contains(regName.toString())) {
-                //Assumes that config lines are enchantments separated by comma
-                String[] enchsInList = configLine.split(EnchantmentControl.SEP);
-                for(String lineEntry : enchsInList) {
-                    lineEntry = lineEntry.trim();
-                    if(lineEntry.isEmpty()) continue;
-                    Enchantment incompatEnch = Enchantment.getEnchantmentByLocation(lineEntry);
-                    if(incompatEnch == null) EnchantmentControl.LOGGER.warn("could not find incompatible enchantment {}", lineEntry);
-                    else incompatEnchs.add(incompatEnch);
-                }
-            }
-        }
-        //Every enchantment is incompatible with itself, this will be handled elsewhere
-        incompatEnchs.remove(thisEnch);
-
-        return incompatEnchs;
     }
 
     public static void printDefaultIncompatibilities(){
@@ -70,22 +52,22 @@ public class IncompatibleConfigProvider {
         groups.sort(Comparator.comparingInt(Set::size));
 
         //Remap to list of strings per group
-        List<String> defaultIncompatList = new ArrayList<>();
+        Map<String, HashSet<String>> defaultIncompats = new LinkedHashMap<>();
+        int counter = 1;
         for(Set<Integer> group : groups) {
-            if(group.size() < 2) continue;
-            StringBuilder groupString = new StringBuilder();
+            if(group.size() <= 1) continue;
+            HashSet<String> groupSet = new HashSet<>();
             for(Integer id : group) {
                 Enchantment ench = Enchantment.getEnchantmentByID(idmap.get(id));
                 if(ench == null) continue;
                 if(ench.getRegistryName() == null) continue;
-                groupString.append(ench.getRegistryName().toString()).append(EnchantmentControl.SEP).append(" ");
+                groupSet.add(ench.getRegistryName().toString());
             }
-            defaultIncompatList.add(groupString.substring(0, groupString.length()-EnchantmentControl.SEP.length()-1));
+            defaultIncompats.put("Group " + (counter++), groupSet);
         }
 
-        String[] out = defaultIncompatList.toArray(new String[0]);
-
-        ConfigHandler.incompatibleGroups = out;
+        ConfigHandler.incompatibleGroups.clear();
+        ConfigHandler.incompatibleGroups.putAll(defaultIncompats);
         ConfigHandler.dev.printIncompats = false;
         EnchantmentControl.configNeedsSaving = true;
     }

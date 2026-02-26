@@ -14,8 +14,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Config(modid = EnchantmentControl.MODID)
 @BetterConfig
@@ -32,8 +31,8 @@ public class ConfigHandler {
 			"Warning: this mod takes full control of enchantments incompatibilities with each other",
 			"  so run the first setup every time you add mods that have enchants, then compare with what you set up to stay up to date"
 	})
-	@Config.Name(ConfigRef.INCOMPAT_CFG_NAME)
-	public static String[] incompatibleGroups = {};
+	@Config.Name("Incompatible Groups")
+	public static Map<String, HashSet<String>> incompatibleGroups = new LinkedHashMap<>();
 
 	@Config.Comment("Global Toggle to disable the entire Incompatible groups override")
 	@Config.Name("Incompatible Groups Enabled")
