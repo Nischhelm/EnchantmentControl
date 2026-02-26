@@ -37,7 +37,6 @@ public class EnchantmentInfoInferrerWriter {
                 EnchantmentControl.LOGGER.warn("Could not create directory: {}", modDir.getPath());
         }
 
-        EnchantmentControl.CONFIG.get("general.first setup", ConfigRef.DO_INFER_CONFIG_NAME, ConfigHandler.dev.printInferred).set(false);
         ConfigHandler.dev.printInferred = false;
         EnchantmentControl.configNeedsSaving = true;
     }

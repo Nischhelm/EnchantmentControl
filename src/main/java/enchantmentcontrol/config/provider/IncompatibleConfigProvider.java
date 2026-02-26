@@ -85,8 +85,6 @@ public class IncompatibleConfigProvider {
 
         String[] out = defaultIncompatList.toArray(new String[0]);
 
-        EnchantmentControl.CONFIG.get("general", ConfigRef.INCOMPAT_CFG_NAME, ConfigHandler.incompatibleGroups).set(out);
-        EnchantmentControl.CONFIG.get("general.first setup", ConfigRef.PRINT_INCOMPAT_CONFIG_NAME, ConfigHandler.dev.printIncompats).set(false);
         ConfigHandler.incompatibleGroups = out;
         ConfigHandler.dev.printIncompats = false;
         EnchantmentControl.configNeedsSaving = true;
