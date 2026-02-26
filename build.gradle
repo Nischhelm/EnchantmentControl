@@ -65,7 +65,7 @@ dependencies {
     implementation fg.deobf("curse.maven:betterconfig-${betterconfig_version}")
     compileOnly fg.deobf("curse.maven:contenttweaker-${contenttweaker_version}")
     implementation fg.deobf("curse.maven:jei-${jei_version}")
-    
+
     implementation fg.deobf("curse.maven:so-many-enchantments-${sme_version}")
     compileOnly fg.deobf("curse.maven:new-so-many-enchantments-${new_sme_version}")
     implementation fg.deobf("curse.maven:enchdesc-250419:2898966")

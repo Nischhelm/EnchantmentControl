@@ -7,6 +7,7 @@ import enchantmentcontrol.config.provider.BlacklistConfigProvider;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.util.ConfigRef;
+import meldexun.betterconfig.api.BetterConfig;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Config(modid = EnchantmentControl.MODID)
+@BetterConfig
 public class ConfigHandler {
 
 	@Config.Comment("If you're a modpack dev just starting to set up this mod, you probably want to start here.")
