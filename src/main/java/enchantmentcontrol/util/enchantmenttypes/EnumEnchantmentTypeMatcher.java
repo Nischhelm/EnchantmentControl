@@ -30,7 +30,7 @@ public class EnumEnchantmentTypeMatcher implements ITypeMatcher {
                 case "Combat Weapon": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.BOW), enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON), ItemTypeConfigProvider.getMatcher("AXE"));
             }
         }
-        return Collections.singletonList(enchantToTypeMatchers.computeIfAbsent(type, EnumEnchantmentTypeMatcher::new));
+        return Collections.singletonList(enchantToTypeMatchers.getOrDefault(type, new EnumEnchantmentTypeMatcher(type)));
     }
 
     private final EnumEnchantmentType type;
