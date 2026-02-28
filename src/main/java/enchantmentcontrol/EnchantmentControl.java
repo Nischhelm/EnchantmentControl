@@ -12,7 +12,6 @@ import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoInferrerWri
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
-import enchantmentcontrol.mixin.vanilla.accessor.ConfigManagerAccessor;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
@@ -25,6 +24,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.Map;
 
 @Mod(
         modid = EnchantmentControl.MODID,
@@ -43,7 +44,15 @@ public class EnchantmentControl {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        CONFIG = ConfigManagerAccessor.getConfigMap().get(new File(Loader.instance().getConfigDir(), MODID + ".cfg").getAbsolutePath());
+        try {
+            Field field = ConfigManager.class.getDeclaredField("CONFIGS");
+            field.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            Map<String, Configuration> map = (Map<String, Configuration>) field.get(null);
+            CONFIG = map.get(new File(Loader.instance().getConfigDir(), MODID + ".cfg").getAbsolutePath());
+        } catch (Exception e){
+            CONFIG = new Configuration(new File(Loader.instance().getConfigDir(), MODID + ".cfg"));
+        }
 
         EnchantmentInfoConfigReader.preInit(); //read EnchantmentInfo's from /enchantments
     }
