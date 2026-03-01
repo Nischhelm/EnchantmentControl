@@ -2,6 +2,7 @@ package enchantmentcontrol.mixin.vanilla;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
@@ -109,13 +110,13 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
 
     @WrapMethod(method = "canApplyTogether")
     protected boolean ec_canApplyTogether(Enchantment ench, Operation<Boolean> original) {
-        if(!ConfigHandler.dev.printIncompats) return IncompatibleConfigProvider.areCompatible(this, ench);
+        if(!ConfigHandler.dev.printIncompats && EnchantmentControl.loadingComplete) return IncompatibleConfigProvider.areCompatible(this, ench);
         return original.call(ench);
     }
 
     @WrapMethod(method = "canApply")
     public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
-        if(ConfigHandler.dev.printTypes){
+        if(ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete){
             ItemTypeConfigProvider.probeAnvil = true;
             return original.call(stack);
         }
@@ -125,7 +126,7 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
 
     @WrapMethod(method = "canApplyAtEnchantingTable", remap = false)
     public boolean ec_canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
-        if(ConfigHandler.dev.printTypes){
+        if(ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete){
             ItemTypeConfigProvider.probe = true;
             return original.call(stack);
         }

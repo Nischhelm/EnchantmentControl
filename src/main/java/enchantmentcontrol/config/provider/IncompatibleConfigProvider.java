@@ -18,7 +18,7 @@ public class IncompatibleConfigProvider {
     }
 
     public static boolean areCompatible(Enchantment ench, Enchantment other){
-        return !incompatibleEnchantments.get(ench).contains(other);
+        return !incompatibleEnchantments.getOrDefault(ench, new HashSet<>()).contains(other);
     }
 
     private static Set<Enchantment> getIncompatibleEnchantmentsFromConfig(Enchantment thisEnch) {

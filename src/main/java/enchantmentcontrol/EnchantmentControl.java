@@ -35,12 +35,13 @@ import java.util.Map;
 )
 public class EnchantmentControl {
     public static final String MODID = "enchantmentcontrol";
-    public static final String VERSION = "1.0.3";
+    public static final String VERSION = "1.0.3.1";
     public static final String NAME = "EnchantmentControl";
     public static final Logger LOGGER = LogManager.getLogger(EnchantmentControl.NAME);
     public static final String SEP = ",";
     public static Configuration CONFIG = null;
     public static boolean configNeedsSaving = false;
+    public static boolean loadingComplete = false;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -88,5 +89,7 @@ public class EnchantmentControl {
 
         //this just as cache clear
         EarlyConfigReader.clearLines();
+
+        loadingComplete = true;
     }
 }
