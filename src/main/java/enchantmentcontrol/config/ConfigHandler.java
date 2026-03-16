@@ -1,6 +1,7 @@
 package enchantmentcontrol.config;
 
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.bloodanvil.FeatureBloodAnvil;
 import enchantmentcontrol.config.folders.*;
 import enchantmentcontrol.config.provider.BlacklistConfigProvider;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
@@ -88,6 +89,8 @@ public class ConfigHandler {
 				ItemTypeConfigProvider.onResetConfig();
 				BlacklistConfigProvider.onResetConfig();
 				IncompatibleConfigProvider.onResetConfig();
+
+				FeatureBloodAnvil.resetConfigValues();
 			}
 		}
 	}

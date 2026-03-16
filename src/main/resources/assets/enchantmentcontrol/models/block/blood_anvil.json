@@ -1,0 +1,8 @@
+{
+    "parent": "block/anvil",
+    "textures": {
+        "particle": "enchantmentcontrol:blocks/blood_anvil_base",
+        "body": "enchantmentcontrol:blocks/blood_anvil_base",
+        "top": "enchantmentcontrol:blocks/blood_anvil_top"
+    }
+}

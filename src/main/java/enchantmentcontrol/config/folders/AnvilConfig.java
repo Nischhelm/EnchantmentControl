@@ -52,13 +52,17 @@ public class AnvilConfig {
 
     @Config.Comment({
             "How the Anvil Use Cost of two items that are combined in the anvil get combined for the resulting item",
-            "  MAX: The default system. The resulting item will use the bigger anvil use cost of the two ingredient items (+1)",
-            "  SUM: Will add up the two items use cost (+1)",
-            "  AVERAGE: Will average the two items use cost (+1)",
-            "  MIN: Will take the smaller anvil use cost of the two ingredient items (+1). Probably not a great idea to use this one but who knows.",
+            "  MAX: The default system. The resulting item will use the bigger anvil use cost of the two ingredient items (+1 use)",
+            "  SUM: Will add up the two items use cost (+1 use)",
+            "  AVERAGE: Will average the two items use cost (+1 use)",
+            "  MIN: Will take the smaller anvil use cost of the two ingredient items (+1 use). Probably not a great idea to use this one but who knows.",
             "Note: This will also apply to the anvil use COUNT used to calc the anvil use COST"
     })
     @Config.Name("Anvil Use Cost Combination Type")
     public ComboType repairCostCombinationType = ComboType.MAX;
     public enum ComboType { MIN, MAX, SUM, AVERAGE }
+
+    @Config.Comment("Options for the Blood Anvil")
+    @Config.Name("Blood Anvil")
+    public BloodAnvilConfig bloodAnvil = new BloodAnvilConfig();
 }

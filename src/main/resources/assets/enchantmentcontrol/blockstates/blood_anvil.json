@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=south": { "model": "enchantmentcontrol:blood_anvil" },
+        "facing=west": { "model": "enchantmentcontrol:blood_anvil", "y": 90 },
+        "facing=north": { "model": "enchantmentcontrol:blood_anvil", "y": 180 },
+        "facing=east": { "model": "enchantmentcontrol:blood_anvil", "y": 270 }
+    }
+}

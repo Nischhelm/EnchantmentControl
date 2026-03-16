@@ -1,5 +1,6 @@
 package enchantmentcontrol;
 
+import enchantmentcontrol.bloodanvil.FeatureBloodAnvil;
 import enchantmentcontrol.compat.crafttweaker.CT_EnchantmentInfo;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.EarlyConfigReader;
@@ -12,11 +13,13 @@ import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoInferrerWri
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -53,6 +56,11 @@ public class EnchantmentControl {
             CONFIG = map.get(new File(Loader.instance().getConfigDir(), MODID + ".cfg").getAbsolutePath());
         } catch (Exception e){
             CONFIG = new Configuration(new File(Loader.instance().getConfigDir(), MODID + ".cfg"));
+        }
+
+        if(ConfigHandler.anvil.bloodAnvil.enabled) {
+            MinecraftForge.EVENT_BUS.register(FeatureBloodAnvil.class);
+            FeatureBloodAnvil.onPreInit();
         }
 
         EnchantmentInfoConfigReader.preInit(); //read EnchantmentInfo's from /enchantments
