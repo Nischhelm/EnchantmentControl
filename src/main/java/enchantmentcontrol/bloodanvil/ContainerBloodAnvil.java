@@ -18,7 +18,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -95,7 +96,7 @@ public class ContainerBloodAnvil extends Container {
     }
 
     @Override
-    public void onCraftMatrixChanged(@Nonnull IInventory inventory) {
+    public void onCraftMatrixChanged(@Nonnull IInventory inventory) { // happens on client+server, can desync if options are different
         super.onCraftMatrixChanged(inventory);
 
         //Reset state
@@ -107,6 +108,7 @@ public class ContainerBloodAnvil extends Container {
         ItemStack leftInput = this.inputSlots.getStackInSlot(0);
         ItemStack rightInput = this.inputSlots.getStackInSlot(1);
         if(leftInput.isEmpty() || rightInput.isEmpty()) return;
+
         boolean isBook = rightInput.getItem() == Items.BOOK || rightInput.getItem() == Items.ENCHANTED_BOOK;
         if (!ConfigHandler.anvil.bloodAnvil.allowBooks && isBook) return;
 
@@ -122,37 +124,60 @@ public class ContainerBloodAnvil extends Container {
         }
 
         Map<Enchantment, Integer> enchsLeft = EnchantmentHelper.getEnchantments(leftInput);
-        if (enchsLeft.isEmpty()) return;
+        if (enchsLeft.isEmpty()) return; // nothing to move
+
         Map<Enchantment, Integer> enchsRight = EnchantmentHelper.getEnchantments(rightInput);
-        if (!ConfigHandler.anvil.bloodAnvil.allowEnchanted && !enchsRight.isEmpty()) return;
+        Map<Enchantment, Integer> enchsOut = new LinkedHashMap<>(enchsRight);
+        if (!ConfigHandler.anvil.bloodAnvil.allowEnchanted && !enchsOut.isEmpty()) return;
 
         boolean changed = false;
         int totalCost = 0;
-        for (Map.Entry<Enchantment, Integer> entry : enchsLeft.entrySet()) {
+
+        // reverse so disallowing illegal mutually exclusive enchants on the original item will pick the topmost one to allow to move
+        ArrayList<Map.Entry<Enchantment, Integer>> revertedEntryList = new ArrayList<>(enchsLeft.entrySet());
+        Collections.reverse(revertedEntryList);
+
+        for (Map.Entry<Enchantment, Integer> entry : revertedEntryList) {
             Enchantment enchantment = entry.getKey();
             int level = entry.getValue();
 
             // can this enchant go on this item
-            if (!enchantment.canApply(rightInput)) continue;
+            if (!ConfigHandler.anvil.bloodAnvil.allowUnapplicable && !enchantment.canApply(rightInput)) continue;
+
+            if (!ConfigHandler.anvil.bloodAnvil.allowMutuallyExclusiveTarget) {
+                // is the currently moved enchant incompatible with any of the targets existing enchants ?
+                boolean allCompatible = areAllEnchantmentsCompatible(enchantment, enchsRight.keySet());
+                if (!allCompatible) continue;
+            }
+            if (!ConfigHandler.anvil.bloodAnvil.allowMutuallyExclusiveOriginal) {
+                // is the currently moved enchant incompatible with any of the targets own enchants ?
+                boolean allCompatible = areAllEnchantmentsCompatible(enchantment, enchsLeft.keySet());
+                if (!allCompatible) {
+                    enchsLeft.remove(enchantment); // one of the mutually exclusive ones is allowed to move.
+                    continue;
+                }
+            }
+
+            // no hax
+            if(ConfigHandler.anvil.bloodAnvil.allowIllegalLevels)
+                level = MathHelper.clamp(level, enchantment.getMinLevel(), enchantment.getMaxLevel());
 
             // take the bigger one if already on it
-            if (enchsRight.containsKey(enchantment))
-                level = Math.max(level, enchsRight.get(enchantment));
-
-            // no hax allowed
-            level = MathHelper.clamp(level, enchantment.getMinLevel(), enchantment.getMaxLevel());
+            if (enchsOut.containsKey(enchantment))
+                level = Math.max(level, enchsOut.get(enchantment));
 
             totalCost += level * AnvilCostUtil.getRarityMultiplier(enchantment.getRarity(), isBook);
 
-            enchsRight.put(enchantment, level);
+            enchsOut.put(enchantment, level);
             changed = true;
         }
+        // if we don't move any enchants we shouldn't be allowed to do the move at all
         if (!changed) return;
 
         ItemStack outStack = rightInput.copy();
-        EnchantmentHelper.setEnchantments(enchsRight, outStack);
+        EnchantmentHelper.setEnchantments(enchsOut, outStack);
 
-        // Repair cost + counts
+        // Move anvil use cost + counts
         if (ConfigHandler.anvil.bloodAnvil.moveAnvilCost) {
             int costLeft = leftInput.getRepairCost();
             int costRight = rightInput.getRepairCost();
@@ -225,5 +250,12 @@ public class ContainerBloodAnvil extends Container {
         }
 
         return stackCopy;
+    }
+
+    private static boolean areAllEnchantmentsCompatible(Enchantment ench, Set<Enchantment> toCompare) {
+        return toCompare
+                .stream()
+                .filter(((Predicate<Enchantment>) ench::equals).negate())
+                .allMatch(ench::isCompatibleWith);
     }
 }

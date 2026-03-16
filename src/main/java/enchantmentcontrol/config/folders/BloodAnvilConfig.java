@@ -37,4 +37,34 @@ public class BloodAnvilConfig {
     @Config.Comment("Treat the blacklist as whitelist")
     @Config.Name("Target Item Blacklist is Whitelist")
     public boolean asWhitelist = false;
+
+    @Config.Comment({
+            "If disabled, will clamp enchantment levels that are moved to their allowed range of levels",
+            "Note: if the target item already has an enchantment outside of its allowed range, this level will not be affected by the clamping."
+    })
+    @Config.Name("Allow illegal levels")
+    public boolean allowIllegalLevels = false;
+
+    @Config.Comment({
+            "If disabled, will check and filter for mutually exclusive enchantments on the original item.",
+            "Otherwise such illegal enchantment combinations would just be moved over to the target item.",
+            "Note: Enabling this will allow to *move existing* illegal enchantment combinations using the blood anvil."
+    })
+    @Config.Name("Allow mutually exclusive original")
+    public boolean allowMutuallyExclusiveOriginal = false;
+
+    @Config.Comment({
+            "If disabled, will check and filter for mutually exclusive enchantments on the target item compared to the enchantments that are moved.",
+            "This option only has an effect if \"Allow Already Enchanted\" is enabled.",
+            "Note: Enabling this will allow to *create* illegal enchantment combinations using the blood anvil."
+    })
+    @Config.Name("Allow mutually exclusive target")
+    public boolean allowMutuallyExclusiveTarget = false;
+
+    @Config.Comment({
+            "If enabled, will not check for whether the moved enchants can actually go on the target item.",
+            "Note: Enabling this will allow all kinds of unintended item x enchantment combinations of which most will not do anything. Handle with care"
+    })
+    @Config.Name("Allow unapplicable")
+    public boolean allowUnapplicable = false;
 }
