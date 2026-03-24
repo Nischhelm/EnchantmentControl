@@ -4,6 +4,7 @@ public final class ConfigRef {
     public static final String BLACKLIST_CONFIG_NAME = "Blacklisted Enchantment Classes";
     public static final String IDREMAP_CONFIG_NAME = "Enchantment Id Remaps";
     public static final String RARITY_CONFIG_NAME = "Rarities";
+    public static final String REGISTRY_BLACKLIST_CONFIG_NAME = "Registered Enchantment Blacklist";
     public static final String CREAT_ATTR_CONFIG_NAME = "Creature Attributes";
     public static final String INCOMPAT_CFG_NAME = "Incompatible Groups";
 

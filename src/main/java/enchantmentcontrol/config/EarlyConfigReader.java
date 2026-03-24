@@ -18,6 +18,7 @@ public class EarlyConfigReader {
     private static Set<String> blacklistConfig = null;
     private static Map<String, ResourceLocation> remapConfig = null;
     private static Map<String, Integer> rarityConfig = null;
+    private static List<String> registrationBlacklist = null;
 
     private static List<String> lines = null;
     private static List<String> readLines(){
@@ -73,6 +74,13 @@ public class EarlyConfigReader {
         return rarityConfig;
     }
 
+    public static List<String> getRegistrationBlacklist(){
+        if(registrationBlacklist == null)
+            registrationBlacklist = readConfigList(ConfigRef.REGISTRY_BLACKLIST_CONFIG_NAME, Function.identity());
+
+        return registrationBlacklist;
+    }
+
     public static <I, O> Map<I,O> readConfigMap(String name, Function<String, I> inputMapper, Function<String, O> outputMapper) {
         Map<I, O> output = new HashMap<>();
 
@@ -104,6 +112,31 @@ public class EarlyConfigReader {
             output.put(inputMapper.apply(input.trim()), outputMapper.apply(split[1].trim()));
         }
         if (!found) EnchantmentControl.LOGGER.warn("Didnt find config map to early-read for {}", name);
+
+        return output;
+    }
+
+    public static <V> List<V> readConfigList(String name, Function<String, V> valueMapper) {
+        List<V> output = new ArrayList<>();
+
+        boolean isReading = false;
+        String nameToCheckFor = (name.contains(" ") ? "\"" + name + "\"" : name) + " <";
+
+        boolean found = false;
+        for (String line : readLines()) {
+            if (line.contains(nameToCheckFor)) {
+                isReading = true;
+                continue;
+            }
+            if (!isReading) continue; //unimportant lines
+
+            found = true;
+
+            if (line.contains(">")) break; //end of bracket
+
+            output.add(valueMapper.apply(line.trim()));
+        }
+        if (!found) EnchantmentControl.LOGGER.warn("Didnt find config list to early-read for {}", name);
 
         return output;
     }
