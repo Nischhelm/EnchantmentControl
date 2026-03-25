@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
@@ -30,11 +31,6 @@ public class FeatureBloodAnvil {
         blacklistedItems = null;
     }
 
-    @SideOnly(Side.CLIENT)
-    public static void initModels() {
-        BLOOD_ANVIL.initModel();
-    }
-
     @SubscribeEvent
     public static void onBlockRegistry(RegistryEvent.Register<Block> event) {
         event.getRegistry().register(BLOOD_ANVIL);
@@ -43,7 +39,12 @@ public class FeatureBloodAnvil {
     @SubscribeEvent
     public static void onItemRegistry(RegistryEvent.Register<Item> event) {
         event.getRegistry().register(new ItemBlock(BLOOD_ANVIL).setRegistryName(EnchantmentControl.MODID, "blood_anvil").setTranslationKey("blood_anvil"));
-        initModels();
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public static void onModelRegistry(ModelRegistryEvent event) {
+        BLOOD_ANVIL.initModel();
     }
 
     public static class GuiHandlerBloodAnvil implements IGuiHandler {
