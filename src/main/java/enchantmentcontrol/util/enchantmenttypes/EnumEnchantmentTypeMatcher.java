@@ -15,7 +15,7 @@ public class EnumEnchantmentTypeMatcher implements ITypeMatcher {
     public static List<ITypeMatcher> byEnum(EnumEnchantmentType type){
         if(type.ordinal() > 11){ //not vanilla enum
             switch (type.name()) {
-                //SME 0.5.5 first tries in making lists of types
+                //some SME 0.x types are just lists of types
                 case "Combat Shield": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("SHIELD"));
                 case "Tool Pickaxe": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("PICKAXE"));
                 case "Tool Hoe": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("HOE"));

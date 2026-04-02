@@ -11,6 +11,7 @@ import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ItemTypeConfigProvider {
     private static final HashMap<String, ITypeMatcher> registeredMatchers = new HashMap<>();
@@ -70,7 +71,7 @@ public class ItemTypeConfigProvider {
 
             ITypeMatcher matcher;
             switch (type) {
-                case "class" : matcher = new InstanceofTypeMatcher(name, split[2].trim()); break;
+                case "class" : matcher = new InstanceofTypeMatcher(name, Arrays.stream(Arrays.copyOfRange(split, 2, split.length)).map(String::trim).collect(Collectors.toList())); break;
                 case "modid" : matcher = new ModidMatcher(name, split[2].trim()); break;
                 case "items" : matcher = new ListMatcher(name, Arrays.copyOfRange(split, 2, split.length)); break;
                 case "regex" : matcher = new CustomTypeMatcher(name, split[2].trim()); break;

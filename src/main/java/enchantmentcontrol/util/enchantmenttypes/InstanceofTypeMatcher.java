@@ -5,32 +5,33 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class InstanceofTypeMatcher implements ITypeMatcher {
     private final String name;
-    private final Class<? extends Item> clazz;
+    private final List<Class<? extends Item>> classes = new ArrayList<>();
     private final Item fakeItem;
 
     @SuppressWarnings("unchecked")
-    public InstanceofTypeMatcher(String name, String className) {
-        Class<? extends Item> classtmp;
-        try {
-            classtmp = (Class<? extends Item>) Launch.classLoader.findClass(className);
-        } catch (Exception e) {
-            classtmp = null;
+    public InstanceofTypeMatcher(String name, List<String> classes) {
+        for(String className : classes) {
+            try { this.classes.add((Class<? extends Item>) Launch.classLoader.findClass(className));
+            } catch (Exception ignored) {}
         }
+
         this.name = name;
-        this.clazz = classtmp;
         this.fakeItem = null;
     }
 
     public InstanceofTypeMatcher(String name, Class<? extends Item> clazz, Item fakeItem) {
         this.name = name;
-        this.clazz = clazz;
+        this.classes.add(clazz);
         this.fakeItem = fakeItem;
     }
 
     public boolean isValid() {
-        return !this.name.isEmpty() && this.clazz != null;
+        return !this.name.isEmpty() && !this.classes.isEmpty();
     }
 
     public String getName() {
@@ -39,7 +40,7 @@ public class InstanceofTypeMatcher implements ITypeMatcher {
 
     @Override
     public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName) {
-        return this.clazz.isAssignableFrom(item.getClass());
+        return this.classes.stream().anyMatch(cls -> cls.isAssignableFrom(item.getClass()));
     }
 
     @Override
