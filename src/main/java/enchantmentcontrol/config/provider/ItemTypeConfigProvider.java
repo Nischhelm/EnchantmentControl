@@ -1,6 +1,8 @@
 package enchantmentcontrol.config.provider;
 
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.compat.CompatUtil;
+import enchantmentcontrol.compat.somanyenchantments.NewSMECompat;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.util.ConfigRef;
 import enchantmentcontrol.util.enchantmenttypes.*;
@@ -196,12 +198,14 @@ public class ItemTypeConfigProvider {
             if (ench.type == null) continue;
             List<ITypeMatcher> matchers = EnumEnchantmentTypeMatcher.byEnum(ench.type);
             matchers.forEach(matcher -> {
+                if(matcher.getName().equals("NONE")) return; // If other mods use NONE enum
                 byName.computeIfAbsent(matcher.getName(), k -> new HashSet<>()).add(ench);
                 byEnchantment.computeIfAbsent(ench, k -> new HashSet<>()).add(matcher.getName());
             });
         }
 
         //Try to be smart, at least a little bit
+        // Inferring applicability by offering a fakeStack to customItem.canApply-AtEnchantingTable(fakeStack)
         for (Map.Entry<String, ITypeMatcher> entry : registeredMatchers.entrySet()) {
             ItemStack fakeStack = entry.getValue().getFakeStack();
             if (fakeStack == null) continue; //the following only infers types using fake stacks
@@ -219,6 +223,9 @@ public class ItemTypeConfigProvider {
                 }
             }
         }
+        if(CompatUtil.somanyenchantments.isLoaded() && CompatUtil.versionInRange(CompatUtil.somanyenchantments, "[1.0.0,)"))
+            NewSMECompat.addNewSMETypes(byName, byEnchantment, byNameAnvil, byEnchantmentAnvil);
+
         simplify(byName, byEnchantment);
         simplify(byNameAnvil, byEnchantmentAnvil);
 
@@ -288,8 +295,13 @@ public class ItemTypeConfigProvider {
             }
             if(entry.getValue().contains("ANY")) removeFromAllExcept(byName, entry.getKey(), "ANY");
             else if(entry.getValue().contains("ANY_TYPE")) removeFromAllExcept(byName, entry.getKey(), "ANY_TYPE");
+            //Vanilla:
+            else if(entry.getValue().contains("ALL")) removeFromAllExcept(byName, entry.getKey(), "ALL");
             else if(entry.getValue().contains("BREAKABLE")) removeFromAllExcept(byName, entry.getKey(), "BREAKABLE");
             else if(entry.getValue().contains("WEARABLE")) removeFromAllExcept(byName, entry.getKey(), "WEARABLE");
+            //New SME
+            else if(entry.getValue().contains("ALL_TYPES")) removeFromAllExcept(byName, entry.getKey(), "ALL_TYPES");
+            else if(entry.getValue().contains("ALL_ITEMS")) removeFromAllExcept(byName, entry.getKey(), "ALL_ITEMS");
         }
     }
 

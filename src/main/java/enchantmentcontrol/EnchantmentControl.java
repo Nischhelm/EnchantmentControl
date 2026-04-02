@@ -1,6 +1,7 @@
 package enchantmentcontrol;
 
 import enchantmentcontrol.bloodanvil.FeatureBloodAnvil;
+import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.compat.crafttweaker.CT_EnchantmentInfo;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.EarlyConfigReader;
@@ -33,7 +34,10 @@ import java.util.Map;
         modid = EnchantmentControl.MODID,
         version = EnchantmentControl.VERSION,
         name = EnchantmentControl.NAME,
-        dependencies = "required-after:fermiumbooter@[1.3.2,);before:contenttweaker"
+        dependencies =
+                "required-after:fermiumbooter@[1.3.2,);" +
+                "before:contenttweaker;" +
+                "after:somanyenchantments;"
 )
 public class EnchantmentControl {
     public static final String MODID = "enchantmentcontrol";
@@ -90,7 +94,7 @@ public class EnchantmentControl {
         if(ConfigHandler.dev.printTypes) ItemTypeConfigProvider.printDefaultItemTypes();
         ItemTypeConfigProvider.initItemTypeConfig();
 
-        if(Loader.isModLoaded("contenttweaker")) CT_EnchantmentInfo.postInit();
+        if(CompatUtil.contenttweaker.isLoaded()) CT_EnchantmentInfo.postInit();
 
         if(configNeedsSaving) ConfigManager.sync(MODID, Config.Type.INSTANCE);
 
