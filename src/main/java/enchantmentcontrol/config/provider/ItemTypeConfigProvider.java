@@ -75,7 +75,6 @@ public class ItemTypeConfigProvider {
                 case "modid" : matcher = new ModidMatcher(name, split[2].trim()); break;
                 case "items" : matcher = new ListMatcher(name, Arrays.copyOfRange(split, 2, split.length)); break;
                 case "regex" : matcher = new CustomTypeMatcher(name, split[2].trim()); break;
-                case "enum"  : matcher = new EnumEnchantmentTypeMatcher(EnumEnchantmentType.valueOf(name)); break;
                 default      : matcher = new CustomTypeMatcher(name, split[1].trim()); //split[1] cause this is the default where no type was named
             }
             if (matcher.isValid()) registeredMatchers.put(name, matcher);

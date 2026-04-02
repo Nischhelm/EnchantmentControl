@@ -14,8 +14,7 @@ public class ItemTypeConfig {
             "Where ",
             "- class matches when item class extends the named item classes",
             "- regex uses regular expressions and has to match the full modid:itemid",
-            "- enum uses an EnumEnchantmentType that another mod has created. This matchers name needs to match that enum name",
-            "- and items is an arbitrarily long list"
+            "- and items is a list of item ids"
     })
     @Config.Name("Custom Item Types")
     public String[] customTypes = {};
