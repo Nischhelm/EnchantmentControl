@@ -120,6 +120,7 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
             ItemTypeConfigProvider.probeAnvil = true;
             return original.call(stack);
         }
+        if(!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.anvil.enable) return original.call(stack);
         if(ItemTypeConfigProvider.shouldYieldToModdedBehavior(this, true)) return original.call(stack);
         return ItemTypeConfigProvider.canItemApply(this, stack, true) || original.call(stack);
     }
@@ -130,6 +131,7 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
             ItemTypeConfigProvider.probe = true;
             return original.call(stack);
         }
+        if(!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.general.enable) return original.call(stack);
         if(ItemTypeConfigProvider.shouldYieldToModdedBehavior(this, false)) return original.call(stack);
         return ItemTypeConfigProvider.canItemApply(this, stack, false);
     }

@@ -100,6 +100,7 @@ public abstract class EnchantmentMixin extends Enchantment { //needs to extend f
             ItemTypeConfigProvider.probeAnvil = true;
             return original.call(stack);
         }
+        if(!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.anvil.enable) return original.call(stack);
         if(ItemTypeConfigProvider.shouldYieldToModdedBehavior(this, true)) return original.call(stack);
         return ItemTypeConfigProvider.canItemApply(this, stack, true) || this.canApplyAtEnchantingTable(stack);
     }
@@ -110,6 +111,7 @@ public abstract class EnchantmentMixin extends Enchantment { //needs to extend f
             ItemTypeConfigProvider.probe = true;
             return original.call(stack);
         }
+        if(!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.general.enable) return original.call(stack);
         if(ItemTypeConfigProvider.shouldYieldToModdedBehavior(this, false)) return original.call(stack);
         return ItemTypeConfigProvider.canItemApply(this, stack, false);
     }

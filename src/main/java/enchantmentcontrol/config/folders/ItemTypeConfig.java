@@ -3,6 +3,10 @@ package enchantmentcontrol.config.folders;
 import net.minecraftforge.common.config.Config;
 
 public class ItemTypeConfig {
+    @Config.Comment("Global Toggle to disable the entire Item Types category")
+    @Config.Name("Modification Enabled")
+    public boolean enable = true;
+
     @Config.Comment({
             "Enchantments are allowed on items using matchers. Define custom matchers here.",
             "Pattern: MatcherName, Type, Arguments",
@@ -42,6 +46,10 @@ public class ItemTypeConfig {
     public GeneralTypeConfig general = new GeneralTypeConfig();
     
     public static class GeneralTypeConfig {
+        @Config.Comment("Global Toggle to disable the entire General Item Types category")
+        @Config.Name("Modification Enabled")
+        public boolean enable = true;
+
         @Config.Comment({
                 "Some modded enchantments come with additional item applicability rules (example: SME Rune Revival on all BREAKABLE except ARMOR). ",
                 "For such enchantments, enabling this toggle will prioritise these additional rules before (and possibly instead of) checking against the types defined in \"Item Types\".",
@@ -82,6 +90,10 @@ public class ItemTypeConfig {
     public AnvilTypeConfig anvil = new AnvilTypeConfig();
     
     public static class AnvilTypeConfig {
+        @Config.Comment("Global Toggle to disable the entire Anvil-specific Item Types category")
+        @Config.Name("Modification Enabled")
+        public boolean enable = true;
+
         @Config.Comment({
                 "Same as \"General.Allow Modded Enchantment Behaviors\" but specifically for anvil and /enchant command.",
                 "Overriding the canApply method is pretty common for mods, so allowing this is a good idea..",

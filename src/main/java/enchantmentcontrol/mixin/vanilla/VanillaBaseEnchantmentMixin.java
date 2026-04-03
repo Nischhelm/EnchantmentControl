@@ -86,6 +86,7 @@ public abstract class VanillaBaseEnchantmentMixin {
     @WrapMethod(method = "canApply")
     public boolean ec_canApply(ItemStack stack, Operation<Boolean> original) {
         if(ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete) return original.call(stack);
+        if(!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.anvil.enable) return original.call(stack);
         Enchantment thisEnch = (Enchantment) (Object) this;
         return ItemTypeConfigProvider.canItemApply(thisEnch, stack, true) || original.call(stack);
     }
@@ -93,6 +94,7 @@ public abstract class VanillaBaseEnchantmentMixin {
     @WrapMethod(method = "canApplyAtEnchantingTable", remap = false)
     public boolean ec_canApplyAtEnchantingTable(ItemStack stack, Operation<Boolean> original) {
         if(ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete) return original.call(stack);
+        if(!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.general.enable) return original.call(stack);
         Enchantment thisEnch = (Enchantment) (Object) this;
         return ItemTypeConfigProvider.canItemApply(thisEnch, stack, false);
     }
