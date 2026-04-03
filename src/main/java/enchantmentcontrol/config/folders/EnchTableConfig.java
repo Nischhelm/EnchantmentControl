@@ -1,7 +1,10 @@
 package enchantmentcontrol.config.folders;
 
+import enchantmentcontrol.EnchantmentControl;
+import fermiumbooter.annotations.MixinConfig;
 import net.minecraftforge.common.config.Config;
 
+@MixinConfig(name = EnchantmentControl.MODID)
 public class EnchTableConfig {
     @Config.Comment({
             "Max level the vanilla enchanting table can roll. ",
@@ -11,4 +14,10 @@ public class EnchTableConfig {
     @Config.Name("Enchantment Table Max Lvl")
     @Config.RangeInt(min = -1)
     public int maxLvl = 30;
+
+    @Config.Comment("Restores older minecraft versions behavior of rolling new enchantments whenever the item gets placed fresh into the enchantment table.")
+    @Config.Name("Always reroll table")
+    @Config.RequiresMcRestart
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablealwaysreroll.json", defaultValue = false)
+    public boolean alwaysReroll = false;
 }
