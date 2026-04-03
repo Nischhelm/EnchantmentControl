@@ -7,6 +7,6 @@
   "minVersion": "0.8",
   "mixins": [
     "vanilla.etable.ContainerEnchantmentMixin_AlwaysReroll",
-    "vanilla.etable.GuiEnchantmentMixin_AlwaysReroll"
+    "vanilla.etable.EntityPlayerAccessor"
   ]
 }

@@ -1,0 +1,10 @@
+package enchantmentcontrol.mixin.vanilla.etable;
+
+import net.minecraft.entity.player.EntityPlayer;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+@Mixin(EntityPlayer.class)
+public interface EntityPlayerAccessor {
+    @Accessor("xpSeed") void setXpSeed(int xpSeed);
+}
