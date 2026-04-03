@@ -57,6 +57,7 @@ public class ItemTypeConfigProvider {
         registeredMatchers.put("HOE", new InstanceofTypeMatcher("HOE", ItemHoe.class, Items.IRON_HOE));
         registeredMatchers.put("SHOVEL", new InstanceofTypeMatcher("SHOVEL", ItemSpade.class, Items.IRON_SHOVEL));
         registeredMatchers.put("SHIELD", new InstanceofTypeMatcher("SHIELD", ItemShield.class, Items.SHIELD));
+        registeredMatchers.put("SHEARS", new InstanceofTypeMatcher("SHEARS", ItemShears.class, Items.SHEARS));
         registeredMatchers.put("NONE", new BooleanTypeMatcher("NONE", false));
 
         for (String s : ConfigHandler.itemTypes.customTypes) {
