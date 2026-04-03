@@ -353,7 +353,7 @@ public class ItemTypeConfigProvider {
     }
 
     public static boolean probe = false;
-    public static boolean probeAnvil = false;
+    public static boolean probeAnvil = false; //needs to be a second boolean cause canApplyAtEnch runs inside canApply
     private static void printDefaultBlacklist() {
         List<String> blacklist = new ArrayList<>();
         List<String> blacklistAnvil = new ArrayList<>();

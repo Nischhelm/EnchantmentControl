@@ -1,6 +1,5 @@
 package enchantmentcontrol.util.enchantmenttypes;
 
-import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -28,6 +27,7 @@ public class EnumEnchantmentTypeMatcher implements ITypeMatcher {
                 case "All Tools": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.DIGGER), enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON));
                 case "Combat": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON), ItemTypeConfigProvider.getMatcher("AXE"));
                 case "Combat Weapon": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.BOW), enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON), ItemTypeConfigProvider.getMatcher("AXE"));
+                //In theory would need old SME Golden Apple matcher here but im too lazy to register a new one just for that
             }
         }
         return Collections.singletonList(enchantToTypeMatchers.getOrDefault(type, new EnumEnchantmentTypeMatcher(type)));
