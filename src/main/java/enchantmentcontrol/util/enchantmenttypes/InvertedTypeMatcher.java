@@ -19,6 +19,7 @@ public class InvertedTypeMatcher implements ITypeMatcher.UsesItemLoc {
 
     @Override
     public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName) {
-        return !this.inner.matches(enchantment, stack, item, itemName);
+        //Inversion happens in ItemTypeConfigProvider.canItemApply
+        return this.inner.matches(enchantment, stack, item, itemName);
     }
 }
