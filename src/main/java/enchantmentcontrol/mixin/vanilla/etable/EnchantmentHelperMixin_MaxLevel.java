@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(EnchantmentHelper.class)
-public abstract class ContainerEnchantmentMixin_MaxLevel {
+public abstract class EnchantmentHelperMixin_MaxLevel {
     @ModifyConstant(
             method = "calcItemStackEnchantability",
             constant = @Constant(intValue = 15)

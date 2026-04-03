@@ -6,6 +6,6 @@
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "mixins": [
-    "vanilla.etable.ContainerEnchantmentMixin_MaxLevel"
+    "vanilla.etable.EnchantmentHelperMixin_MaxLevel"
   ]
 }
