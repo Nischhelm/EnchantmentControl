@@ -15,7 +15,7 @@ public class EnumEnchantmentTypeMatcher implements ITypeMatcher {
     public static List<ITypeMatcher> byEnum(EnumEnchantmentType type){
         if(type.ordinal() > 11){ //not vanilla enum
             switch (type.name()) {
-                //some SME 0.x types are just lists of types
+                //some SME 0.x types are just lists of types or renames of existing vanilla Enums
                 case "Combat Shield": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("SHIELD"));
                 case "Tool Pickaxe": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("PICKAXE"));
                 case "Tool Hoe": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("HOE"));
@@ -53,7 +53,7 @@ public class EnumEnchantmentTypeMatcher implements ITypeMatcher {
         // enchantment.type == myPretended_vanillaEnumEnchantment_type
 
         // The main issue why we cant use the normal system is that vanilla only allows one type per enchant
-        if(ConfigHandler.itemTypes.allowCustomItems) {
+        if(ItemTypeConfigProvider.shouldYieldToModdedBehavior(item)) {
             EnumEnchantmentType tmpType = enchantment.type;
             enchantment.type = this.type;
             boolean doesMatch = item.canApplyAtEnchantingTable(stack, enchantment);

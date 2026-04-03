@@ -25,6 +25,7 @@ public class ItemTypeConfigProvider {
         registeredMatchers.clear();
         itemTypes.clear();
         itemTypesAnvil.clear();
+        blacklistedItems.clear();
         blacklistedEnchantments.clear();
         blacklistedEnchantmentsAnvil.clear();
         initRegisteredItemTypesFromConfig();
@@ -88,6 +89,7 @@ public class ItemTypeConfigProvider {
         initItemTypes(ConfigHandler.itemTypes.general.itemTypes, itemTypes);
         initItemTypes(ConfigHandler.itemTypes.anvil.itemTypes, itemTypesAnvil);
 
+        initItemBlacklist(ConfigHandler.itemTypes.blacklist, blacklistedItems);
         initBlacklist(ConfigHandler.itemTypes.general.blacklist, blacklistedEnchantments);
         initBlacklist(ConfigHandler.itemTypes.anvil.blacklist, blacklistedEnchantmentsAnvil);
     }
@@ -124,12 +126,20 @@ public class ItemTypeConfigProvider {
         }
     }
 
+    private static final Set<Item> blacklistedItems = new HashSet<>();
     private static final Set<Enchantment> blacklistedEnchantments = new HashSet<>();
     private static final Set<Enchantment> blacklistedEnchantmentsAnvil = new HashSet<>();
     private static void initBlacklist(String[] cfg, Set<Enchantment> set) {
         Arrays.stream(cfg)
                 .map(String::trim)
                 .map(Enchantment::getEnchantmentByLocation)
+                .filter(Objects::nonNull)
+                .forEach(set::add);
+    }
+    private static void initItemBlacklist(String[] cfg, Set<Item> set) {
+        Arrays.stream(cfg)
+                .map(String::trim)
+                .map(Item::getByNameOrId)
                 .filter(Objects::nonNull)
                 .forEach(set::add);
     }
@@ -146,6 +156,12 @@ public class ItemTypeConfigProvider {
         // allowed + not blacklisted -> only runs original code (true)
         // not allowed + not blacklisted -> skips original code (false)
         return isGenerallyAllowed != enchantIsBlacklisted; //even if this returns true we might still run canItemApply in Enchantment.canApply/At
+    }
+
+    public static boolean shouldYieldToModdedBehavior(Item item){
+        // allowed + not blacklisted -> only runs original code (true)
+        // not allowed + not blacklisted -> skips original code (false)
+        return ConfigHandler.itemTypes.allowCustomItems != blacklistedItems.contains(item);
     }
 
     public static boolean canItemApply(Enchantment enchantment, ItemStack stack, boolean forAnvil){

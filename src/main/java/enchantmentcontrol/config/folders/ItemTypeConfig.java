@@ -23,10 +23,19 @@ public class ItemTypeConfig {
             "Some modded items only pretend to be a specific item type without actually being them (wolf armor being SWORD and ARMOR_FEET, better survival items being SWORD etc).",
             "Enabling this toggle will make the given item type match those too.",
             "Disabling will instead only look at the actual checks of each EnumEnchantmentType (like SWORD = has to be instanceof ItemSword) to match.",
-            "It is closer to an unmodified experience if you keep this enabled. Disable it if you want full control over what enchants go on which items using custom types."
+            "It is closer to an unmodified experience if you keep this enabled. Disable it if you want full control over what enchants go on which items using custom types.",
+            "DEV NOTE: this toggle decides whether CustomItem.canApplyAtEnchantingTable is checked"
     })
     @Config.Name("Allow Modded Item Behaviors")
     public boolean allowCustomItems = true;
+
+    @Config.Comment({
+            "Enchantments listed here will run against what is set in \"Allow Modded Item Behaviors\":",
+            " - If modded behaviors are generally allowed, items listed here will not have their modded behavior allowed",
+            " - If modded behaviors are generally disallowed, items listed here will have their modded behavior be allowed anyway",
+    })
+    @Config.Name("Item Blacklist")
+    public String[] blacklist = {};
 
     @Config.Comment("Whenever enchantments are checked against items to possibly apply the enchantment, the rules in here are checked, to a modifiably varying degree.")
     @Config.Name("General")
@@ -38,7 +47,8 @@ public class ItemTypeConfig {
                 "For such enchantments, enabling this toggle will prioritise these additional rules before (and possibly instead of) checking against the types defined in \"Item Types\".",
                 "Disabling will instead only use the config \"Item Types\" to match.",
                 "It is closer to an unmodified experience if you keep this enabled. Disable it if you want full control over what enchants go on which items using custom types.",
-                "Note: prioritising custom behavior also means that inverted types (!TYPE) won't be able to re-disallow items that were only allowed by such custom behavior"
+                "Note: prioritising custom behavior also means that inverted types (!TYPE) won't be able to re-disallow items that were only allowed by such custom behavior",
+                "DEV NOTE: this toggle decides whether only CustomEnchantment.canApplyAtEnchantingTable is checked vs only against Item Types config"
         })
         @Config.Name("Allow Modded Enchantment Behaviors")
         public boolean allowCustomEnchantments = true;
@@ -78,7 +88,8 @@ public class ItemTypeConfig {
                 " Even vanilla does it, to",
                 " - allow Sharpness, Smite & BoA on Axes",
                 " - and to allow Thorns on all armor pieces, not just Chestplate",
-                "Disable this only if you want total control, then only the \"Anvil.Item Types\" are used, on top of whatever behavior happens in General"
+                "Disable this only if you want total control, then only the \"Anvil.Item Types\" are used, on top of whatever behavior happens in General",
+                "DEV NOTE: this toggle decides whether only CustomEnchantment.canApply is checked vs Item Types config || super.canApply"
         })
         @Config.Name("Allow Modded Enchantment Behaviors")
         public boolean allowCustomEnchantments = true;
