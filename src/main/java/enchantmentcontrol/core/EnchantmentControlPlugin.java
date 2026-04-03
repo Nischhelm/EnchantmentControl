@@ -1,6 +1,8 @@
 package enchantmentcontrol.core;
 
 import enchantmentcontrol.compat.CompatUtil;
+import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.config.EarlyConfigReader;
 import fermiumbooter.FermiumRegistryAPI;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
@@ -26,6 +28,7 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 			return true;
 		});
 		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.vanilla.creativecanapplyoverride.json");
+		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.vanilla.etablemaxlvl.json", () -> EarlyConfigReader.getInt("Enchantment Table Max Lvl", ConfigHandler.etable.maxLvl) >= 0);
 		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.contenttweaker.json", CompatUtil.contenttweaker::isLoaded);
 		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.crafttweaker.json", () -> Loader.isModLoaded("crafttweaker"));
 	}

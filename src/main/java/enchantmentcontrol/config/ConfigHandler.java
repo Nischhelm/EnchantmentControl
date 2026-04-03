@@ -83,6 +83,10 @@ public class ConfigHandler {
 	@Config.Name("Anvil Mechanics")
 	public static AnvilConfig anvil = new AnvilConfig();
 
+	@Config.Comment("Options for Enchantment Table Mechanics")
+	@Config.Name("Enchantment Table Mechanics")
+	public static EnchTableConfig etable = new EnchTableConfig();
+
 	@Mod.EventBusSubscriber(modid = EnchantmentControl.MODID)
 	private static class EventHandler {
 		@SubscribeEvent
