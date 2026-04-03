@@ -38,19 +38,19 @@ public class ItemTypeConfigProvider {
 
     // ---------------- INIT ----------------
 
+    private static final List<String> oldSMETypes = Arrays.asList("Combat Weapon", "Damageable", "Golden Apple", "Combat Tool", "Combat Axe", "Tool Axe", "Tool Pickaxe", "Tool Hoe", "Combat Sword", "Tool Shovel", "Combat Shield", "Combat", "All Tools", "All", "None");
+
     public static void initRegisteredItemTypesFromConfig(){
-        registeredMatchers.put("ANY_TYPE", new EnumEnchantmentTypeMatcher("ANY_TYPE", EnumEnchantmentType.ALL));
-        registeredMatchers.put("ARMOR", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR));
-        registeredMatchers.put("ARMOR_HEAD", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_HEAD));
-        registeredMatchers.put("ARMOR_CHEST", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_CHEST));
-        registeredMatchers.put("ARMOR_LEGS", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_LEGS));
-        registeredMatchers.put("ARMOR_FEET", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.ARMOR_FEET));
-        registeredMatchers.put("SWORD", new EnumEnchantmentTypeMatcher("SWORD", EnumEnchantmentType.WEAPON));
-        registeredMatchers.put("TOOL", new EnumEnchantmentTypeMatcher("TOOL", EnumEnchantmentType.DIGGER));
-        registeredMatchers.put("FISHING_ROD", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.FISHING_ROD));
-        registeredMatchers.put("BREAKABLE", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.BREAKABLE));
-        registeredMatchers.put("BOW", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.BOW));
-        registeredMatchers.put("WEARABLE", new EnumEnchantmentTypeMatcher(EnumEnchantmentType.WEARABLE));
+        for (EnumEnchantmentType registeredEnum : EnumEnchantmentType.values()){
+            String rename = registeredEnum.name();
+            switch(rename){
+                case "ALL": rename = "ANY_TYPE"; break;
+                case "SWORD": rename = "WEAPON"; break;
+                case "DIGGER": rename = "TOOL"; break;
+            }
+            if (oldSMETypes.contains(rename)) continue;
+            registeredMatchers.put(rename, new EnumEnchantmentTypeMatcher(rename, registeredEnum));
+        }
 
         registeredMatchers.put("ANY", new BooleanTypeMatcher("ANY", true));
         registeredMatchers.put("AXE", new InstanceofTypeMatcher("AXE", ItemAxe.class, Items.IRON_AXE));
