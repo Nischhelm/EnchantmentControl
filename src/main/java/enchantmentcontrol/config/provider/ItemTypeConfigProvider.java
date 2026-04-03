@@ -310,16 +310,39 @@ public class ItemTypeConfigProvider {
                 byName.get("SHOVEL").remove(entry.getKey());
                 byName.computeIfAbsent("TOOL", k -> new HashSet<>()).add(entry.getKey());
             }
+            //DIGGER is TOOL
+            if(entry.getValue().contains("DIGGER")){
+                byName.get("DIGGER").remove(entry.getKey());
+                byName.computeIfAbsent("TOOL", k -> new HashSet<>()).add(entry.getKey());
+            }
+            //SWORD is WEAPON
+            if(entry.getValue().contains("SWORD")){
+                byName.get("SWORD").remove(entry.getKey());
+                byName.computeIfAbsent("WEAPON", k -> new HashSet<>()).add(entry.getKey());
+            }
+            //Both BATTLEAXE and WEAPON -> only WEAPON
+            if(entry.getValue().contains("BATTLEAXE") && entry.getValue().contains("WEAPON")){
+                byName.get("BATTLEAXE").remove(entry.getKey());
+            }
+            //Only use ANY as catchall
             if(entry.getValue().contains("ANY")) removeFromAllExcept(byName, entry.getKey(), "ANY");
-            else if(entry.getValue().contains("ANY_TYPE")) removeFromAllExcept(byName, entry.getKey(), "ANY_TYPE");
+            else if(entry.getValue().contains("ANY_TYPE") || entry.getValue().contains("ALL") || entry.getValue().contains("ALL_TYPES") || entry.getValue().contains("ALL_ITEMS")){
+                //ALL is vanilla, ALL_TYPES and ALL_ITEMS is new SME
+                removeFromAllExcept(byName, entry.getKey(), "ANY");
+                byName.computeIfAbsent("ANY", k -> new HashSet<>()).add(entry.getKey());
+            }
             //Vanilla:
-            else if(entry.getValue().contains("ALL")) removeFromAllExcept(byName, entry.getKey(), "ALL");
             else if(entry.getValue().contains("BREAKABLE")) removeFromAllExcept(byName, entry.getKey(), "BREAKABLE");
             else if(entry.getValue().contains("WEARABLE")) removeFromAllExcept(byName, entry.getKey(), "WEARABLE");
-            //New SME
-            else if(entry.getValue().contains("ALL_TYPES")) removeFromAllExcept(byName, entry.getKey(), "ALL_TYPES");
-            else if(entry.getValue().contains("ALL_ITEMS")) removeFromAllExcept(byName, entry.getKey(), "ALL_ITEMS");
         }
+
+        //Remove enums that shouldn't be used at all
+        byName.remove("SWORD");
+        byName.remove("DIGGER");
+        byName.remove("ANY_TYPE");
+        byName.remove("ALL");
+        byName.remove("ALL_TYPES");
+        byName.remove("ALL_ITEMS");
     }
 
     private static void removeFromAllExcept(Map<String, Set<Enchantment>> validMatchers, Enchantment enchantment, String matcherName){
