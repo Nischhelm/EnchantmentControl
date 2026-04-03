@@ -25,6 +25,7 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 			graphClasses(); //this is a good position in the loading process, so we do it here, right during MC init while early jsons are enqueued
 			return true;
 		});
+		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.vanilla.creativecanapplyoverride.json");
 		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.contenttweaker.json", CompatUtil.contenttweaker::isLoaded);
 		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.crafttweaker.json", () -> Loader.isModLoaded("crafttweaker"));
 	}

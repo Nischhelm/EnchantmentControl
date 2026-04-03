@@ -44,6 +44,11 @@ public class ItemTypeConfig {
     @Config.Comment("Whenever enchantments are checked against items to possibly apply the enchantment, the rules in here are checked, to a modifiably varying degree.")
     @Config.Name("General")
     public GeneralTypeConfig general = new GeneralTypeConfig();
+
+    @Config.Comment("Allow creative mode ignoring the canApply-AtEnchTable check for items matching the enchantment in the ANVIL, the /enchant CMD, both or neither. Vanilla default: ANVIL")
+    @Config.Name("Creative Skips Item Check")
+    public EnumCreativeAllowed creativeOptions = EnumCreativeAllowed.NONE;
+    public enum EnumCreativeAllowed { BOTH, ANVIL, CMD, NONE};
     
     public static class GeneralTypeConfig {
         @Config.Comment("Global Toggle to disable the entire General Item Types category")
