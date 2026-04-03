@@ -110,6 +110,7 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
 
     @WrapMethod(method = "canApplyTogether")
     protected boolean ec_canApplyTogether(Enchantment ench, Operation<Boolean> original) {
+        if(!ConfigHandler.incompatibleEnabled) return original.call(ench);
         if(!ConfigHandler.dev.printIncompats && EnchantmentControl.loadingComplete) return IncompatibleConfigProvider.areCompatible(this, ench);
         return original.call(ench);
     }

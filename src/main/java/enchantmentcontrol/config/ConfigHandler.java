@@ -33,6 +33,10 @@ public class ConfigHandler {
 	@Config.Name(ConfigRef.INCOMPAT_CFG_NAME)
 	public static String[] incompatibleGroups = {};
 
+	@Config.Comment("Global Toggle to disable the entire Incompatible groups override")
+	@Config.Name("Incompatible Groups Enabled")
+	public static boolean incompatibleEnabled = true;
+
 	@Config.Comment({
 			"Override vanilla rarity weights (COMMON = 10, UNCOMMON = 5, RARE = 2, VERY_RARE = 1)",
 			"or define your own rarities with their own weights here.",
