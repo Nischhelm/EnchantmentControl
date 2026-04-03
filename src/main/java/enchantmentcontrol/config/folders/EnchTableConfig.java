@@ -20,4 +20,10 @@ public class EnchTableConfig {
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablealwaysreroll.json", defaultValue = false)
     public boolean alwaysReroll = false;
+
+    @Config.Comment("Shows the enchantment clue directly in the GUI of the enchantment table instead of needing to hover.")
+    @Config.Name("Preview Enchantment Clue")
+    @Config.RequiresMcRestart
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablepreviewclue.json", defaultValue = false)
+    public boolean previewClue = false;
 }
