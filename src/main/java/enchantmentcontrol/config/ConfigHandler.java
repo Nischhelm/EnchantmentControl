@@ -64,7 +64,7 @@ public class ConfigHandler {
 			"  mob: check against 1 or more mob registry names ",
 			"  class: check if given class is in java class hierarchy of the mob",
 			"Examples:",
-			" S:LYCANITE=modid, lycanitesmobs",
+			"  S:LYCANITE=modid, lycanitesmobs",
 			"  S:DRAGON=mob, minecraft:ender_dragon, iceandfire:firedragon, iceandfire:icedragon",
 			"  S:ANIMAL=class, net.minecraft.entity.EntityAgeable"
 	})
