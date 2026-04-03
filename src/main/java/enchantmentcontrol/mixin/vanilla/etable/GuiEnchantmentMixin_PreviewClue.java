@@ -43,7 +43,7 @@ public abstract class GuiEnchantmentMixin_PreviewClue extends GuiContainer {
         int lvl = this.container.worldClue[l];
         Enchantment enchantment = Enchantment.getEnchantmentByID(this.container.enchantClue[l]);
         if(enchantment == null) return original.call(instance, fontRendererIn, length);
-        return I18n.format(TextFormatting.WHITE + enchantment.getTranslatedName(lvl));
+        return I18n.format(enchantment.getTranslatedName(lvl));
     }
 
     @ModifyReceiver(
