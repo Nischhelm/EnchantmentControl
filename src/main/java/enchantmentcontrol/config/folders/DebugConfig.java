@@ -22,7 +22,7 @@ public class DebugConfig {
     public boolean printLoaded = false;
 
     @Config.Comment({
-            "If enabled, using \"Print Default Item Types\" will also print all enchants that have custom behavior for general or anvil item application.",
+            "If enabled, using \"Print Default Item Types\" will also print all enchants and items that have custom behavior for general or anvil item application.",
             " Prints go to each blacklist. Will also automatically turn them into whitelists by untoggling \"Allow Modded Behavior\"",
             "This option exists to make it easier for the few wanting full control over item types to see which enchantments have overriding behavior to account for"
     })

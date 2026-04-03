@@ -355,6 +355,7 @@ public class ItemTypeConfigProvider {
     public static boolean probe = false;
     public static boolean probeAnvil = false; //needs to be a second boolean cause canApplyAtEnch runs inside canApply
     private static void printDefaultBlacklist() {
+        List<String> itemBlacklist = new ArrayList<>();
         List<String> blacklist = new ArrayList<>();
         List<String> blacklistAnvil = new ArrayList<>();
 
@@ -371,6 +372,17 @@ public class ItemTypeConfigProvider {
             if(probeAnvil) blacklistAnvil.add(loc.toString());
         }
 
+        for(Item item : Item.REGISTRY){
+            ResourceLocation loc = item.getRegistryName();
+            if(loc == null) continue;
+
+            boolean hasOverride = false;
+            try {
+                hasOverride = !Item.class.getName().equals(item.getClass().getMethod("canApplyAtEnchantingTable", ItemStack.class, Enchantment.class).getDeclaringClass().getName());
+            } catch (Exception ignored){}
+            if(hasOverride) itemBlacklist.add(loc.toString());
+        }
+
         String[] outarr = blacklist.toArray(new String[0]);
         EnchantmentControl.CONFIG.get("general.item types.general", "Blacklist", ConfigHandler.itemTypes.general.blacklist).set(outarr);
         ConfigHandler.itemTypes.general.blacklist = outarr;
@@ -382,6 +394,12 @@ public class ItemTypeConfigProvider {
         ConfigHandler.itemTypes.anvil.blacklist = outarrAnv;
         EnchantmentControl.CONFIG.get("general.item types.anvil", "Allow Modded Enchantment Behaviors", ConfigHandler.itemTypes.anvil.allowCustomEnchantments).set(false);
         ConfigHandler.itemTypes.anvil.allowCustomEnchantments = false;
+
+        String[] outarrItem = itemBlacklist.toArray(new String[0]);
+        EnchantmentControl.CONFIG.get("general.item types", "Item Blacklist", ConfigHandler.itemTypes.blacklist).set(outarrItem);
+        ConfigHandler.itemTypes.blacklist = outarrItem;
+        EnchantmentControl.CONFIG.get("general.item types", "Allow Modded Item Behaviors", ConfigHandler.itemTypes.allowCustomItems).set(false);
+        ConfigHandler.itemTypes.allowCustomItems = false;
     }
 }
 
