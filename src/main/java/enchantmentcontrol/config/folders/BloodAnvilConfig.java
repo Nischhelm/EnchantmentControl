@@ -5,10 +5,12 @@ import net.minecraftforge.common.config.Config;
 public class BloodAnvilConfig {
     @Config.Comment("Enables the Blood Anvil, a Block similar to the anvil which allows to move enchants from one item to another.")
     @Config.Name("Enabled")
+    @Config.RequiresMcRestart
     public boolean enabled = true;
 
     @Config.Comment("How many XP Levels using the Blood Anvil will cost, flat")
     @Config.Name("XP Level Cost")
+    @Config.RangeInt(min = 0)
     public int cost = 100;
 
     @Config.Comment("If enabled, will calculate the total cost of the enchantment move depending on the config defined anvil formulas for calculating xp costs")
