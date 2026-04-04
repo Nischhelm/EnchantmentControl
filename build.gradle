@@ -65,6 +65,8 @@ dependencies {
     compileOnly fg.deobf("curse.maven:so-many-enchantments-${sme_version}")
     compileOnly fg.deobf("curse.maven:contenttweaker-${contenttweaker_version}")
     implementation fg.deobf("curse.maven:jei-${jei_version}")
+    implementation fg.deobf("curse.maven:enchdesc-250419:2898966")
+    compileOnly fg.deobf("curse.maven:enchctrl-315721:2791638")
 
     compileOnly fg.deobf("CraftTweaker2:CraftTweaker2-${crafttweaker_version}")
     compileOnly fg.deobf("CraftTweaker2:ZenScript:${zs_version}")

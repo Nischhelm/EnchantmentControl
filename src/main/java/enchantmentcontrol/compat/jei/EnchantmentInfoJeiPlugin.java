@@ -1,5 +1,6 @@
 package enchantmentcontrol.compat.jei;
 
+import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
@@ -16,6 +17,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 
@@ -125,6 +127,14 @@ public class EnchantmentInfoJeiPlugin implements IModPlugin {
 
         if(ConfigHandler.compat.jei.jeiEnchIdInfo && enchantment.getRegistryName() != null)
             desc.add(I18n.format("jei.enchantmentcontrol.id.desc", I18n.format(enchantment.getRegistryName().toString())));
+
+        if (ConfigHandler.compat.jei.jeiDescriptionInfo && CompatUtil.enchdesc.isLoaded()) {
+            ResourceLocation loc = enchantment.getRegistryName();
+            if(loc != null) {
+                desc.add("");
+                desc.add(TextFormatting.DARK_GRAY + I18n.format(String.format("enchantment.%s.%s.desc", loc.getNamespace(), loc.getPath())));
+            }
+        }
 
         if (!desc.stream().allMatch(String::isEmpty)) {
             desc.add(0, I18n.format("jei.enchantmentcontrol.name.desc", I18n.format(enchantment.getTranslatedName(lvl))));

@@ -8,6 +8,7 @@ public class CompatUtil {
 
     public static final LoadedContainer somanyenchantments = new LoadedContainer("somanyenchantments");
     public static final LoadedContainer contenttweaker = new LoadedContainer("contenttweaker");
+    public static final LoadedContainer enchdesc = new LoadedContainer("enchdesc");
 
     public static boolean versionInRange(LoadedContainer container, String version) {
         if (!container.isLoaded()) return false;

@@ -32,15 +32,20 @@ public class CompatConfig {
         @Config.RequiresMcRestart
         public boolean jeiSlotInfo = false;
 
+        @Config.Comment("Adds information about xp price (when on book/when on item) on anvil and potential emerald price range on Librarians to enchanted books in JEI")
+        @Config.Name("Add JEI XP & Emerald Price Info")
+        @Config.RequiresMcRestart
+        public boolean jeiXPEmeraldPriceInfo = false;
+
         @Config.Comment("Adds information about enchantability levels to enchanted books in JEI")
         @Config.Name("Add JEI Enchantability Info")
         @Config.RequiresMcRestart
         public boolean jeiEnchantabilityInfo = true;
 
-        @Config.Comment("Adds information about xp price (when on book/when on item) on anvil and potential emerald price range on Librarians to enchanted books in JEI")
-        @Config.Name("Add JEI XP & Emerald Price Info")
+        @Config.Comment("Adds information about enchantment descriptions to enchanted books in JEI")
+        @Config.Name("Add JEI Enchantment Description Info")
         @Config.RequiresMcRestart
-        public boolean jeiXPEmeraldPriceInfo = false;
+        public boolean jeiDescriptionInfo = true;
 
         @Config.Comment("Adds information about enchantment id (modid:enchid) to enchanted books in JEI")
         @Config.Name("Add JEI Enchantment Id Info")
