@@ -13,7 +13,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerEnchantment;
 import net.minecraft.util.EnchantmentNameParts;
-import net.minecraft.util.text.TextFormatting;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

@@ -1,8 +1,6 @@
 package enchantmentcontrol.compat.jei;
 
-import com.sun.imageio.plugins.common.I18N;
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.mixin.vanilla.accessor.EnchantmentAccessor;
