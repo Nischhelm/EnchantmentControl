@@ -9,26 +9,26 @@ public class EnchTableConfig {
     @Config.Comment({
             "Max level the vanilla enchanting table can roll. ",
             "Only works in steps of 2.",
-            "Set to -1 to disable (requires restart)"
+            "Set to -1 to disable mixin (requires restart)"
     })
-    @Config.Name("Enchantment Table Max Lvl")
+    @Config.Name("(MixinToggle) Enchantment Table Max Lvl")
     @Config.RangeInt(min = -1)
     public int maxLvl = 30;
 
     @Config.Comment("Restores older minecraft versions behavior of rolling new enchantments whenever the item gets placed fresh into the enchantment table.")
-    @Config.Name("Always reroll table")
+    @Config.Name("(MixinToggle) Always reroll table")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablealwaysreroll.json", defaultValue = false)
     public boolean alwaysReroll = false;
 
     @Config.Comment("Shows the enchantment clue directly in the GUI of the enchantment table instead of needing to hover.")
-    @Config.Name("Preview Enchantment Clue")
+    @Config.Name("(MixinToggle) Preview Enchantment Clue")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablepreviewclue.json", defaultValue = false)
     public boolean previewClue = false;
 
     @Config.Comment("Allows to enchant already enchanted items on enchanting table. This will overwrite existing enchants.")
-    @Config.Name("Allow Re-Enchant")
+    @Config.Name("(MixinToggle) Allow Re-Enchant")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablereenchant.json", defaultValue = false)
     public boolean allowReEnchant = false;

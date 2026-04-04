@@ -45,10 +45,14 @@ public class ItemTypeConfig {
     @Config.Name("General")
     public GeneralTypeConfig general = new GeneralTypeConfig();
 
-    @Config.Comment("Allow creative mode ignoring the canApply-AtEnchTable check for items matching the enchantment in the ANVIL, the /enchant CMD, both or neither. Vanilla default: ANVIL")
-    @Config.Name("Creative Skips Item Check")
+    @Config.Comment({
+            "Allow creative mode to ignore the canApply-AtEnchTable check for items matching the enchantment in the ANVIL, the /enchant CMD, both or neither. ",
+            "Vanilla default: ANVIL",
+            "Set to ANVIL to disable mixin (requires restart)"
+    })
+    @Config.Name("(MixinToggle) Creative Skips Item Check")
     public EnumCreativeAllowed creativeOptions = EnumCreativeAllowed.NONE;
-    public enum EnumCreativeAllowed { BOTH, ANVIL, CMD, NONE};
+    public enum EnumCreativeAllowed { BOTH, ANVIL, CMD, NONE}
     
     public static class GeneralTypeConfig {
         @Config.Comment("Global Toggle to disable the entire General Item Types category")
