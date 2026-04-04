@@ -123,9 +123,12 @@ public class EnchantmentInfoJeiPlugin implements IModPlugin {
             int minEnch = enchantment.getMinEnchantability(lvl);
             int maxEnchActual = enchantment.getMaxEnchantability(lvl);
             int maxEnch = lvl >= enchantment.getMaxLevel() ? maxEnchActual : enchantment.getMinEnchantability(lvl + 1) - 1;
-            if(maxEnch >= minEnch)
-                desc.add(I18n.format("jei.enchantmentcontrol.enchantability.desc", enchantment.getMinEnchantability(lvl), maxEnch, maxEnchActual));
-            else
+            if(maxEnch >= minEnch) {
+                if(maxEnch != maxEnchActual)
+                    desc.add(I18n.format("jei.enchantmentcontrol.enchantability.desc", enchantment.getMinEnchantability(lvl), maxEnch, maxEnchActual));
+                else
+                    desc.add(I18n.format("jei.enchantmentcontrol.enchantability.normal.desc", enchantment.getMinEnchantability(lvl), maxEnch));
+            }else
                 desc.add(I18n.format("jei.enchantmentcontrol.enchantability.broken.desc"));
         }
 
