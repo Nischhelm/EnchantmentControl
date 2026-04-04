@@ -6,13 +6,12 @@ import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import org.spongepowered.asm.mixin.Unique;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class EnchantCountTag {
+public class ReEnchantUtil {
     public static final String KEY_ENCHANT_COUNT = "EC_EnchantCount";
 
     public static int getEnchantCount(ItemStack stack) {

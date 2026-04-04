@@ -3,7 +3,7 @@ package enchantmentcontrol.mixin.vanilla.etable;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.util.EnchantCountTag;
+import enchantmentcontrol.util.ReEnchantUtil;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ContainerEnchantment;
@@ -25,7 +25,7 @@ public abstract class ContainerEnchantmentMixin_ReEnchant {
         if(original) return true;
         if(!stack.getItem().isEnchantable(stack)) return false; //counters stack.isItemEnchantable
         if(stack.isItemEnchanted()) { //allows isEnchanted too
-            return ConfigHandler.etable.reEnchantMaxTimes <= 0 || EnchantCountTag.getEnchantCount(stack) < ConfigHandler.etable.reEnchantMaxTimes;
+            return ConfigHandler.etable.reEnchantMaxTimes <= 0 || ReEnchantUtil.getEnchantCount(stack) < ConfigHandler.etable.reEnchantMaxTimes;
         } else
             return false;
     }
@@ -35,7 +35,7 @@ public abstract class ContainerEnchantmentMixin_ReEnchant {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/ContainerEnchantment;getEnchantmentList(Lnet/minecraft/item/ItemStack;II)Ljava/util/List;")
     )
     private List<EnchantmentData> ec_disallowIllegallReEnchant_simulate(List<EnchantmentData> rolledEnchants, @Local(name="itemstack") ItemStack stack) {
-        return EnchantCountTag.reenchant(rolledEnchants, stack, true);
+        return ReEnchantUtil.reenchant(rolledEnchants, stack, true);
     }
 
     @ModifyExpressionValue(
@@ -43,7 +43,7 @@ public abstract class ContainerEnchantmentMixin_ReEnchant {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/ContainerEnchantment;getEnchantmentList(Lnet/minecraft/item/ItemStack;II)Ljava/util/List;")
     )
     private List<EnchantmentData> ec_disallowIllegallReEnchant_actual(List<EnchantmentData> rolledEnchants, @Local(name="itemstack") ItemStack stack) {
-        return EnchantCountTag.reenchant(rolledEnchants, stack, false);
+        return ReEnchantUtil.reenchant(rolledEnchants, stack, false);
     }
 
     @Inject(
@@ -52,6 +52,6 @@ public abstract class ContainerEnchantmentMixin_ReEnchant {
     )
     private void ec_incrementEnchantCount(EntityPlayer player, int id, CallbackInfoReturnable<Boolean> cir, @Local(name = "itemstack") ItemStack stack){
         if(player.getRNG().nextFloat() > ConfigHandler.etable.reEnchantSkipIncrementChance)
-            EnchantCountTag.setEnchantCount(stack, EnchantCountTag.getEnchantCount(stack) + 1);
+            ReEnchantUtil.setEnchantCount(stack, ReEnchantUtil.getEnchantCount(stack) + 1);
     }
 }
