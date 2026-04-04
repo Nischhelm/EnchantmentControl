@@ -1,10 +1,11 @@
 package enchantmentcontrol.mixin.vanilla.etable;
 
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiEnchantment;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -26,22 +27,22 @@ public abstract class GuiEnchantmentMixin_PreviewClue extends GuiContainer {
         super(inventorySlotsIn);
     }
 
-    @WrapWithCondition(
-            method = "drawGuiContainerBackgroundLayer",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/util/EnchantmentNameParts;reseedRandomGenerator(J)V")
-    )
-    private boolean ec_previewClue(EnchantmentNameParts instance, long seed){
-        return false;
-    }
-
     @WrapOperation(
             method = "drawGuiContainerBackgroundLayer",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/util/EnchantmentNameParts;generateNewRandomName(Lnet/minecraft/client/gui/FontRenderer;I)Ljava/lang/String;")
     )
-    private String ec_previewClue(EnchantmentNameParts instance, FontRenderer fontRendererIn, int length, Operation<String> original, @Local(name = "l") int l){
+    private String ec_previewClue(
+            EnchantmentNameParts instance,
+            FontRenderer fontRendererIn, int length,
+            Operation<String> original,
+            @Local(name = "l") int l,
+            @Share("hasClue")LocalBooleanRef hasClue
+    ){
+        hasClue.set(false);
         int lvl = this.container.worldClue[l];
         Enchantment enchantment = Enchantment.getEnchantmentByID(this.container.enchantClue[l]);
         if(enchantment == null) return original.call(instance, fontRendererIn, length);
+        hasClue.set(true);
         return I18n.format(enchantment.getTranslatedName(lvl));
     }
 
@@ -49,7 +50,11 @@ public abstract class GuiEnchantmentMixin_PreviewClue extends GuiContainer {
             method = "drawGuiContainerBackgroundLayer",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;drawSplitString(Ljava/lang/String;IIII)V")
     )
-    private FontRenderer ec_previewClue(FontRenderer instance, String str, int x, int y, int wrapWidth, int textColor){
-        return mc.fontRenderer;
+    private FontRenderer ec_previewClue(
+            FontRenderer originalReceiver,
+            String str, int x, int y, int wrapWidth, int textColor,
+            @Share("hasClue")LocalBooleanRef hasClue
+    ){
+        return hasClue.get() ? mc.fontRenderer : originalReceiver;
     }
 }
