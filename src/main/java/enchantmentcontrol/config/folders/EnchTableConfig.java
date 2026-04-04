@@ -41,6 +41,7 @@ public class EnchTableConfig {
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablereenchant.json", defaultValue = false)
     @MixinConfig.CompatHandling(modid = "apotheosis", desired = false, warnIngame = false, reason = "Incompatible with Apotheosis")
+    @MixinConfig.CompatHandling(modid = "somanyenchantments", targetVersionRange = "[1.0.0,)", desired = false, warnIngame = false, reason = "Incompatible with New So Many Enchantments")
     public boolean allowReEnchant = true;
 
     @Config.Comment({
