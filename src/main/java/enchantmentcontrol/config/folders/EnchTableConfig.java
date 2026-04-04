@@ -26,4 +26,10 @@ public class EnchTableConfig {
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablepreviewclue.json", defaultValue = false)
     public boolean previewClue = false;
+
+    @Config.Comment("Allows to enchant already enchanted items on enchanting table. This will overwrite existing enchants.")
+    @Config.Name("Allow Re-Enchant")
+    @Config.RequiresMcRestart
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablereenchant.json", defaultValue = false)
+    public boolean allowReEnchant = false;
 }
