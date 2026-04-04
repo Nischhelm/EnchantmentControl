@@ -87,6 +87,10 @@ public class ConfigHandler {
 	@Config.Name("Enchantment Table Mechanics")
 	public static EnchTableConfig etable = new EnchTableConfig();
 
+	@Config.Comment("Mod Compatibility")
+	@Config.Name("Compat")
+	public static CompatConfig compat = new CompatConfig();
+
 	@Mod.EventBusSubscriber(modid = EnchantmentControl.MODID)
 	private static class EventHandler {
 		@SubscribeEvent
