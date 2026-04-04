@@ -2,18 +2,18 @@ package enchantmentcontrol.mixin.vanilla.etable;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.enchantment.Enchantment;
+import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.util.EnchantCountTag;
 import net.minecraft.enchantment.EnchantmentData;
-import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ContainerEnchantment;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Mixin(ContainerEnchantment.class)
 public abstract class ContainerEnchantmentMixin_ReEnchant {
@@ -22,23 +22,36 @@ public abstract class ContainerEnchantmentMixin_ReEnchant {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isItemEnchantable()Z")
     )
     private boolean ec_allowReEnchanting(boolean original, @Local ItemStack stack) {
-        return original || (stack.getItem().isEnchantable(stack) && stack.isItemEnchanted()); //counters stack.isItemEnchantable to allow isEnchanted
+        if(original) return true;
+        if(!stack.getItem().isEnchantable(stack)) return false; //counters stack.isItemEnchantable
+        if(stack.isItemEnchanted()) { //allows isEnchanted too
+            return ConfigHandler.etable.reEnchantMaxTimes <= 0 || EnchantCountTag.getEnchantCount(stack) < ConfigHandler.etable.reEnchantMaxTimes;
+        } else
+            return false;
     }
 
     @ModifyExpressionValue(
-            method = {"onCraftMatrixChanged", "enchantItem"},
+            method = {"onCraftMatrixChanged"},
             at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/ContainerEnchantment;getEnchantmentList(Lnet/minecraft/item/ItemStack;II)Ljava/util/List;")
     )
-    private List<EnchantmentData> ec_disallowIllegallReEnchant(List<EnchantmentData> rolledEnchants, @Local(name="itemstack") ItemStack stack) {
-        Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(stack);
-        return rolledEnchants.stream().filter(enchD -> ec$isLegallReEnchant(enchD.enchantment, map)).collect(Collectors.toList());
+    private List<EnchantmentData> ec_disallowIllegallReEnchant_simulate(List<EnchantmentData> rolledEnchants, @Local(name="itemstack") ItemStack stack) {
+        return EnchantCountTag.reenchant(rolledEnchants, stack, true);
     }
 
-    @Unique
-    private static boolean ec$isLegallReEnchant(Enchantment ench, Map<Enchantment, Integer> origEnchs) {
-        if(origEnchs.containsKey(ench)) return false; //already in
-        if(origEnchs.keySet().stream().anyMatch(origE -> !origE.isCompatibleWith(ench))) return false; //incompat with one of previous
+    @ModifyExpressionValue(
+            method = {"enchantItem"},
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/ContainerEnchantment;getEnchantmentList(Lnet/minecraft/item/ItemStack;II)Ljava/util/List;")
+    )
+    private List<EnchantmentData> ec_disallowIllegallReEnchant_actual(List<EnchantmentData> rolledEnchants, @Local(name="itemstack") ItemStack stack) {
+        return EnchantCountTag.reenchant(rolledEnchants, stack, false);
+    }
 
-        return true;
+    @Inject(
+            method = "enchantItem",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;onEnchant(Lnet/minecraft/item/ItemStack;I)V")
+    )
+    private void ec_incrementEnchantCount(EntityPlayer player, int id, CallbackInfoReturnable<Boolean> cir, @Local(name = "itemstack") ItemStack stack){
+        if(player.getRNG().nextFloat() > ConfigHandler.etable.reEnchantSkipIncrementChance)
+            EnchantCountTag.setEnchantCount(stack, EnchantCountTag.getEnchantCount(stack) + 1);
     }
 }
