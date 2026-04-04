@@ -33,7 +33,7 @@ public abstract class ContainerRepairMixin_NoPriceIncrease {
             method = "updateRepairOutput",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;setRepairCost(I)V")
     )
-    private boolean ec_updateRepairOutput_removeCap(
+    private boolean ec_updateRepairOutput_noAnvilCostIncrease(
             ItemStack instance, int cost,
             @Local(name = "map") Map<Enchantment, Integer> modifiedEnchants,
             @Share("originalMap") LocalRef<Map<Enchantment, Integer>> originalEnchants
