@@ -2,21 +2,20 @@ package enchantmentcontrol.util;
 
 import com.google.gson.annotations.SerializedName;
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.util.vanillabehavior.ArthropodBehavior;
+import enchantmentcontrol.util.vanillabehavior.ProtectionBehavior;
+import enchantmentcontrol.util.vanillabehavior.SharpnessBehavior;
+import enchantmentcontrol.util.vanillabehavior.ThornsBehavior;
 import enchantmentcontrol.util.vanillasystem.ISystemOverride;
 import enchantmentcontrol.util.vanillasystem.VanillaSystem;
 import enchantmentcontrol.util.vanillasystem.VanillaSystemOverride;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.logging.log4j.util.TriConsumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,7 +23,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 public class EnchantmentInfo {
     // -------- STATIC LOOKUP --------
@@ -152,11 +150,11 @@ public class EnchantmentInfo {
     @SerializedName("doublePrice")
     public boolean doublePrice;
 
-    //TODO: do i do anything with this? maybe delete or implement some default behavior
-    public BiFunction<Integer, EnumCreatureAttribute, Float> sharpnessBehavior;
-    public BiFunction<Integer, DamageSource, Integer> protectionBehavior;
-    public TriConsumer<EntityLivingBase, Entity, Integer> arthropodBehavior;
-    public TriConsumer<EntityLivingBase, Entity, Integer> thornsBehavior;
+    //More control via ContentTweaker  using calcDamageByCreature, calcModifierDamage, onEntityDamaged, onUserHurt
+    public SharpnessBehavior sharpnessBehavior;
+    public ProtectionBehavior protectionBehavior;
+    public ArthropodBehavior arthropodBehavior;
+    public ThornsBehavior thornsBehavior;
 
     //-------- CONSTRUCTOR --------
 

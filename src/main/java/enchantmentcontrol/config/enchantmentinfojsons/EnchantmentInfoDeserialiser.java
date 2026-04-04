@@ -3,6 +3,10 @@ package enchantmentcontrol.config.enchantmentinfojsons;
 import com.google.gson.*;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.MaxEnchantabilityMode;
+import enchantmentcontrol.util.vanillabehavior.ArthropodBehavior;
+import enchantmentcontrol.util.vanillabehavior.ProtectionBehavior;
+import enchantmentcontrol.util.vanillabehavior.SharpnessBehavior;
+import enchantmentcontrol.util.vanillabehavior.ThornsBehavior;
 import enchantmentcontrol.util.vanillasystem.ISystemOverride;
 import enchantmentcontrol.util.vanillasystem.VanillaSystem;
 import enchantmentcontrol.util.vanillasystem.VanillaSystemOverride;
@@ -97,7 +101,70 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
             JsonObject vanillaSystems = jsonObj.getAsJsonObject("vanilla system overrides");
             for(VanillaSystem system : VanillaSystem.values()) {
                 Float val = getAsFloat(vanillaSystems, system.toString());
-                if(val != null) info.registerVanillaSystemOverride(system, val);
+                if (val != null) info.registerVanillaSystemOverride(system, val);
+            }
+
+
+            // sharpness behavior
+            if (vanillaSystems.has("sharpness-like behavior")) {
+                JsonObject obj = vanillaSystems.getAsJsonObject("sharpness-like behavior");
+                Float startDmg = getAsFloat(obj, "startDmg");
+                Float dmgPerLvl = getAsFloat(obj, "dmgPerLvl");
+                List<String> attributes = new ArrayList<>();
+                obj.getAsJsonArray("attributes").forEach(attr -> attributes.add(attr.getAsString()));
+                if(startDmg != null && dmgPerLvl != null && !attributes.isEmpty()) {
+                    info.sharpnessBehavior = new SharpnessBehavior(startDmg, dmgPerLvl, attributes.toArray(new String[0]));
+                }
+            }
+
+            // protection behavior
+            if (vanillaSystems.has("protection-like behavior")) {
+                JsonObject obj = vanillaSystems.getAsJsonObject("protection-like behavior");
+                Integer startProt = getAsInt(obj, "startProt");
+                Integer protPerLvl = getAsInt(obj, "protPerLvl");
+                List<String> sources = new ArrayList<>();
+                obj.getAsJsonArray("sources").forEach(source -> sources.add(source.getAsString()));
+                if(startProt != null && protPerLvl != null && !sources.isEmpty()) {
+                    info.protectionBehavior = new ProtectionBehavior(startProt, protPerLvl, sources.toArray(new String[0]));
+                }
+            }
+
+            // arthropod behavior
+            if (vanillaSystems.has("bane-of-arthropods-like behavior")) {
+                JsonObject obj = vanillaSystems.getAsJsonObject("bane-of-arthropods-like behavior");
+                Integer startAmp = getAsInt(obj, "startAmp");
+                Integer ampPerLvl = getAsInt(obj, "ampPerLvl");
+                Integer startDur = getAsInt(obj, "startDur");
+                Integer durPerLvl = getAsInt(obj, "durPerLvl");
+                String potion = getAsString(obj, "potion");
+                List<String> attributes = new ArrayList<>();
+                obj.getAsJsonArray("attributes").forEach(attr -> attributes.add(attr.getAsString()));
+
+                if(startAmp != null && ampPerLvl != null && startDur != null && durPerLvl != null && potion != null && !attributes.isEmpty()) {
+                    info.arthropodBehavior = new ArthropodBehavior()
+                            .setAmplifier(startAmp, ampPerLvl)
+                            .setDuration(startDur, durPerLvl)
+                            .setPotion(potion);
+                    attributes.forEach(attr -> info.arthropodBehavior.addCreatureAttribute(attr));
+                }
+            }
+
+            // thorns behavior
+            if (vanillaSystems.has("thorns-like behavior")) {
+                JsonObject obj = vanillaSystems.getAsJsonObject("thorns-like behavior");
+                Integer startChance = getAsInt(obj, "startChance");
+                Integer chancePerLvl = getAsInt(obj, "chancePerLvl");
+                Integer startDmgMin = getAsInt(obj, "startDmgMin");
+                Integer startDmgMax = getAsInt(obj, "startDmgMax");
+                Integer dmgPerLvl = getAsInt(obj, "dmgPerLvl");
+                Integer duraDmg = getAsInt(obj, "duraDmg");
+
+                if(startChance != null && chancePerLvl != null && startDmgMin != null && startDmgMax != null && dmgPerLvl != null && duraDmg != null) {
+                    info.thornsBehavior = new ThornsBehavior(info)
+                            .setChances(startChance, chancePerLvl)
+                            .setDamage(startDmgMin, startDmgMax, dmgPerLvl)
+                            .setDurabilityDamage(duraDmg);
+                }
             }
         }
 
@@ -164,7 +231,63 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
             if(!(entry.getValue() instanceof VanillaSystemOverride)) continue;
             vanillaSystems.addProperty(entry.getKey().toString(), ((VanillaSystemOverride)entry.getValue()).multiplier);
         }
-        return vanillaSystems;
+        return writeVanillaBehaviors(vanillaSystems, info);
+    }
+
+    @Nonnull
+    private static JsonObject writeVanillaBehaviors(JsonObject systems, EnchantmentInfo info) {
+        // sharpness behavior
+        if (info.sharpnessBehavior != null) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("startDmg", info.sharpnessBehavior.startDmg);
+            obj.addProperty("dmgPerLvl", info.sharpnessBehavior.dmgPerLvl);
+            JsonArray attrs = new JsonArray();
+            info.sharpnessBehavior.attributes.forEach(attrs::add);
+            obj.add("attributes", attrs);
+
+            systems.addProperty("sharpness-like behavior", obj.toString());
+        }
+
+        // protection behavior
+        if (info.protectionBehavior != null) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("startProt", info.protectionBehavior.startProt);
+            obj.addProperty("protPerLvl", info.protectionBehavior.protPerLvl);
+            JsonArray sources = new JsonArray();
+            info.protectionBehavior.sources.forEach(sources::add);
+            obj.add("sources", sources);
+
+            systems.addProperty("protection-like behavior", obj.toString());
+        }
+
+        // arthropod behavior
+        if (info.arthropodBehavior != null) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("startAmp", info.arthropodBehavior.startAmp);
+            obj.addProperty("ampPerLvl", info.arthropodBehavior.ampPerLevel);
+            obj.addProperty("startDur", info.arthropodBehavior.startDuration);
+            obj.addProperty("durPerLvl", info.arthropodBehavior.durationPerLevel);
+            obj.addProperty("potion", info.arthropodBehavior.potionId);
+            JsonArray attrs = new JsonArray();
+            info.arthropodBehavior.attributes.forEach(attrs::add);
+            obj.add("attributes", attrs);
+
+            systems.addProperty("bane-of-arthropods-like behavior", obj.toString());
+        }
+
+        // thorns behavior
+        if (info.thornsBehavior != null) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("startChance", info.thornsBehavior.startChance);
+            obj.addProperty("chancePerLvl", info.thornsBehavior.chancePerLevel);
+            obj.addProperty("startDmgMin", info.thornsBehavior.startDmgMin);
+            obj.addProperty("startDmgMax", info.thornsBehavior.startDmgMax);
+            obj.addProperty("dmgPerLvl", info.thornsBehavior.dmgPerLevel);
+            obj.addProperty("duraDmg", info.thornsBehavior.durabilityDmg);
+
+            systems.addProperty("thorns-like behavior", obj.toString());
+        }
+        return systems;
     }
 
     private static String getAsString(JsonObject o, String key) {
