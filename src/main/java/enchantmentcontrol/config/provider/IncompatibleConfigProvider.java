@@ -41,10 +41,8 @@ public class IncompatibleConfigProvider {
                 }
             }
         }
-        // remove the calling enchant
-        // every enchantment is incompatible with itself, this is handled by Enchantment class directly though
-        // and thus doesn't need to be in this list
-        incompatEnchs.remove(thisEnch);
+        //Every enchantment is incompatible with itself
+        incompatEnchs.add(thisEnch);
 
         return incompatEnchs;
     }
