@@ -8,6 +8,7 @@ jei.enchantmentcontrol.rarity.desc=%s%s
 jei.enchantmentcontrol.treasure.desc=§5Treasure
 jei.enchantmentcontrol.curse.desc=§cCurse
 jei.enchantmentcontrol.enchantability.desc=Enchantability: §8%d - %d §7(%d)
+jei.enchantmentcontrol.enchantability.broken.desc=§cNo Enchantability Range
 jei.enchantmentcontrol.slots.desc=Slots: §8%s
 jei.enchantmentcontrol.incompatible.desc=Incompatible: §8%s
 jei.enchantmentcontrol.itemtypes.desc=On Items: §8%s
