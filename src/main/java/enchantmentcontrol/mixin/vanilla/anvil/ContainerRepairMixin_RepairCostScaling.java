@@ -7,19 +7,33 @@ import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.util.AnvilCostUtil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerRepair;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.ForgeHooks;
 import org.apache.commons.lang3.StringUtils;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import shadows.ench.asm.EnchHooks;
 
 import java.util.Map;
 
 @Mixin(ContainerRepair.class)
-public abstract class ContainerRepairMixin_RepairCostScaling {
+public abstract class ContainerRepairMixin_RepairCostScaling {//extends Container {
+    @Shadow @Final private IInventory inputSlots;
+    @Shadow @Final private IInventory outputSlot;
+    @Shadow @Final private EntityPlayer player;
+    @Shadow public int maximumCost;
+    @Shadow public int materialCost;
+    @Shadow private String repairedItemName;
+
     @WrapOperation(
             method = "updateRepairOutput",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;setRepairCost(I)V")
@@ -83,6 +97,7 @@ public abstract class ContainerRepairMixin_RepairCostScaling {
         } else {
             ItemStack itemstack1 = itemstack.copy();
             ItemStack itemstack2 = this.inputSlots.getStackInSlot(1);
+            //EC should ec_updateRepairOutput_saveOriginalMap the result of this call:
             Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(itemstack1);
             j = j + itemstack.getRepairCost() + (itemstack2.isEmpty() ? 0 : itemstack2.getRepairCost());
             this.materialCost = 0;
@@ -147,8 +162,8 @@ public abstract class ContainerRepairMixin_RepairCostScaling {
                             int j2 = ((Integer) map1.get(enchantment1)).intValue();
                             j2 = i2 == j2 ? j2 + 1 : Math.max(j2, i2);
                             boolean flag1 = enchantment1.canApply(itemstack);
-
-                            if (this.player.capabilities.isCreativeMode || itemstack.getItem() == Items.ENCHANTED_BOOK) {
+                            //EC
+                            if (this.modifyExpressionValue$zzi000$ec_overrideCanApply(this.player.capabilities.isCreativeMode) || itemstack.getItem() == Items.ENCHANTED_BOOK) {
                                 flag1 = true;
                             }
 
@@ -163,9 +178,9 @@ public abstract class ContainerRepairMixin_RepairCostScaling {
                                 flag3 = true;
                             } else {
                                 flag2 = true;
-
-                                if (j2 > enchantment1.getMaxLevel()) {
-                                    j2 = enchantment1.getMaxLevel();
+                                //APOTHEOSIS
+                                if (j2 > EnchHooks.getMaxLevel(enchantment1)) {
+                                    j2 = EnchHooks.getMaxLevel(enchantment1);
                                 }
 
                                 map.put(enchantment1, Integer.valueOf(j2));
@@ -229,8 +244,10 @@ public abstract class ContainerRepairMixin_RepairCostScaling {
                 this.maximumCost = 39;
             }
 
+            //EC should modify the 40 here, doesnt
             if (this.maximumCost >= 40 && !this.player.capabilities.isCreativeMode) {
-                itemstack1 = ItemStack.EMPTY;
+                //APOTHEOSIS
+                itemstack1 = itemstack1;
             }
 
             if (!itemstack1.isEmpty()) {
@@ -244,6 +261,8 @@ public abstract class ContainerRepairMixin_RepairCostScaling {
                     k2 = k2 * 2 + 1;
                 }
 
+                //EC should wrapoperation this with ec_updateRepairOutput_changeRepairCostScaling
+                //EC should add condition ec_updateRepairOutput_removeCap
                 itemstack1.setRepairCost(k2);
                 EnchantmentHelper.setEnchantments(map, itemstack1);
             }
