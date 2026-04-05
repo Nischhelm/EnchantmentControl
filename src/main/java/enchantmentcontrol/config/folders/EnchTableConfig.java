@@ -35,13 +35,13 @@ public class EnchTableConfig {
     @Config.Comment({
             "Allows to enchant already enchanted items on enchanting table.",
             "This will add to existing enchants.",
-            "Incompatible with apotheosis"
+            "Incompatible with apotheosis & noexpensive"
     })
     @Config.Name("(MixinToggle) Allow Re-Enchant")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablereenchant.json", defaultValue = false)
     @MixinConfig.CompatHandling(modid = "apotheosis", desired = false, warnIngame = false, reason = "Incompatible with Apotheosis")
-    @MixinConfig.CompatHandling(modid = "somanyenchantments", targetVersionRange = "[1.0.0,)", desired = false, warnIngame = false, reason = "Incompatible with New So Many Enchantments")
+    @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompatible with No Expensive")
     public boolean allowReEnchant = true;
 
     @Config.Comment({
