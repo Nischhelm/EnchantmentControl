@@ -14,6 +14,6 @@ public abstract class ContainerRepairMixin_CanApplyCreative {
             at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerCapabilities;isCreativeMode:Z", ordinal = 0)
     )
     private boolean ec_overrideCanApply(boolean original){
-        return ConfigHandler.itemTypes.creativeOptions == ItemTypeConfig.EnumCreativeAllowed.ANVIL || ConfigHandler.itemTypes.creativeOptions == ItemTypeConfig.EnumCreativeAllowed.BOTH;
+        return original && (ConfigHandler.itemTypes.creativeOptions == ItemTypeConfig.EnumCreativeAllowed.ANVIL || ConfigHandler.itemTypes.creativeOptions == ItemTypeConfig.EnumCreativeAllowed.BOTH);
     }
 }
