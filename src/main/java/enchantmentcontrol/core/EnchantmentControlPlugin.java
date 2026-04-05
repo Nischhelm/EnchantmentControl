@@ -28,8 +28,8 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 			graphClasses(); //this is a good position in the loading process, so we do it here, right during MC init while early jsons are enqueued
 			return true;
 		});
-		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.creativecanapplyoverride.json", () -> !EarlyConfigReader.getString("Creative Skips Item Check", ConfigHandler.itemTypes.creativeOptions.toString()).equals("ANVIL"));
-		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.etablemaxlvl.json", () -> !FermiumJarScanner.isModPresent("apotheosis") && EarlyConfigReader.getInt("Enchantment Table Max Lvl", ConfigHandler.etable.maxLvl) >= 0);
+		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.creativecanapplyoverride.json", () -> !EarlyConfigReader.getString("(MixinToggle) Creative Skips Item Check", ConfigHandler.itemTypes.creativeOptions.toString()).equals("ANVIL"));
+		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.etablemaxlvl.json", () -> !FermiumJarScanner.isModPresent("apotheosis") && EarlyConfigReader.getInt("(MixinToggle) Enchantment Table Max Lvl", ConfigHandler.etable.maxLvl) >= 0);
 
 		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.contenttweaker.json", CompatUtil.contenttweaker::isLoaded);
 		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.crafttweaker.json", () -> Loader.isModLoaded("crafttweaker"));
