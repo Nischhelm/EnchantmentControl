@@ -45,7 +45,7 @@ public class ItemTypeConfigProvider {
             String rename = registeredEnum.name();
             switch(rename){
                 case "ALL": rename = "ANY_TYPE"; break;
-                case "SWORD": rename = "WEAPON"; break;
+                case "WEAPON": rename = "SWORD"; break;
                 case "DIGGER": rename = "TOOL"; break;
             }
             if (oldSMETypes.contains(rename)) continue;
