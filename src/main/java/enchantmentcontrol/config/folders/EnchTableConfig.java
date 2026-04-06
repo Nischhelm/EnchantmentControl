@@ -79,4 +79,11 @@ public class EnchTableConfig {
     })
     @Config.Name("Re-Enchant Combine Existing")
     public boolean reEnchantCombineExisting = false;
+
+    @Config.Comment({
+            "Set to true to allow items to be re-enchanted even if they already have been used on the anvil",
+            "Requires \"Allow Re-Enchant\""
+    })
+    @Config.Name("Re-Enchant Already Anviled")
+    public boolean reEnchantAlreadyAnviled = false;
 }

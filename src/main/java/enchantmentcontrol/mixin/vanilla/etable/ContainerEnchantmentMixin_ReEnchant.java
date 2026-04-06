@@ -3,6 +3,7 @@ package enchantmentcontrol.mixin.vanilla.etable;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.util.AnvilCostUtil;
 import enchantmentcontrol.util.ReEnchantUtil;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +26,7 @@ public abstract class ContainerEnchantmentMixin_ReEnchant {
         if(original) return true;
         if(!stack.getItem().isEnchantable(stack)) return false; //counters stack.isItemEnchantable
         if(stack.isItemEnchanted()) { //allows isEnchanted too
-            return ConfigHandler.etable.reEnchantMaxTimes <= 0 || ReEnchantUtil.getEnchantCount(stack) < ConfigHandler.etable.reEnchantMaxTimes;
+            return (ConfigHandler.etable.reEnchantMaxTimes <= 0 || ReEnchantUtil.getEnchantCount(stack) < ConfigHandler.etable.reEnchantMaxTimes) && (ConfigHandler.etable.reEnchantAlreadyAnviled || (stack.getRepairCost() <= 0 && AnvilCostUtil.getAnvilCount(stack) <= 0));
         } else
             return false;
     }
