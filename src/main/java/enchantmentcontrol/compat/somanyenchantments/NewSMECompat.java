@@ -2,6 +2,7 @@ package enchantmentcontrol.compat.somanyenchantments;
 
 import com.shultrea.rin.enchantments.base.EnchantmentBase;
 import com.shultrea.rin.registry.EnchantmentRegistry;
+import enchantmentcontrol.EnchantmentControl;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
@@ -159,10 +160,15 @@ public class NewSMECompat {
             }
         }
 
+        String enchName = smeEnchNames.get(ench);
+        if(enchName == null){
+            EnchantmentControl.LOGGER.warn("Didn't find new SME enchantment {} {}, skipping inferral", ench.getClass(), ench.getRegistryName()!=null ? ench.getRegistryName().toString() : "not registered");
+        }
+
         if(!forAnvil)
-            return enchT.computeIfAbsent(ench, k -> smeConfig.get("general.can apply on enchantment table and anvil", smeEnchNames.get(ench), new String[0]).getStringList());
+            return enchT.computeIfAbsent(ench, k -> smeConfig.get("general.can apply on enchantment table and anvil", enchName, new String[0]).getStringList());
         else
-            return anvil.computeIfAbsent(ench, k -> smeConfig.get("general.general.can apply additionally on anvil", smeEnchNames.get(ench), new String[0]).getStringList());
+            return anvil.computeIfAbsent(ench, k -> smeConfig.get("general.general.can apply additionally on anvil", enchName, new String[0]).getStringList());
     }
 
     public static void addNewSMETypes(Map<String, Set<Enchantment>> byName, Map<Enchantment, Set<String>> byEnchantment, Map<String, Set<Enchantment>> byNameAnvil, Map<Enchantment, Set<String>> byEnchantmentAnvil) {
