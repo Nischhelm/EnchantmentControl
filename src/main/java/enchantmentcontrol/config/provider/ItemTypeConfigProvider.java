@@ -41,6 +41,9 @@ public class ItemTypeConfigProvider {
     private static final List<String> oldSMETypes = Arrays.asList("Combat Weapon", "Damageable", "Golden Apple", "Combat Tool", "Combat Axe", "Tool Axe", "Tool Pickaxe", "Tool Hoe", "Combat Sword", "Tool Shovel", "Combat Shield", "Combat", "All Tools", "All", "None");
 
     public static void initRegisteredItemTypesFromConfig(){
+        if(CompatUtil.somanyenchantments.isLoaded() && CompatUtil.versionInRange(CompatUtil.somanyenchantments, "[1.0.0,)"))
+            NewSMECompat.addNewSMECustomTypes(); //as early as possible so others can override these. its mainly for having something available for the names
+
         for (EnumEnchantmentType registeredEnum : EnumEnchantmentType.values()){
             String rename = registeredEnum.name();
             switch(rename){

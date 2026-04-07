@@ -1,8 +1,13 @@
 package enchantmentcontrol.compat.somanyenchantments;
 
+import com.shultrea.rin.config.ModConfig;
 import com.shultrea.rin.enchantments.base.EnchantmentBase;
 import com.shultrea.rin.registry.EnchantmentRegistry;
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.config.EarlyConfigReader;
+import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
+import enchantmentcontrol.util.enchantmenttypes.CustomTypeMatcher;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
@@ -11,6 +16,7 @@ import net.minecraftforge.fml.common.Loader;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class NewSMECompat {
     private static Configuration smeConfig = null;
@@ -180,7 +186,9 @@ public class NewSMECompat {
         } catch (Exception ignored) {
             return;
         }
-        for (Enchantment ench : smeEnchants) {
+        for (EnchantmentBase ench : smeEnchants) {
+            if(!ench.isEnabled()) continue;
+            if(ench.getRegistryName() == null && EarlyConfigReader.getRegistrationBlacklist().contains(ench.getRegistryName().toString())) continue;
             //Direct copy, not being extra intelligent
             for(String smeType : getNewSMETypes(ench, false)){
                 byName.computeIfAbsent(smeType, k -> new LinkedHashSet<>()).add(ench);
@@ -191,5 +199,40 @@ public class NewSMECompat {
                 byEnchantmentAnvil.computeIfAbsent(ench, k -> new HashSet<>()).add(smeType);
             }
         }
+    }
+
+    public static void addNewSMECustomTypes(){
+        List<String> existingCustomTypeCfgs = Arrays.stream(ConfigHandler.itemTypes.customTypes).collect(Collectors.toList());
+        Set<String> existingCustomTypeNames = existingCustomTypeCfgs.stream().map(cfg -> cfg.split(";")[0].trim()).collect(Collectors.toSet());
+        String[] smeCustomTypes = ModConfig.canApply.customTypes;
+        if(smeCustomTypes.length == 0) return;
+
+        boolean cfgChanged = false;
+        for(String customType : smeCustomTypes){
+            String[] split = customType.split(";");
+            String name, regex;
+            if(split.length==2) {
+                name = split[0].trim();
+                regex = split[1].trim();
+            } else {
+                name = "";
+                regex = "";
+            }
+            //Add matcher internally
+            ItemTypeConfigProvider.registerCustomTypeMatcher(new CustomTypeMatcher(name, regex));
+
+            //Add matcher for config
+            if(!existingCustomTypeNames.contains(name)) {
+                cfgChanged = true;
+                existingCustomTypeCfgs.add(name + EnchantmentControl.SEP + " regex" + EnchantmentControl.SEP + " " + regex);
+            }
+        }
+        if(!cfgChanged) return; //Nothing added, no need to write cfg
+        String[] enchCtrlCustomTypes = existingCustomTypeCfgs.toArray(new String[0]);
+
+        //Write custom types config
+        EnchantmentControl.CONFIG.get("general.item types","Custom Item Types", new String[0]).set(enchCtrlCustomTypes);
+        ConfigHandler.itemTypes.customTypes = enchCtrlCustomTypes;
+        EnchantmentControl.configNeedsSaving = true;
     }
 }
