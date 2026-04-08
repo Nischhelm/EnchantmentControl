@@ -158,13 +158,14 @@ public class NewSMECompat {
 
     private static String[] getNewSMETypes(Enchantment ench, boolean forAnvil) {
         if(smeConfig == null){
+            File configFile = new File(Loader.instance().getConfigDir(), "somanyenchantments.cfg");
             try {
                 Field field = ConfigManager.class.getDeclaredField("CONFIGS");
                 field.setAccessible(true);
-                smeConfig = ((Map<String, Configuration>) field.get(null)).get(Loader.instance().getConfigDir().getAbsolutePath() + "/somanyenchantments.cfg");
-            } catch (Exception e) {
-                smeConfig = new Configuration(new File(Loader.instance().getConfigDir(), "somanyenchantments.cfg"));
-            }
+                Map<String, Configuration> CONFIGS = (Map<String, Configuration>) field.get(null);
+                smeConfig = CONFIGS.get(configFile.getAbsolutePath());
+            } catch (Exception ignored) {}
+            if(smeConfig == null) smeConfig = new Configuration(configFile);
         }
 
         String enchName = smeEnchNames.get(ench);
