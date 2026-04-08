@@ -11,6 +11,7 @@ import enchantmentcontrol.util.enchantmenttypes.CustomTypeMatcher;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.Loader;
 
 import java.io.File;
@@ -171,10 +172,37 @@ public class NewSMECompat {
             EnchantmentControl.LOGGER.warn("Didn't find new SME enchantment {} {}, skipping inferral", ench.getClass(), ench.getRegistryName()!=null ? ench.getRegistryName().toString() : "not registered");
         }
 
-        if(!forAnvil)
-            return enchT.computeIfAbsent(ench, k -> smeConfig.get("general.can apply on enchantment table and anvil", enchName, new String[0]).getStringList());
-        else
-            return anvil.computeIfAbsent(ench, k -> smeConfig.get("general.general.can apply additionally on anvil", enchName, new String[0]).getStringList());
+        if(!forAnvil) {
+            if(enchT.get(ench) != null) return enchT.get(ench);
+            Property prop = smeConfig.get("general.can apply on enchantment table and anvil", enchName, new String[0]);
+            if(prop==null){
+                EnchantmentControl.LOGGER.warn("Property ench null");
+                return new String[0];
+            }
+            String[] types = prop.getStringList();
+            if(types==null){
+                EnchantmentControl.LOGGER.warn("Config String array types null");
+                return new String[0];
+            }
+            enchT.put(ench, types);
+            return types;
+        }
+        else {
+            if(anvil.get(ench) != null) return anvil.get(ench);
+
+            Property prop = smeConfig.get("general.can apply additionally on anvil", enchName, new String[0]);
+            if(prop==null){
+                EnchantmentControl.LOGGER.warn("Property anvil null");
+                return new String[0];
+            }
+            String[] typesAnvil = prop.getStringList();
+            if(typesAnvil==null){
+                EnchantmentControl.LOGGER.warn("Config String array types anvil null");
+                return new String[0];
+            }
+            anvil.put(ench, typesAnvil);
+            return typesAnvil;
+        }
     }
 
     public static void addNewSMETypes(Map<String, Set<Enchantment>> byName, Map<Enchantment, Set<String>> byEnchantment, Map<String, Set<Enchantment>> byNameAnvil, Map<Enchantment, Set<String>> byEnchantmentAnvil) {
