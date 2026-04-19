@@ -29,7 +29,7 @@ public class IncompatibleConfigProvider {
         if(regName == null) return incompatEnchs;
 
         for(String configLine : ConfigHandler.incompatibleGroups) {
-            if(configLine.contains(regName.getPath())) {
+            if(configLine.contains(regName.toString())) {
                 //Assumes that config lines are enchantments separated by comma
                 String[] enchsInList = configLine.split(EnchantmentControl.SEP);
                 for(String lineEntry : enchsInList) {
@@ -41,8 +41,8 @@ public class IncompatibleConfigProvider {
                 }
             }
         }
-        //Every enchantment is incompatible with itself
-        incompatEnchs.add(thisEnch);
+        //Every enchantment is incompatible with itself, this will be handled elsewhere
+        incompatEnchs.remove(thisEnch);
 
         return incompatEnchs;
     }

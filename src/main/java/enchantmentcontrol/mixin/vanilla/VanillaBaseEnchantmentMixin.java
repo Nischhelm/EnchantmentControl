@@ -80,7 +80,8 @@ public abstract class VanillaBaseEnchantmentMixin {
     @WrapMethod(method = "canApplyTogether")
     protected boolean ec_canApplyTogether(Enchantment ench, Operation<Boolean> original) {
         if(!ConfigHandler.incompatibleEnabled) return original.call(ench);
-        if(!ConfigHandler.dev.printIncompats && EnchantmentControl.loadingComplete) return IncompatibleConfigProvider.areCompatible((Enchantment) (Object)this, ench);
+        Enchantment thisEnch = (Enchantment) (Object) this;
+        if(!ConfigHandler.dev.printIncompats && EnchantmentControl.loadingComplete) return thisEnch != ench && IncompatibleConfigProvider.areCompatible(thisEnch, ench);
         return original.call(ench);
     }
 
