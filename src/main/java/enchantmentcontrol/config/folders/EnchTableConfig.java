@@ -86,4 +86,9 @@ public class EnchTableConfig {
     })
     @Config.Name("Re-Enchant Already Anviled")
     public boolean reEnchantAlreadyAnviled = false;
+
+    @Config.Comment("When in the etable gui, adds a tooltip to items with enchant count to indicate how often they have been enchanted already. Only in advanced mode = F3+H")
+    @Config.Name("Re-Enchant Show Count Tooltip")
+    @Config.RequiresMcRestart
+    public boolean addEnchCountTooltip = true;
 }

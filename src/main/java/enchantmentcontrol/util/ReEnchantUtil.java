@@ -21,6 +21,7 @@ public class ReEnchantUtil {
     }
 
     public static void setEnchantCount(ItemStack stack, int count) {
+        if(count == 0 && getEnchantCount(stack) == 0) return;
         NBTTagCompound tagCompound = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
         tagCompound.setInteger(KEY_ENCHANT_COUNT, count);
         stack.setTagCompound(tagCompound);

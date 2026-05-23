@@ -31,6 +31,21 @@ public class AnvilConfig {
     public boolean enableAnvilScalingChange = false;
 
     @Config.Comment({
+            "If set to true, removes anvil repair cost increase when combining two single enchanted books with the same lvl (Prot 3 + Prot 3 = Prot 4)",
+            "Note: This is copied and updated from SoManyEnchantments 1.0.8"
+    })
+    @Config.Name("(MixinToggle) Anvil Use Free Book Combination")
+    @Config.RequiresMcRestart
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.freebookcombination.json", defaultValue = false)
+    @SuppressWarnings("unused")
+    public boolean removeBookCombinationAnvilCost = false;
+
+    @Config.Comment("When in the anvil gui, adds a tooltip to items with anvil use cost to indicate how often they have been used at the anvil already. Only in advanced mode = F3+H")
+    @Config.Name("Show Anvil Use Tooltip")
+    @Config.RequiresMcRestart
+    public boolean addAnvilUseTooltip = true;
+
+    @Config.Comment({
             "How Anvil Use Cost (\"RepairCost\") scales with increased uses of the anvil",
             "Available Types:",
             "  EXPONENTIAL (a^n) - 1: Default system, possibly with modified scaling factor. Every use multiplies the current cost by the given factor (-1)",

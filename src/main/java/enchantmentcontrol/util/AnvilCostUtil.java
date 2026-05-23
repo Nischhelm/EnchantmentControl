@@ -4,6 +4,7 @@ import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.MathHelper;
 
 public class AnvilCostUtil {
     private static final String key = "AnvilCount";
@@ -13,6 +14,7 @@ public class AnvilCostUtil {
     }
 
     public static void setAnvilCount(ItemStack stack, int count) {
+        if(count == 0 && getAnvilCount(stack) == 0) return;
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
         stack.getTagCompound().setInteger(key, count);
     }
@@ -53,6 +55,19 @@ public class AnvilCostUtil {
                 return isBook ? 2 : 4;
             case VERY_RARE: default:
                 return isBook ? 4 : 8;
+        }
+    }
+
+    public static int getNextRepairCost(int repairCost, int useCount, float multi){
+        switch(ConfigHandler.anvil.repairCostScalingType) {
+            case CONST: // a
+                return (int) multi;
+            case LINEAR: // a * useCount
+                return (int) (multi * useCount);
+            case QUADRATIC: // a * useCount^2
+                return (int) (multi * useCount * useCount);
+            case EXPONENTIAL: default: // (a ^ useCount) - 1
+                return MathHelper.ceil(repairCost * multi) + 1;
         }
     }
 }

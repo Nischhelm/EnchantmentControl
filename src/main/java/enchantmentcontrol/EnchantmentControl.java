@@ -14,6 +14,8 @@ import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoInferrerWri
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
+import enchantmentcontrol.handler.AnvilUseTooltipHandler;
+import enchantmentcontrol.handler.ReEnchantTooltipHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -65,6 +67,11 @@ public class EnchantmentControl {
             MinecraftForge.EVENT_BUS.register(FeatureBloodAnvil.class);
             FeatureBloodAnvil.onPreInit();
         }
+
+        if(ConfigHandler.anvil.addAnvilUseTooltip && event.getSide() == Side.CLIENT)
+            MinecraftForge.EVENT_BUS.register(AnvilUseTooltipHandler.class);
+        if(ConfigHandler.etable.allowReEnchant && ConfigHandler.etable.addEnchCountTooltip && event.getSide() == Side.CLIENT)
+            MinecraftForge.EVENT_BUS.register(ReEnchantTooltipHandler.class);
 
         EnchantmentInfoConfigReader.preInit(); //read EnchantmentInfo's from /enchantments
     }

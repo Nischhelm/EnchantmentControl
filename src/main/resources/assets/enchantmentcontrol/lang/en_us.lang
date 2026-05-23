@@ -15,3 +15,8 @@ jei.enchantmentcontrol.incompatible.desc=Incompatible: §8%s
 jei.enchantmentcontrol.itemtypes.desc=On Items: §8%s
 jei.enchantmentcontrol.itemtypes.anvil.desc=Only Anvil: §8%s
 jei.enchantmentcontrol.price.desc=XP: §8%s, §rEmeralds: §2%d-§2%d
+
+tooltip.anviluses.singular= %d Anvil use (%d)
+tooltip.anviluses= %d Anvil uses (%d)
+tooltip.enchcount.full= Enchanted fully
+tooltip.enchcount= Enchanted %d / %d times
