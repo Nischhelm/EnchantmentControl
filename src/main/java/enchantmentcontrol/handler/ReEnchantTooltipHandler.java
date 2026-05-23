@@ -15,6 +15,7 @@ public class ReEnchantTooltipHandler {
         if(!event.getFlags().isAdvanced()) return;
         if(event.getEntityPlayer() == null) return;
         if(!(event.getEntityPlayer().openContainer instanceof ContainerEnchantment)) return;
+        if(!event.getItemStack().getItem().isEnchantable(event.getItemStack())) return;
 
         int enchCount = ReEnchantUtil.getEnchantCount(event.getItemStack());
         event.getToolTip().add(AnvilUseTooltipHandler.getLowestEnchantLineIndex(event), TextFormatting.DARK_GRAY + ((enchCount == ConfigHandler.etable.reEnchantMaxTimes) ? I18n.format("tooltip.enchcount.full") :  I18n.format("tooltip.enchcount", enchCount, ConfigHandler.etable.reEnchantMaxTimes)) + TextFormatting.RESET);
