@@ -120,7 +120,7 @@ shadowJar {
 
     exclude "META-INF/versions/9/module-info*" //idk why this even exists, can and needs to be deleted
 
-    archiveClassifier.set('1.12.2')
+    archiveClassifier.set('')
 }
 
 reobf {
@@ -143,6 +143,7 @@ jar {
                 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker'
         ])
     }
+    archiveClassifier.set('THIN')
 }
 
 build.dependsOn(shadowJar)
