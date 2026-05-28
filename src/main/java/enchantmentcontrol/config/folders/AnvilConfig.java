@@ -40,6 +40,18 @@ public class AnvilConfig {
     @SuppressWarnings("unused")
     public boolean removeBookCombinationAnvilCost = false;
 
+    @Config.Comment({
+            "Sets Anvil Use Count to 0 if Upgraded Potentials is used on an enchanted items.",
+            "This is needed if \"Anvil Use Cost Scaling Type\" is not the default EXPONENTIAL.",
+            "Accounts for the cut-off at high anvil use costs (>~120 lvls) of UpgPot."
+    })
+    @Config.Name("(MixinToggle) Anvil Use Count UpgPot Compat (SoManyEnchantments)")
+    @Config.RequiresMcRestart
+    @MixinConfig.MixinToggle(lateMixin = "mixins.enchantmentcontrol.somanyenchantments.json", defaultValue = false)
+    @MixinConfig.CompatHandling(modid = "somanyenchantments", desired = true, warnIngame = false, reason = "Optional Compat for Upgraded Potentials if new SME is present", targetVersionRange = "[1.0.0,)")
+    @SuppressWarnings("unused")
+    public boolean upgradedPotentialsResetsAnvilCount = true;
+
     @Config.Comment("When in the anvil gui, adds a tooltip to items with anvil use cost to indicate how often they have been used at the anvil already. Only in advanced mode = F3+H")
     @Config.Name("Show Anvil Use Tooltip")
     @Config.RequiresMcRestart
@@ -66,6 +78,7 @@ public class AnvilConfig {
             "Default is EXPONENTIAL with a factor of 2"
     })
     @Config.Name("Anvil Use Cost Scaling Factor")
+    @Config.RangeDouble(min = Float.MIN_VALUE)
     public float repairCostScalingFactor = 2;
 
     @Config.Comment({
