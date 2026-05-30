@@ -91,6 +91,10 @@ public class ConfigHandler {
 	@Config.Name("Compat")
 	public static CompatConfig compat = new CompatConfig();
 
+	@Config.Comment("Mixin Toggles")
+	@Config.Name("Mixin Toggles")
+	public static MixinToggleConfig mixintoggles = new MixinToggleConfig();
+
 	@Mod.EventBusSubscriber(modid = EnchantmentControl.MODID)
 	private static class EventHandler {
 		@SubscribeEvent
