@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import org.spongepowered.asm.mixin.Mixin;
 
-//@Debug(export = true)
 @Mixin(targets = {
         "net.minecraft.enchantment.EnchantmentArrowDamage",
         "net.minecraft.enchantment.EnchantmentArrowFire",
@@ -48,7 +47,7 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
         super(rarityIn, typeIn, slots);
     }
 
-    @WrapMethod(method = "getMinLevel")
+    @WrapMethod(method = "getMinLevel()I")
     public int ec_getMinLevel(Operation<Integer> original) {
         EnchantmentInfo info = EnchantmentInfo.get(this);
         if(info != null && info.overwritesMinLvl) return info.minLvl;
@@ -76,7 +75,7 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
         return original.call(enchantmentLevel);
     }
 
-    @WrapMethod(method = "getTranslatedName")
+    @WrapMethod(method = "getTranslatedName(I)Ljava/lang/String;")
     public String ec_getTranslatedName(int level, Operation<String> original) {
         EnchantmentInfo info = EnchantmentInfo.get(this);
         if(info != null && info.displayColor != null)
@@ -85,14 +84,14 @@ public abstract class VanillaEnchantmentMixin extends Enchantment { //copy of Va
             return original.call(level);
     }
 
-    @WrapMethod(method = "isTreasureEnchantment")
+    @WrapMethod(method = "isTreasureEnchantment()Z")
     public boolean ec_isTreasureEnchantment(Operation<Boolean> original) {
         EnchantmentInfo info = EnchantmentInfo.get(this);
         if(info != null && info.overwritesIsTreasure) return info.isTreasure;
         return original.call();
     }
 
-    @WrapMethod(method = "isCurse")
+    @WrapMethod(method = "isCurse()Z")
     public boolean ec_isCurse(Operation<Boolean> original) {
         EnchantmentInfo info = EnchantmentInfo.get(this);
         if(info != null && info.overwritesIsCurse) return info.isCurse;

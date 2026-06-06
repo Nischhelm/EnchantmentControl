@@ -24,7 +24,7 @@ public abstract class ContainerRepairMixin_NoExpensive {
     @ModifyExpressionValue(
             method = "updateRepairOutput",
             at = @At(value = "CONSTANT", args = "intValue=40"),
-            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isBookEnchantable(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"))
+            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;isBookEnchantable(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z", remap = false))
     )
     private int ec_updateRepairOutput_removeCap(int original) {
         return Integer.MAX_VALUE;
