@@ -47,7 +47,7 @@ public abstract class ContainerRepairMixin_RepairCostScaling {
         float multi = ConfigHandler.anvil.repairCostScalingFactor;
 
         if (!(renameCost == totalCost && renameCost != 0)) { //condition by mojang: don't increase if its not a rename action only
-            repairCost = AnvilCostUtil.getNextRepairCost(repairCost, useCount, multi);
+            repairCost = AnvilCostUtil.getNextRepairCost(repairCost, useCount + 1, multi);
             AnvilCostUtil.setAnvilCount(stackLeftCopy, useCount + 1);
         }
         original.call(stackLeftCopy, repairCost); //stackLeftCopy.setRepairCost(repairCost);
