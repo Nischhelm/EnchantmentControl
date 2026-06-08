@@ -17,6 +17,16 @@ public class EnchTableConfig {
     public int maxLvl = 30;
 
     @Config.Comment({
+            "Removes the requirement of the blocks around the enchantment table (and one higher) needing to be air for it to count bookshelves.",
+            "Incompatible with apotheosis"
+    })
+    @Config.Name("(MixinToggle) Remove Air Requirement")
+    @Config.RequiresMcRestart
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablenoaircond.json", defaultValue = false)
+    @MixinConfig.CompatHandling(modid = "apotheosis", desired = false, warnIngame = false, reason = "Incompatible with Apotheosis")
+    public boolean noAirCond = false;
+
+    @Config.Comment({
             "Restores older minecraft versions behavior of rolling new enchantments whenever the item gets placed fresh into the enchantment table.",
             "Incompatible with apotheosis"
     })
