@@ -40,4 +40,23 @@ public class DebugConfig {
             defaultValue = true
     )
     public static boolean enableEnchantmentInjection = true;
+
+    @Config.Comment({
+            "If enabled, will register a loot function named set_enchantments.",
+            "This loot function takes in a list of enchantment ids and random value ranges (or fixed values)",
+            "And applies exactly these enchantments onto a given item, not even checking for applicability",
+            "Example showing all options: ",
+            "\"function\": \"set_enchantments\",",
+            "\"enchantments\":[{",
+            "  \"enchantment\": \"minecraft:power\",",
+            "  \"lvl\": 5",
+            "},{",
+            "  \"enchantment\": \"minecraft:punch\",",
+            "  \"lvlMin\": 1,",
+            "  \"lvlMax\": 2",
+            "}]"
+    })
+    @Config.Name("Register SetEnchantments Loot Function")
+    @Config.RequiresMcRestart
+    public boolean enableSetEnchantmentsLootFunction = false;
 }

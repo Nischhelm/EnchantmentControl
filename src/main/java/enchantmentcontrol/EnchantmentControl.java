@@ -16,6 +16,9 @@ import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.handler.AnvilUseTooltipHandler;
 import enchantmentcontrol.handler.ReEnchantTooltipHandler;
+import enchantmentcontrol.loot.SetEnchantments;
+import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -27,6 +30,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import shadows.deadly.loot.LootManager;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -72,6 +76,8 @@ public class EnchantmentControl {
             MinecraftForge.EVENT_BUS.register(AnvilUseTooltipHandler.class);
         if(ConfigHandler.etable.allowReEnchant && ConfigHandler.etable.addEnchCountTooltip && event.getSide() == Side.CLIENT)
             MinecraftForge.EVENT_BUS.register(ReEnchantTooltipHandler.class);
+
+        LootFunctionManager.registerFunction(new SetEnchantments.Serializer());
 
         EnchantmentInfoConfigReader.preInit(); //read EnchantmentInfo's from /enchantments
     }
