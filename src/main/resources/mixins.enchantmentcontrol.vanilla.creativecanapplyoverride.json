@@ -6,7 +6,7 @@
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "mixins": [
-    "vanilla.anvil.ContainerRepairMixin_CanApplyCreative",
-    "vanilla.anvil.CommandEnchantMixin_CanApplyCreative"
+    "vanilla.anvil.CommandEnchantMixin_CanApplyCreative",
+    "vanilla.anvil.ContainerRepairMixin_CanApplyCreative"
   ]
 }
