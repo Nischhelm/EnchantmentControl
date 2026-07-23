@@ -24,6 +24,7 @@ public class EarlyConfigReader {
     private static Map<String, ResourceLocation> remapConfig = null;
     private static Map<String, Integer> rarityConfig = null;
     private static List<String> registrationBlacklist = null;
+    private static Map<String, Integer> customNumericIdsConfig = null;
 
     private static List<String> lines = null;
     private static List<String> readLines(){
@@ -84,6 +85,18 @@ public class EarlyConfigReader {
             registrationBlacklist = readConfigList(ConfigRef.REGISTRY_BLACKLIST_CONFIG_NAME, Function.identity());
 
         return registrationBlacklist;
+    }
+
+    @Nullable
+    public static Integer getCustomNumericId(String enchantmentRegistryName) {
+        return getCustomNumericIdsConfig().get(enchantmentRegistryName);
+    }
+
+    public static Map<String, Integer> getCustomNumericIdsConfig() {
+        if (customNumericIdsConfig == null)
+            customNumericIdsConfig = readConfigMap(ConfigRef.CUSTOM_NUMERIC_IDS_CONFIG_NAME, Function.identity(), Integer::parseInt);
+
+        return customNumericIdsConfig;
     }
 
     public static <I, O> Map<I,O> readConfigMap(String name, Function<String, I> inputMapper, Function<String, O> outputMapper) {

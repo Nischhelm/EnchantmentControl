@@ -10,7 +10,7 @@ import java.util.Map;
 
 @MixinConfig(name = EnchantmentControl.MODID)
 public class FirstSetupConfig {
-    @Config.Comment("Enable if you want to remap enchantment ids. Warning: See Warning in \""+ConfigRef.IDREMAP_CONFIG_NAME+"\"")
+    @Config.Comment("Enable if you want to remap enchantment ids (numerical or name). Warning: See Warnings in \""+ConfigRef.IDREMAP_CONFIG_NAME+"\" and \""+ConfigRef.CUSTOM_NUMERIC_IDS_CONFIG_NAME+"\"")
     @Config.Name("(MixinToggle) Enable Registry Remapping")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.registryremap.json", defaultValue = false)
@@ -19,12 +19,23 @@ public class FirstSetupConfig {
     @Config.Comment({
             "If you really dont like one mods enchantment id (modid:enchid), you can add it here with a second entry of what you want to call it instead (modid:enchid). ",
             "WARNING: this will cause permanent id remapping issues for old worlds! Only do this for new worlds or before you release a modpack, if you really need to!",
-            "pattern: S:\"modid:oldenchid\"=modid:newenchid",
-            "Has Mixin Toggle \"Enable Registry Remapping\""
+            "Pattern: S:\"modid:oldenchid\"=modid:newenchid",
+            "Requires Mixin Toggle \"Enable Registry Remapping\""
     })
     @Config.Name(ConfigRef.IDREMAP_CONFIG_NAME)
     @Config.RequiresMcRestart
     public Map<String, String> idRemaps = new HashMap<>();
+
+    @Config.Comment({
+            "Assign custom numeric ids to enchantments.",
+            "This can be useful for custom villager trades or enchanted loot in structures, where the enchantments are stored as numerical ids.",
+            "WARNING: Changing enchantment ids will cause id remapping issues for exactly such content. Use this cautiously.",
+            "Pattern: I:\"modid:enchid\"=id",
+            "Requires Mixin Toggle \"Enable Registry Remapping\""
+    })
+    @Config.Name(ConfigRef.CUSTOM_NUMERIC_IDS_CONFIG_NAME)
+    @Config.RequiresMcRestart
+    public Map<String, Integer> customNumericIds = new HashMap<>();
 
     @Config.Comment({
             "!Disables itself after a one time use!",
