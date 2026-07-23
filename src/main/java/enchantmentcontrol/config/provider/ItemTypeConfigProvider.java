@@ -38,18 +38,21 @@ public class ItemTypeConfigProvider {
 
     // ---------------- INIT ----------------
 
+    private static final Map<String, String> typeRenames = new HashMap<>();
+    static {
+        typeRenames.put("ALL", "ANY_TYPE");
+        typeRenames.put("WEAPON", "SWORD");
+        typeRenames.put("DIGGER", "TOOL");
+    }
     private static final List<String> oldSMETypes = Arrays.asList("Combat Weapon", "Damageable", "Golden Apple", "Combat Tool", "Combat Axe", "Tool Axe", "Tool Pickaxe", "Tool Hoe", "Combat Sword", "Tool Shovel", "Combat Shield", "Combat", "All Tools", "All", "None");
 
     public static void initRegisteredItemTypesFromConfig(){
         for (EnumEnchantmentType registeredEnum : EnumEnchantmentType.values()){
-            String rename = registeredEnum.name();
-            switch(rename){
-                case "ALL": rename = "ANY_TYPE"; break;
-                case "WEAPON": rename = "SWORD"; break;
-                case "DIGGER": rename = "TOOL"; break;
-            }
-            if (oldSMETypes.contains(rename)) continue;
-            registeredMatchers.put(rename, new EnumEnchantmentTypeMatcher(rename, registeredEnum));
+            String enumName = registeredEnum.name();
+            enumName = typeRenames.getOrDefault(enumName, enumName); // some vanilla names suck
+
+            if (oldSMETypes.contains(enumName)) continue; //filter out additional enum types by old (pre 1.x) somanyenchantments
+            registeredMatchers.put(enumName, new EnumEnchantmentTypeMatcher(enumName, registeredEnum));
         }
 
         registeredMatchers.put("ANY", new BooleanTypeMatcher("ANY", true));
@@ -105,6 +108,7 @@ public class ItemTypeConfigProvider {
 
             boolean inverted = typeName.startsWith("!");
             if(inverted) typeName = typeName.substring(1);
+            typeName = typeRenames.getOrDefault(typeName, typeName); // user config might have an old type name, treat internally as if it was renamed
 
             ITypeMatcher matcher = registeredMatchers.get(typeName);
             if(matcher == null){
@@ -318,10 +322,10 @@ public class ItemTypeConfigProvider {
                 byName.get("DIGGER").remove(entry.getKey());
                 byName.computeIfAbsent("TOOL", k -> new HashSet<>()).add(entry.getKey());
             }
-            //SWORD is WEAPON
-            if(entry.getValue().contains("SWORD")){
-                byName.get("SWORD").remove(entry.getKey());
-                byName.computeIfAbsent("WEAPON", k -> new HashSet<>()).add(entry.getKey());
+            //WEAPON is SWORD
+            if(entry.getValue().contains("WEAPON")) {
+                byName.get("WEAPON").remove(entry.getKey());
+                byName.computeIfAbsent("SWORD", k -> new HashSet<>()).add(entry.getKey());
             }
             //Both BATTLEAXE and WEAPON -> only WEAPON
             if(entry.getValue().contains("BATTLEAXE") && entry.getValue().contains("WEAPON")){
@@ -339,8 +343,8 @@ public class ItemTypeConfigProvider {
             else if(entry.getValue().contains("WEARABLE")) removeFromAllExcept(byName, entry.getKey(), "WEARABLE");
         }
 
-        //Remove enums that shouldn't be used at all
-        byName.remove("SWORD");
+        //Remove enums that shouldn't be used for inference at all
+        byName.remove("WEAPON");
         byName.remove("DIGGER");
         byName.remove("ANY_TYPE");
         byName.remove("ALL");
