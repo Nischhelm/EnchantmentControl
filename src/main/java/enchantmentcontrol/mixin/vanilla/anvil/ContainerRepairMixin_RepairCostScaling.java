@@ -18,7 +18,7 @@ public abstract class ContainerRepairMixin_RepairCostScaling {
             method = "updateRepairOutput",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;setRepairCost(I)V")
     )
-    private void ec_updateRepairOutput_changeRepairCostScaling(
+    private void ec_updateRepairOutput_changeRepairCostScaling( //TODO: correctly ordered with everything else at that spot?
             ItemStack stackLeftCopy, int cost,
             Operation<Void> original,
             @Local(name = "itemstack2") ItemStack stackRight,

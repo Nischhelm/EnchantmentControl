@@ -47,7 +47,7 @@ import java.util.Map;
 )
 public class EnchantmentControl {
     public static final String MODID = "enchantmentcontrol";
-    public static final String VERSION = "1.1.1";
+    public static final String VERSION = "1.1.1.1";
     public static final String NAME = "EnchantmentControl";
     public static final Logger LOGGER = LogManager.getLogger(EnchantmentControl.NAME);
     public static final String SEP = ",";
