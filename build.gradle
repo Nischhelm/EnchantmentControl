@@ -151,7 +151,7 @@ build.dependsOn(shadowJar)
 jar.finalizedBy('reobfShadowJar')
 
 publishMods {
-    file = jar.archiveFile
+    file = shadowJar.archiveFile
     changelog = providers.environmentVariable("CHANGELOG").orElse("See GitHub releases for changelog")
     version = mod_version
     type = STABLE
