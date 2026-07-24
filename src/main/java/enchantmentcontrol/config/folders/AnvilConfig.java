@@ -40,17 +40,12 @@ public class AnvilConfig {
     @SuppressWarnings("unused")
     public boolean removeBookCombinationAnvilCost = false;
 
-    @Config.Comment({
-            "Sets Anvil Use Count to 0 if Upgraded Potentials is used on an enchanted items.",
-            "This is needed if \"Anvil Use Cost Scaling Type\" is not the default EXPONENTIAL.",
-            "Accounts for the cut-off at high anvil use costs (>~120 lvls) of UpgPot."
-    })
-    @Config.Name("(MixinToggle) Anvil Use Count UpgPot Compat (SoManyEnchantments)")
+    @Config.Comment("If enabled, adding enchants with lower level or with already max lvl (anything leaving the resulting lvl the same as the one on the left item) will cost 0 XP in the anvil.")
+    @Config.Name("(MixinToggle) No cost if Enchantment Lvl unchanged")
     @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(lateMixin = "mixins.enchantmentcontrol.somanyenchantments.json", defaultValue = false)
-    @MixinConfig.CompatHandling(modid = "somanyenchantments", desired = true, warnIngame = false, reason = "Optional Compat for Upgraded Potentials if new SME is present", targetVersionRange = "[1.0.0,)")
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.zerocostifunchanged.json", defaultValue = false)
     @SuppressWarnings("unused")
-    public boolean upgradedPotentialsResetsAnvilCount = true;
+    public boolean noCostIfUnchanged = false;
 
     @Config.Comment("When in the anvil gui, adds a tooltip to items with anvil use cost to indicate how often they have been used at the anvil already. Only in advanced mode = F3+H")
     @Config.Name("Show Anvil Use Tooltip")
