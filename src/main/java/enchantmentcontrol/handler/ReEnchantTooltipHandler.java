@@ -2,6 +2,7 @@ package enchantmentcontrol.handler;
 
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.util.ReEnchantUtil;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.ContainerEnchantment;
 import net.minecraft.util.text.TextFormatting;
@@ -12,9 +13,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ReEnchantTooltipHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onItemTooltip(ItemTooltipEvent event){
-        if(!event.getFlags().isAdvanced()) return;
+        //On shift or on advanced
+        if(!(ConfigHandler.etable.tooltipOnShiftKey ? GuiScreen.isShiftKeyDown() : event.getFlags().isAdvanced())) return;
+
         if(event.getEntityPlayer() == null) return;
-        if(!(event.getEntityPlayer().openContainer instanceof ContainerEnchantment)) return;
+
+        if(!ConfigHandler.etable.tooltipShowEverywhere && !(event.getEntityPlayer().openContainer instanceof ContainerEnchantment)) return;
+
         if(!event.getItemStack().getItem().isEnchantable(event.getItemStack())) return;
 
         int enchCount = ReEnchantUtil.getEnchantCount(event.getItemStack());

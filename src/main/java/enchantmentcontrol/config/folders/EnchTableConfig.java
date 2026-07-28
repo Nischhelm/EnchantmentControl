@@ -101,4 +101,12 @@ public class EnchTableConfig {
     @Config.Name("Re-Enchant Show Count Tooltip")
     @Config.RequiresMcRestart
     public boolean addEnchCountTooltip = true;
+
+    @Config.Comment("When enabled, the enchant count tooltip will be shown everywhere, not just in the enchantment table GUI")
+    @Config.Name("Re-Enchant Tooltip Show Everywhere")
+    public boolean tooltipShowEverywhere = false;
+
+    @Config.Comment("When enabled, the enchant count tooltip will be shown when pressing Shift instead of requiring advanced mode (F3+H)")
+    @Config.Name("Re-Enchant Tooltip On Shift Key")
+    public boolean tooltipOnShiftKey = false;
 }

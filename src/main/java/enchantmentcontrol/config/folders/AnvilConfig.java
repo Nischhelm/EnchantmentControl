@@ -52,6 +52,14 @@ public class AnvilConfig {
     @Config.RequiresMcRestart
     public boolean addAnvilUseTooltip = true;
 
+    @Config.Comment("When enabled, the anvil use tooltip will be shown everywhere, not just in the anvil GUI")
+    @Config.Name("Anvil Use Tooltip Show Everywhere")
+    public boolean tooltipShowEverywhere = false;
+
+    @Config.Comment("When enabled, the anvil use tooltip will be shown when pressing Shift instead of requiring advanced mode (F3+H)")
+    @Config.Name("Anvil Use Tooltip On Shift Key")
+    public boolean tooltipOnShiftKey = false;
+
     @Config.Comment({
             "How Anvil Use Cost (\"RepairCost\") scales with increased uses of the anvil",
             "Available Types:",

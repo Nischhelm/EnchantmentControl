@@ -1,6 +1,8 @@
 package enchantmentcontrol.handler;
 
+import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.util.AnvilCostUtil;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.ContainerRepair;
@@ -14,9 +16,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class AnvilUseTooltipHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onItemTooltip(ItemTooltipEvent event){
-        if(!event.getFlags().isAdvanced()) return;
+        // show on shift or on advanced
+        if(!(ConfigHandler.anvil.tooltipOnShiftKey ? GuiScreen.isShiftKeyDown() : event.getFlags().isAdvanced())) return;
+
         if(event.getEntityPlayer() == null) return;
-        if(!(event.getEntityPlayer().openContainer instanceof ContainerRepair)) return;
+
+        if(!ConfigHandler.anvil.tooltipShowEverywhere && !(event.getEntityPlayer().openContainer instanceof ContainerRepair)) return;
 
         int repairCost = event.getItemStack().getRepairCost();
         if(repairCost <= 0) return;
