@@ -8,7 +8,6 @@ public class BooleanTypeMatcher implements ITypeMatcher {
     private final String name;
     private final boolean result;
 
-    @SuppressWarnings("unchecked")
     public BooleanTypeMatcher(String in, boolean result) {
         this.name = in;
         this.result = result;

@@ -1,5 +1,5 @@
 package enchantmentcontrol.util.matcher;
 
-public interface IMatcher<T> {
-    boolean matches(T t);
+public interface IMatcher<CTX> {
+    boolean matches(CTX t);
 }

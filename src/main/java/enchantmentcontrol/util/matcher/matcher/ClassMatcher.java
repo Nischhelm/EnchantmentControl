@@ -1,16 +1,17 @@
-package enchantmentcontrol.util.matcher;
+package enchantmentcontrol.util.matcher.matcher;
 
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.util.matcher.IMatcher;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
-public class ClassMatcher<T> implements IMatcher<T> {
+public class ClassMatcher<CTX> implements IMatcher<CTX> {
     private final Set<Class<?>> classes;
-    private final Function<T, Object> instanceExtractor;
+    private final Function<CTX, Object> instanceExtractor;
 
-    public ClassMatcher(Set<String> classNames, Function<T, Object> instanceExtractor) {
+    public ClassMatcher(Set<String> classNames, Function<CTX, Object> instanceExtractor) {
         this.classes = new HashSet<>();
         this.instanceExtractor = instanceExtractor;
         classNames.forEach(className -> {
@@ -23,7 +24,7 @@ public class ClassMatcher<T> implements IMatcher<T> {
     }
 
     @Override
-    public boolean matches(T context) {
+    public boolean matches(CTX context) {
         Object instance = instanceExtractor.apply(context);
         return instance != null && !classes.isEmpty()
             && classes.stream().anyMatch(clazz -> clazz.isInstance(instance));

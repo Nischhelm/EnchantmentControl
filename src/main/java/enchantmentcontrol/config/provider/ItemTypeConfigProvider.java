@@ -7,11 +7,12 @@ import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.util.enchantmenttypes.*;
 import enchantmentcontrol.util.matcher.IMatcher;
-import enchantmentcontrol.util.matcher.InvertedMatcher;
-import enchantmentcontrol.util.matcher.ModIdMatcher;
-import enchantmentcontrol.util.matcher.RegexMatcher;
+import enchantmentcontrol.util.matcher.matcher.InvertedMatcher;
+import enchantmentcontrol.util.matcher.matcher.ModIdMatcher;
+import enchantmentcontrol.util.matcher.matcher.RegexMatcher;
 import enchantmentcontrol.util.matcher.context.ItemTypeContext;
 import enchantmentcontrol.util.matcher.context.ItemTypeMatcherRegistry;
+import enchantmentcontrol.util.matcher.matcher.StringListMatcher;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Items;
@@ -212,7 +213,7 @@ public class ItemTypeConfigProvider {
                     Set<String> trimmed = values.stream().map(String::trim).collect(Collectors.toSet());
                     registry = createRegistration(
                         name,
-                        new enchantmentcontrol.util.matcher.ListMatcher<>(trimmed, ItemTypeContext::getItemName),
+                        new StringListMatcher<>(trimmed, ItemTypeContext::getItemName),
                         () -> !trimmed.isEmpty(),
                         null
                     );

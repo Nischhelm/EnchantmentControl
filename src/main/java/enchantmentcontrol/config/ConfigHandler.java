@@ -69,7 +69,7 @@ public class ConfigHandler {
 	@Config.Name("Creature Attributes")
 	public static Map<String, CustomCreatureAttribute> creatureAttributes = new HashMap<>();
 	public static class CustomCreatureAttribute {
-		public enum EnumAttributeType { MOB, MODID, CLASS }
+		public enum EnumAttributeType { MOB, MODID, CLASS, REGEX }
 		public EnumAttributeType type = EnumAttributeType.MOB;
 		public LinkedHashSet<String> values = new LinkedHashSet<>();
 		public CustomCreatureAttribute() {}

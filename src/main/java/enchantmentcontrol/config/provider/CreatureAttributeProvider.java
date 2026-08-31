@@ -1,11 +1,12 @@
 package enchantmentcontrol.config.provider;
 
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.util.matcher.ClassMatcher;
+import enchantmentcontrol.util.matcher.matcher.ClassMatcher;
 import enchantmentcontrol.util.matcher.context.EntityMatcherContext;
 import enchantmentcontrol.util.matcher.IMatcher;
-import enchantmentcontrol.util.matcher.ListMatcher;
-import enchantmentcontrol.util.matcher.ModIdMatcher;
+import enchantmentcontrol.util.matcher.matcher.RegexMatcher;
+import enchantmentcontrol.util.matcher.matcher.StringListMatcher;
+import enchantmentcontrol.util.matcher.matcher.ModIdMatcher;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
@@ -25,6 +26,9 @@ public class CreatureAttributeProvider {
             if(attr.values.isEmpty()) return;
             IMatcher<EntityMatcherContext> matcher;
             switch (attr.type) {
+                case REGEX:
+                    matcher = new RegexMatcher<>(attr.values, ctx -> ctx.getLocation().toString());
+                    break;
                 case MODID:
                     matcher = new ModIdMatcher<>(attr.values, ctx -> ctx.getLocation().getNamespace());
                     break;
@@ -33,7 +37,7 @@ public class CreatureAttributeProvider {
                     break;
                 case MOB:
                 default:
-                    matcher = new ListMatcher<>(attr.values, ctx -> ctx.getLocation().toString());
+                    matcher = new StringListMatcher<>(attr.values, ctx -> ctx.getLocation().toString());
                     break;
             }
 
