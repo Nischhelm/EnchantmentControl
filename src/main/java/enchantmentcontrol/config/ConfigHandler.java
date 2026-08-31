@@ -2,7 +2,7 @@ package enchantmentcontrol.config;
 
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.folders.*;
-import enchantmentcontrol.config.matcherregistry.CreatureAttributeTypeTypes;
+import enchantmentcontrol.config.matcherregistry.CreatureAttributeTypeCreator;
 import meldexun.betterconfig.api.BetterConfig;
 import meldexun.betterconfig.api.LoadEarly;
 import net.minecraftforge.common.config.Config;
@@ -25,7 +25,7 @@ public class ConfigHandler {
 			"  so run the first setup every time you add mods that have enchants, then compare with what you set up to stay up to date"
 	})
 	@Config.Name("Incompatible Groups")
-	public static Map<String, HashSet<String>> incompatibleGroups = new LinkedHashMap<>();
+	public static Map<String, List<String>> incompatibleGroups = new LinkedHashMap<>();
 
 	@Config.Comment("Global Toggle to disable the entire Incompatible groups override")
 	@Config.Name("Incompatible Groups Enabled")
@@ -71,7 +71,7 @@ public class ConfigHandler {
 	public static Map<String, CustomCreatureAttribute> creatureAttributes = new HashMap<>();
 
 	public static class CustomCreatureAttribute {
-		public CreatureAttributeTypeTypes type = CreatureAttributeTypeTypes.MOB;
+		public CreatureAttributeTypeCreator type = CreatureAttributeTypeCreator.MOB;
 		public LinkedHashSet<String> values = new LinkedHashSet<>();
 		public CustomCreatureAttribute() {}
 	}

@@ -14,13 +14,21 @@ public class ClassMatcher<CTX> implements IMatcher<CTX> {
     public ClassMatcher(Set<String> classNames, Function<CTX, Object> instanceExtractor) {
         this.classes = new HashSet<>();
         this.instanceExtractor = instanceExtractor;
-        classNames.forEach(className -> {
-            try {
-                this.classes.add(Class.forName(className));
-            } catch (ClassNotFoundException e) {
-                EnchantmentControl.LOGGER.warn("Could not find class {} for matcher", className);
-            }
-        });
+        classNames.forEach(this::addClass);
+    }
+
+    public ClassMatcher(String className, Function<CTX, Object> instanceExtractor) {
+        this.classes = new HashSet<>();
+        this.instanceExtractor = instanceExtractor;
+        addClass(className);
+    }
+
+    private void addClass(String className){
+        try {
+            this.classes.add(Class.forName(className));
+        } catch (ClassNotFoundException e) {
+            EnchantmentControl.LOGGER.warn("Could not find class {} for matcher", className);
+        }
     }
 
     @Override

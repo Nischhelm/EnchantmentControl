@@ -9,7 +9,7 @@ import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.MaxEnchantabilityMode;
-import enchantmentcontrol.util.matcher.context.ItemTypeMatcherRegistry;
+import enchantmentcontrol.util.enchantmenttypes.CanApplyMatcher;
 import enchantmentcontrol.util.vanillasystem.VanillaSystem;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -161,18 +161,18 @@ public class CT_EnchantmentInfo {
         for(Map.Entry<EnchantmentBuilder, String[]> entry : types.entrySet()){
             if(entry.getValue().length == 0) continue;
             Enchantment ench = EnchantmentInfo.getEnchantmentObject(map.get(entry.getKey()));
-            Set<ItemTypeMatcherRegistry> set = ItemTypeConfigProvider.itemTypes.computeIfAbsent(ench, e -> new HashSet<>());
+            Set<CanApplyMatcher> set = ItemTypeConfigProvider.itemTypes.computeIfAbsent(ench, e -> new HashSet<>());
             Arrays.stream(entry.getValue())
-                    .map(ItemTypeConfigProvider::getMatcherRegistry)
+                    .map(ItemTypeConfigProvider::getMatcher)
                     .filter(Objects::nonNull)
                     .forEach(set::add);
         }
         for(Map.Entry<EnchantmentBuilder, String[]> entry : typesAnvil.entrySet()){
             if(entry.getValue().length == 0) continue;
             Enchantment ench = EnchantmentInfo.getEnchantmentObject(map.get(entry.getKey()));
-            Set<ItemTypeMatcherRegistry> set = ItemTypeConfigProvider.itemTypesAnvil.computeIfAbsent(ench, e -> new HashSet<>());
+            Set<CanApplyMatcher> set = ItemTypeConfigProvider.itemTypesAnvil.computeIfAbsent(ench, e -> new HashSet<>());
             Arrays.stream(entry.getValue())
-                    .map(ItemTypeConfigProvider::getMatcherRegistry)
+                    .map(ItemTypeConfigProvider::getMatcher)
                     .filter(Objects::nonNull)
                     .forEach(set::add);
         }

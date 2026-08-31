@@ -1,6 +1,7 @@
 package enchantmentcontrol.util.enchantmenttypes;
 
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
+import enchantmentcontrol.util.matcher.context.ItemTypeContext;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Items;
@@ -9,9 +10,9 @@ import net.minecraft.item.ItemStack;
 
 import java.util.*;
 
-public class EnumEnchantmentTypeMatcher implements ICanApplyMatcher {
+public class EnumEnchantmentTypeMatcher extends CanApplyMatcher {
     private static final Map<EnumEnchantmentType, EnumEnchantmentTypeMatcher> enchantToTypeMatchers = new HashMap<>();
-    public static List<ICanApplyMatcher> byEnum(EnumEnchantmentType type){
+    public static List<CanApplyMatcher> byEnum(EnumEnchantmentType type){
         if(type.ordinal() > 11){ //not vanilla enum
             switch (type.name()) {
                 //some SME 0.x types are just lists of types or renames of existing vanilla Enums
@@ -37,6 +38,7 @@ public class EnumEnchantmentTypeMatcher implements ICanApplyMatcher {
     private final String name;
 
     public EnumEnchantmentTypeMatcher(String name, EnumEnchantmentType type){
+        super(name, null);
         this.name = name;
         this.type = type;
         enchantToTypeMatchers.put(type, this);
@@ -47,17 +49,20 @@ public class EnumEnchantmentTypeMatcher implements ICanApplyMatcher {
     }
 
     @Override
-    public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName){
+    public boolean matches(ItemTypeContext context) {
+        Enchantment ench = context.getEnchantment();
+        Item item = context.getItem();
+
         // This tries to catch all items that pretend to be normal MC items without inheriting from them
         // which then try to get the correct enchantments by overriding item.canApplyAtEnchantingTable(enchantment) using
         // enchantment.type == myPretended_vanillaEnumEnchantment_type
 
         // The main issue why we cant use the normal system is that vanilla only allows one type per enchant
         if(ItemTypeConfigProvider.shouldYieldToModdedBehavior(item)) {
-            EnumEnchantmentType tmpType = enchantment.type;
-            enchantment.type = this.type;
-            boolean doesMatch = item.canApplyAtEnchantingTable(stack, enchantment);
-            enchantment.type = tmpType;
+            EnumEnchantmentType tmpType = ench.type;
+            ench.type = this.type;
+            boolean doesMatch = item.canApplyAtEnchantingTable(context.getStack(), ench);
+            ench.type = tmpType;
 
             return doesMatch;
         }

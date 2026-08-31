@@ -3,9 +3,8 @@ package enchantmentcontrol.compat.crafttweaker;
 import crafttweaker.annotations.ZenRegister;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
-import enchantmentcontrol.util.enchantmenttypes.ICanApplyMatcher;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.Item;
+import enchantmentcontrol.util.enchantmenttypes.CanApplyMatcher;
+import enchantmentcontrol.util.matcher.context.ItemTypeContext;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -18,25 +17,20 @@ import java.util.function.Predicate;
 public class CT_CustomType {
     @ZenMethod
     public static void registerCustomType(String name, Predicate<ItemStack> matcher){
-        ItemTypeConfigProvider.registerCustomTypeMatcher(new ICanApplyMatcher() {
+        ItemTypeConfigProvider.registerCustomTypeMatcher(new CanApplyMatcher(name, null) {
             @Override
-            public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName) {
-                return matcher.test(stack);
-            }
-
-            @Override
-            public String getName() {
-                return name;
+            public boolean matches(ItemTypeContext context) {
+                return matcher.test(context.getStack());
             }
         });
     }
 
     @ZenMethod
     public static void registerCustomTypeWithMetadata(String name, String itemid, int metadata){
-        ItemTypeConfigProvider.registerCustomTypeMatcher(new ICanApplyMatcher() {
+        ItemTypeConfigProvider.registerCustomTypeMatcher(new CanApplyMatcher(name, null) {
             @Override
-            public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName) {
-                return item.getRegistryName().toString().equals(itemid) && stack.getMetadata() == metadata;
+            public boolean matches(ItemTypeContext context) {
+                return context.getItemName().equals(itemid) && context.getMetadata() == metadata;
             }
 
             @Override

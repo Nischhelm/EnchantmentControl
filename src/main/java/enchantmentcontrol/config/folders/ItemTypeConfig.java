@@ -1,6 +1,6 @@
 package enchantmentcontrol.config.folders;
 
-import enchantmentcontrol.config.matcherregistry.CustomItemTypeTypes;
+import enchantmentcontrol.config.matcherregistry.CustomItemTypeCreator;
 import net.minecraftforge.common.config.Config;
 
 import java.util.*;
@@ -26,7 +26,7 @@ public class ItemTypeConfig {
     @Config.Name("Custom Item Types")
     public Map<String, CustomItemType> customTypes = new HashMap<>();
     public static class CustomItemType {
-        public CustomItemTypeTypes type = CustomItemTypeTypes.ITEMID;
+        public CustomItemTypeCreator type = CustomItemTypeCreator.ITEMID;
         public Set<String> values = new HashSet<>();
         public CustomItemType(){} //needed for BetterConfig
     }

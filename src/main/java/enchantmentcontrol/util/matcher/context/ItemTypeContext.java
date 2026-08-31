@@ -32,4 +32,8 @@ public class ItemTypeContext {
     public String getItemName() {
         return itemName;
     }
+
+    public int getMetadata() {
+        return stack.getMetadata();
+    }
 }

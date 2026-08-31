@@ -9,20 +9,31 @@ import java.util.stream.Collectors;
 
 public class IncompatibleConfigProvider {
     public static final Map<Enchantment, Set<Enchantment>> incompatibleEnchantments = new HashMap<>();
-    public static final List<Set<Enchantment>> incompatibleGroups = new ArrayList<>();
 
     public static void onResetConfig(){
-        ConfigHandler.incompatibleGroups.values().forEach(group -> incompatibleGroups.add(group.stream().map(Enchantment::getEnchantmentByLocation).filter(Objects::nonNull).collect(Collectors.toSet())));
-        Enchantment.REGISTRY.forEach(ench -> incompatibleEnchantments.put(
-                ench,
-                incompatibleGroups.stream()
-                        .filter(group -> group.contains(ench))
-                        .reduce(new HashSet<>(), (groupsCollected, addedGroup) -> {
-                            groupsCollected.addAll(addedGroup);
-                            groupsCollected.remove(ench);
-                            return groupsCollected;
-                        })
-        ));
+        List<Set<Enchantment>> incompatibleGroups = new ArrayList<>();
+
+        // Add an entry for each enchantment listed
+        ConfigHandler.incompatibleGroups.values().forEach(group ->
+                incompatibleGroups.add(group.stream()
+                        .map(Enchantment::getEnchantmentByLocation)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet()))
+        );
+
+        // Lookup in registry
+        Enchantment.REGISTRY.forEach(ench ->
+                // make Map<Ench, Incompats> view of the groups
+                incompatibleEnchantments.put(ench,
+                    incompatibleGroups.stream()
+                            .filter(group -> group.contains(ench))
+                            .reduce(new HashSet<>(), (groupsCollected, addedGroup) -> {
+                                groupsCollected.addAll(addedGroup);
+                                groupsCollected.remove(ench); // never incompatible with ourselves, thats handled at diff spot
+                                return groupsCollected;
+                            })
+                )
+        );
     }
 
     public static boolean areCompatible(Enchantment ench, Enchantment other){
@@ -52,18 +63,18 @@ public class IncompatibleConfigProvider {
         groups.sort(Comparator.comparingInt(Set::size));
 
         //Remap to list of strings per group
-        Map<String, HashSet<String>> defaultIncompats = new LinkedHashMap<>();
+        Map<String, ArrayList<String>> defaultIncompats = new LinkedHashMap<>();
         int counter = 1;
         for(Set<Integer> group : groups) {
             if(group.size() <= 1) continue;
-            HashSet<String> groupSet = new HashSet<>();
+            ArrayList<String> groupList = new ArrayList<>();
             for(Integer id : group) {
                 Enchantment ench = Enchantment.getEnchantmentByID(idmap.get(id));
                 if(ench == null) continue;
                 if(ench.getRegistryName() == null) continue;
-                groupSet.add(ench.getRegistryName().toString());
+                groupList.add(ench.getRegistryName().toString());
             }
-            defaultIncompats.put("Group " + (counter++), groupSet);
+            defaultIncompats.put("Group " + (counter++), groupList);
         }
 
         ConfigHandler.incompatibleGroups.clear();

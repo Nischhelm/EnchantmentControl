@@ -1,104 +1,42 @@
 package enchantmentcontrol.config.matcherregistry;
 
-import enchantmentcontrol.util.enchantmenttypes.BooleanTypeMatcher;
-import enchantmentcontrol.util.enchantmenttypes.InstanceofTypeMatcher;
-import enchantmentcontrol.util.matcher.context.ItemTypeMatcherRegistry;
+import enchantmentcontrol.util.enchantmenttypes.CanApplyMatcher;
+import enchantmentcontrol.util.matcher.IMatcher;
+import enchantmentcontrol.util.matcher.context.ItemTypeContext;
+import enchantmentcontrol.util.matcher.matcher.BooleanMatcher;
+import enchantmentcontrol.util.matcher.matcher.ClassMatcher;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 
-import java.util.function.Function;
-
 public enum DefaultCanApplyTypes {
-    ANY2("ANY",(name) -> {
+    ANY("ANY", new BooleanMatcher<>(true)),
+    NONE("NONE", new BooleanMatcher<>(false)),
+    AXE("AXE", createClassMatcher(ItemAxe.class), Items.IRON_AXE),
+    PICKAXE("PICKAXE", createClassMatcher(ItemPickaxe.class), Items.IRON_PICKAXE),
+    HOE("HOE", createClassMatcher(ItemHoe.class), Items.IRON_HOE),
+    SHOVEL("SHOVEL", createClassMatcher(ItemSpade.class), Items.IRON_SHOVEL),
+    SHIELD("SHIELD", createClassMatcher(ItemShield.class), Items.SHIELD),
+    SHEARS("SHEARS", createClassMatcher(ItemShears.class), Items.SHEARS);
 
-    }),
+    private final CanApplyMatcher matcher;
 
-    ANY("ANY", (name) -> {
-        BooleanTypeMatcher matcher = new BooleanTypeMatcher(name, true);
-        return new ItemTypeMatcherRegistry(
-                matcher.getName(),
-                ctx -> matcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-                matcher::isValid,
-                matcher.getFakeStack()
-        );
-    }),
-    NONE("NONE", (name) -> {
-        BooleanTypeMatcher matcher = new BooleanTypeMatcher(name, false);
-        return new ItemTypeMatcherRegistry(
-                matcher.getName(),
-                ctx -> matcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-                matcher::isValid,
-                matcher.getFakeStack()
-        );
-    }),
-    AXE("AXE", (name) -> {
-        InstanceofTypeMatcher matcher = new InstanceofTypeMatcher(name, ItemAxe.class, Items.IRON_AXE);
-        return new ItemTypeMatcherRegistry(
-                matcher.getName(),
-                ctx -> matcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-                matcher::isValid,
-                matcher.getFakeStack()
-        );
-    }),
-    PICKAXE("PICKAXE", (name) -> {
-        InstanceofTypeMatcher matcher = new InstanceofTypeMatcher(name, ItemPickaxe.class, Items.IRON_PICKAXE);
-        return new ItemTypeMatcherRegistry(
-                matcher.getName(),
-                ctx -> matcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-                matcher::isValid,
-                matcher.getFakeStack()
-        );
-    }),
-    HOE("HOE", (name) -> {
-        InstanceofTypeMatcher matcher = new InstanceofTypeMatcher(name, ItemHoe.class, Items.IRON_HOE);
-        return new ItemTypeMatcherRegistry(
-                matcher.getName(),
-                ctx -> matcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-                matcher::isValid,
-                matcher.getFakeStack()
-        );
-    }),
-    SHOVEL("SHOVEL", (name) -> {
-        InstanceofTypeMatcher matcher = new InstanceofTypeMatcher(name, ItemSpade.class, Items.IRON_SHOVEL);
-        return new ItemTypeMatcherRegistry(
-                matcher.getName(),
-                ctx -> matcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-                matcher::isValid,
-                matcher.getFakeStack()
-        );
-    }),
-    SHIELD("SHIELD", (name) -> {
-        InstanceofTypeMatcher matcher = new InstanceofTypeMatcher(name, ItemShield.class, Items.SHIELD);
-        return new ItemTypeMatcherRegistry(
-                matcher.getName(),
-                ctx -> matcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-                matcher::isValid,
-                matcher.getFakeStack()
-        );
-    }),
-    SHEARS("SHEARS", (name) -> {
-        InstanceofTypeMatcher matcher = new InstanceofTypeMatcher(name, ItemShears.class, Items.SHEARS);
-        return new ItemTypeMatcherRegistry(
-                matcher.getName(),
-                ctx -> matcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-                matcher::isValid,
-                matcher.getFakeStack()
-        );
-    });
+    DefaultCanApplyTypes(String name, IMatcher<ItemTypeContext> matcher) {
+        this(name, matcher, null);
+    }
 
-    private final String name;
-    private final Function<String, ItemTypeMatcherRegistry> registryFactory;
-
-    DefaultCanApplyTypes(String name, Function<String, ItemTypeMatcherRegistry> registryFactory) {
-        this.name = name;
-        this.registryFactory = registryFactory;
+    DefaultCanApplyTypes(String name, IMatcher<ItemTypeContext> matcher, Item fakeItem) {
+        this.matcher = new CanApplyMatcher(name,matcher, new ItemStack(fakeItem));
     }
 
     public String getTypeName() {
-        return name;
+        return matcher.getName();
     }
 
-    public ItemTypeMatcherRegistry createRegistry() {
-        return registryFactory.apply(name);
+    public CanApplyMatcher getMatcher() {
+        return this.matcher;
+    }
+
+    private static ClassMatcher<ItemTypeContext> createClassMatcher(Class<? extends Item> clazz){
+        return new ClassMatcher<>(clazz.getName(), context -> context.getItem().getClass());
     }
 }

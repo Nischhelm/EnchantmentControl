@@ -10,7 +10,7 @@ import enchantmentcontrol.util.matcher.matcher.StringListMatcher;
 import java.util.Set;
 import java.util.function.Function;
 
-public enum CreatureAttributeTypeTypes {
+public enum CreatureAttributeTypeCreator {
     MOB(values -> new StringListMatcher<>(values, ctx -> ctx.getLocation().toString())),
     MODID(values -> new ModIdMatcher<>(values, ctx -> ctx.getLocation().getNamespace())),
     CLASS(values -> new ClassMatcher<>(values, EntityMatcherContext::getEntity)),
@@ -18,7 +18,7 @@ public enum CreatureAttributeTypeTypes {
 
     private final Function<Set<String>, IMatcher<EntityMatcherContext>> matcherFactory;
 
-    CreatureAttributeTypeTypes(Function<Set<String>, IMatcher<EntityMatcherContext>> matcherFactory) {
+    CreatureAttributeTypeCreator(Function<Set<String>, IMatcher<EntityMatcherContext>> matcherFactory) {
         this.matcherFactory = matcherFactory;
     }
 

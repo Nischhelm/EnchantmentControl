@@ -4,12 +4,12 @@ import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.compat.somanyenchantments.NewSMECompat;
 import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.config.matcherregistry.CustomItemTypeCreator;
 import enchantmentcontrol.config.matcherregistry.DefaultCanApplyTypes;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.util.enchantmenttypes.*;
 import enchantmentcontrol.util.matcher.IMatcher;
 import enchantmentcontrol.util.matcher.context.ItemTypeContext;
-import enchantmentcontrol.util.matcher.context.ItemTypeMatcherRegistry;
 import enchantmentcontrol.util.matcher.matcher.InvertedMatcher;
 import enchantmentcontrol.util.matcher.matcher.RegexMatcher;
 import enchantmentcontrol.util.matcher.matcher.StringListMatcher;
@@ -21,35 +21,8 @@ import net.minecraft.util.ResourceLocation;
 import java.util.*;
 
 public class ItemTypeConfigProvider {
-    private static final HashMap<String, ItemTypeMatcherRegistry> registeredMatchers = new HashMap<>();
-    public static ICanApplyMatcher getMatcher(String name){
-        ItemTypeMatcherRegistry registry = registeredMatchers.get(name);
-        if(registry == null) return null;
-
-        return new ICanApplyMatcher() {
-            @Override
-            public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName) {
-                return registry.getMatcher().matches(new ItemTypeContext(enchantment, stack, item, itemName));
-            }
-
-            @Override
-            public String getName() {
-                return registry.getName();
-            }
-
-            @Override
-            public boolean isValid() {
-                return registry.isValid();
-            }
-
-            @Override
-            public ItemStack getFakeStack() {
-                return registry.getFakeStack();
-            }
-        };
-    }
-
-    public static ItemTypeMatcherRegistry getMatcherRegistry(String name){
+    private static final HashMap<String, CanApplyMatcher> registeredMatchers = new HashMap<>();
+    public static CanApplyMatcher getMatcher(String name){
         return registeredMatchers.get(name);
     }
 
@@ -64,29 +37,13 @@ public class ItemTypeConfigProvider {
         initItemTypeConfig();
     }
 
-    public static void registerCustomTypeMatcher(ICanApplyMatcher matcher){
-        ItemTypeMatcherRegistry registry = new ItemTypeMatcherRegistry(
-            matcher.getName(),
-            ctx -> matcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-            matcher::isValid,
-            matcher.getFakeStack()
-        );
-        registeredMatchers.put(matcher.getName(), registry);
+    public static void registerCustomTypeMatcher(CanApplyMatcher matcher){
+        registeredMatchers.put(matcher.getName(), matcher);
     }
 
-    public static ICanApplyMatcher createRegexMatcher(String name, Set<String> regexes) {
-        ItemTypeMatcherRegistry registry = createRegistration(
-            name,
-            new RegexMatcher<>(regexes, ItemTypeContext::getItemName),
-            () -> !regexes.isEmpty(),
-            null
-        );
-        registeredMatchers.put(name, registry);
+    public static CanApplyMatcher createRegexMatcher(String name, Set<String> regexes) {
+        registeredMatchers.put(name, CustomItemTypeCreator.REGEX.createMatcher(name, regexes));
         return getMatcher(name);
-    }
-
-    private static ItemTypeMatcherRegistry createRegistration(String name, IMatcher<ItemTypeContext> matcher, java.util.function.Supplier<Boolean> isValid, ItemStack fakeStack) {
-        return new ItemTypeMatcherRegistry(name, matcher, isValid, fakeStack);
     }
 
     // ---------------- INIT ----------------
@@ -107,24 +64,21 @@ public class ItemTypeConfigProvider {
             if (oldSMETypes.contains(enumName)) continue; //filter out additional enum types by old (pre 1.x) somanyenchantments
 
             EnumEnchantmentTypeMatcher oldMatcher = new EnumEnchantmentTypeMatcher(enumName, registeredEnum);
-            ItemTypeMatcherRegistry registry = new ItemTypeMatcherRegistry(
-                oldMatcher.getName(),
-                ctx -> oldMatcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-                oldMatcher::isValid,
-                oldMatcher.getFakeStack()
-            );
-            registeredMatchers.put(enumName, registry);
+            registeredMatchers.put(enumName, oldMatcher);
         }
 
         // Register various default item types, mostly from vanilla EnumEnchantmentType
         for (DefaultCanApplyTypes type : DefaultCanApplyTypes.values())
-            registeredMatchers.put(type.getTypeName(), type.createRegistry());
+            registeredMatchers.put(type.getTypeName(), type.getMatcher());
 
         // Create custom types and add them to the list
         for (Map.Entry<String, ItemTypeConfig.CustomItemType> entry : ConfigHandler.itemTypes.customTypes.entrySet()) {
+            if(entry.getValue().values.isEmpty()) continue;
+
             String name = entry.getKey();
-            ItemTypeMatcherRegistry registry = entry.getValue().type.createRegistry(name, entry.getValue().values);
-            if (registry.isValid()) registeredMatchers.put(name, registry);
+            CanApplyMatcher matcher = entry.getValue().type.createMatcher(name, entry.getValue().values);
+
+            registeredMatchers.put(name, matcher);
         }
     }
 
@@ -137,9 +91,9 @@ public class ItemTypeConfigProvider {
         initBlacklist(ConfigHandler.itemTypes.anvil.blacklist, blacklistedEnchantmentsAnvil);
     }
 
-    public static final Map<Enchantment, Set<ItemTypeMatcherRegistry>> itemTypes = new HashMap<>();
-    public static final Map<Enchantment, Set<ItemTypeMatcherRegistry>> itemTypesAnvil = new HashMap<>();
-    private static void initItemTypes(List<String> config, Map<Enchantment, Set<ItemTypeMatcherRegistry>> mapOut){
+    public static final Map<Enchantment, Set<CanApplyMatcher>> itemTypes = new HashMap<>();
+    public static final Map<Enchantment, Set<CanApplyMatcher>> itemTypesAnvil = new HashMap<>();
+    private static void initItemTypes(List<String> config, Map<Enchantment, Set<CanApplyMatcher>> mapOut){
         for(String s : config){
             String[] split = s.split("=");
             if(split.length < 2) continue;
@@ -150,20 +104,14 @@ public class ItemTypeConfigProvider {
             if(inverted) typeName = typeName.substring(1);
             typeName = typeRenames.getOrDefault(typeName, typeName); // user config might have an old type name, treat internally as if it was renamed
 
-            ItemTypeMatcherRegistry registry = registeredMatchers.get(typeName);
-            if(registry == null){
+            CanApplyMatcher matcher = registeredMatchers.get(typeName);
+            if(matcher == null){
                 EnchantmentControl.LOGGER.warn("Could not find given item type while reading enchants per item type {}", typeName);
                 continue;
             }
             if(inverted) {
                 // Wrap the matcher in InvertedMatcher
-                IMatcher<ItemTypeContext> invertedMatcher = new InvertedMatcher<>(registry.getMatcher());
-                registry = new ItemTypeMatcherRegistry(
-                    "inverted",
-                    invertedMatcher,
-                    registry::isValid,
-                    registry.getFakeStack()
-                );
+                matcher = new CanApplyMatcher("!"+matcher.getName(), new InvertedMatcher<>(matcher.getMatcher()));
             }
 
             for(String enchName : split[1].split(EnchantmentControl.SEP)){
@@ -174,7 +122,7 @@ public class ItemTypeConfigProvider {
                     EnchantmentControl.LOGGER.warn("Could not find enchantment {} while reading enchants per item type {}", enchName, typeName);
                     continue;
                 }
-                mapOut.computeIfAbsent(ench, k -> new HashSet<>()).add(registry);
+                mapOut.computeIfAbsent(ench, k -> new HashSet<>()).add((CanApplyMatcher) matcher);
             }
         }
     }
@@ -224,17 +172,16 @@ public class ItemTypeConfigProvider {
         String itemName = null;
 
         //Each enchantment has a set of matchers which items can try to match against
-        Set<ItemTypeMatcherRegistry> matchers = (forAnvil ? itemTypesAnvil : itemTypes).get(enchantment);
+        Set<CanApplyMatcher> matchers = (forAnvil ? itemTypesAnvil : itemTypes).get(enchantment);
         if(matchers == null) return false;
 
         boolean isValid = false;
         boolean invertedMatches = false;
 
-        for(ItemTypeMatcherRegistry registration : matchers) {
-            IMatcher<ItemTypeContext> matcher = registration.getMatcher();
+        for(CanApplyMatcher matcher : matchers) {
 
             // Lazy compute itemName only if needed
-            if(itemName == null && needsItemName(matcher)) {
+            if(itemName == null && needsItemName(matcher.getMatcher())) {
                 ResourceLocation loc = item.getRegistryName();
                 itemName = (loc != null) ? loc.toString() : "";
             }
@@ -243,7 +190,7 @@ public class ItemTypeConfigProvider {
             boolean matches = matcher.matches(context);
 
             // Handle inversion
-            if(matcher instanceof InvertedMatcher) {
+            if(matcher.getMatcher() instanceof InvertedMatcher) {
                 invertedMatches = invertedMatches || matches;
             } else {
                 isValid = isValid || matches;
@@ -282,7 +229,7 @@ public class ItemTypeConfigProvider {
         //Note down each enchants original type
         for (Enchantment ench : Enchantment.REGISTRY) {
             if (ench.type == null) continue;
-            List<ICanApplyMatcher> matchers = EnumEnchantmentTypeMatcher.byEnum(ench.type);
+            List<CanApplyMatcher> matchers = EnumEnchantmentTypeMatcher.byEnum(ench.type);
             matchers.forEach(matcher -> {
                 if(matcher.getName().equals("NONE")) return; // If other mods use NONE enum
                 byName.computeIfAbsent(matcher.getName(), k -> new HashSet<>()).add(ench);
@@ -292,7 +239,7 @@ public class ItemTypeConfigProvider {
 
         //Try to be smart, at least a little bit
         // Inferring applicability by offering a fakeStack to customItem.canApply-AtEnchantingTable(fakeStack)
-        for (Map.Entry<String, ItemTypeMatcherRegistry> entry : registeredMatchers.entrySet()) {
+        for (Map.Entry<String, CanApplyMatcher> entry : registeredMatchers.entrySet()) {
             ItemStack fakeStack = entry.getValue().getFakeStack();
             if (fakeStack == null) continue; //the following only infers types using fake stacks
 
