@@ -22,7 +22,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -30,7 +29,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -60,9 +58,9 @@ public class EnchantmentControl {
             field.setAccessible(true);
             @SuppressWarnings("unchecked")
             Map<String, Configuration> map = (Map<String, Configuration>) field.get(null);
-            CONFIG = map.get(new File(Loader.instance().getConfigDir(), MODID + ".cfg").getAbsolutePath());
+            CONFIG = map.get(event.getSuggestedConfigurationFile().getAbsolutePath());
         } catch (Exception e){
-            CONFIG = new Configuration(new File(Loader.instance().getConfigDir(), MODID + ".cfg"));
+            CONFIG = new Configuration(event.getSuggestedConfigurationFile());
         }
 
         if(ConfigHandler.anvil.bloodAnvil.enabled) {
