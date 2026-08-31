@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.Set;
 
-public class CustomTypeMatcher implements ITypeMatcher.UsesItemLoc {
+public class CustomTypeMatcher implements ITypeMatcher {
     private final String name;
     private final Set<String> regexes;
 

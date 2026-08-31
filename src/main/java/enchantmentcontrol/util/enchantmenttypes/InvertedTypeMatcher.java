@@ -4,7 +4,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class InvertedTypeMatcher implements ITypeMatcher.UsesItemLoc {
+public class InvertedTypeMatcher implements ITypeMatcher {
     private static final String name = "inverted";
 
     private final ITypeMatcher inner;

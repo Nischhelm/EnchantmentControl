@@ -5,8 +5,8 @@ import com.shultrea.rin.enchantments.base.EnchantmentBase;
 import com.shultrea.rin.registry.EnchantmentRegistry;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
-import enchantmentcontrol.util.enchantmenttypes.CustomTypeMatcher;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
@@ -15,7 +15,6 @@ import net.minecraftforge.fml.common.Loader;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class NewSMECompat {
     private static Configuration smeConfig = null;
@@ -193,7 +192,7 @@ public class NewSMECompat {
     }
 
     public static void addNewSMECustomTypes(){
-        Set<String> existingCustomTypeNames = ConfigHandler.itemTypes.customTypes.stream().map(cfg -> cfg.split(";")[0].trim()).collect(Collectors.toSet());
+        Set<String> existingCustomTypeNames = ConfigHandler.itemTypes.customTypes.keySet();
         String[] smeCustomTypes = ModConfig.canApply.customTypes;
         if(smeCustomTypes.length == 0) return;
 
@@ -209,12 +208,15 @@ public class NewSMECompat {
                 regex = "";
             }
             //Add matcher internally
-            ItemTypeConfigProvider.registerCustomTypeMatcher(new CustomTypeMatcher(name, regex));
+            ItemTypeConfigProvider.registerCustomTypeMatcher(ItemTypeConfigProvider.createRegexMatcher(name, Collections.singleton(regex)));
 
             //Add matcher for config
             if(!existingCustomTypeNames.contains(name)) {
                 cfgChanged = true;
-                ConfigHandler.itemTypes.customTypes.add(name + EnchantmentControl.SEP + " regex" + EnchantmentControl.SEP + " " + regex);
+                ItemTypeConfig.CustomItemType customItemType = new ItemTypeConfig.CustomItemType();
+                customItemType.type = ItemTypeConfig.CustomItemType.EnumItemTypeMatcher.REGEX;
+                customItemType.values = Collections.singleton(regex);
+                ConfigHandler.itemTypes.customTypes.put(name, customItemType);
             }
         }
 

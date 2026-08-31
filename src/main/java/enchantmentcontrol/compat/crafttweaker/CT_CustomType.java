@@ -33,7 +33,7 @@ public class CT_CustomType {
 
     @ZenMethod
     public static void registerCustomTypeWithMetadata(String name, String itemid, int metadata){
-        ItemTypeConfigProvider.registerCustomTypeMatcher(new ITypeMatcher.UsesItemLoc() {
+        ItemTypeConfigProvider.registerCustomTypeMatcher(new ITypeMatcher() {
             @Override
             public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName) {
                 return item.getRegistryName().toString().equals(itemid) && stack.getMetadata() == metadata;

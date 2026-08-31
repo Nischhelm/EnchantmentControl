@@ -1,10 +1,11 @@
 package enchantmentcontrol.config.provider;
 
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.config.provider.matchers.ClassMatcher;
-import enchantmentcontrol.config.provider.matchers.IEntityMatcher;
-import enchantmentcontrol.config.provider.matchers.ListMatcher;
-import enchantmentcontrol.config.provider.matchers.ModIdListMatcher;
+import enchantmentcontrol.util.matcher.ClassMatcher;
+import enchantmentcontrol.util.matcher.context.EntityMatcherContext;
+import enchantmentcontrol.util.matcher.IMatcher;
+import enchantmentcontrol.util.matcher.ListMatcher;
+import enchantmentcontrol.util.matcher.ModIdMatcher;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
@@ -15,18 +16,25 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class CreatureAttributeProvider {
-    private static Map<EnumCreatureAttribute, IEntityMatcher> attributes = new HashMap<>(); //gets overwritten during EnumCreatureAttribute.<clinit>
+    private static Map<EnumCreatureAttribute, IMatcher<EntityMatcherContext>> attributes = new HashMap<>(); //gets overwritten during EnumCreatureAttribute.<clinit>
 
     public static void registerAttributes(Function<String, EnumCreatureAttribute> constructor) {
         attributes = new HashMap<>();
         ConfigHandler.creatureAttributes.forEach((attributeName, attr) -> {
             if(attributeName.isEmpty()) return;
             if(attr.values.isEmpty()) return;
-            IEntityMatcher matcher;
+            IMatcher<EntityMatcherContext> matcher;
             switch (attr.type) {
-                case MODID: matcher = new ModIdListMatcher(attr.values); break;
-                case CLASS: matcher = new ClassMatcher(attr.values); break;
-                case MOB: default: matcher = new ListMatcher(attr.values); break;
+                case MODID:
+                    matcher = new ModIdMatcher<>(attr.values, ctx -> ctx.getLocation().getNamespace());
+                    break;
+                case CLASS:
+                    matcher = new ClassMatcher<>(attr.values, EntityMatcherContext::getEntity);
+                    break;
+                case MOB:
+                default:
+                    matcher = new ListMatcher<>(attr.values, ctx -> ctx.getLocation().toString());
+                    break;
             }
 
             EnumCreatureAttribute attribute = constructor.apply(attributeName);
@@ -37,8 +45,9 @@ public class CreatureAttributeProvider {
     public static EnumCreatureAttribute getAttribute(EntityLivingBase entity) {
         ResourceLocation loc = EntityList.getKey(entity);
         if(loc == null) return EnumCreatureAttribute.UNDEFINED;
-        for (Map.Entry<EnumCreatureAttribute, IEntityMatcher> entry : attributes.entrySet())
-            if (entry.getValue().matches(entity, loc))
+        EntityMatcherContext context = new EntityMatcherContext(entity, loc);
+        for (Map.Entry<EnumCreatureAttribute, IMatcher<EntityMatcherContext>> entry : attributes.entrySet())
+            if (entry.getValue().matches(context))
                 return entry.getKey();
         return EnumCreatureAttribute.UNDEFINED;
     }

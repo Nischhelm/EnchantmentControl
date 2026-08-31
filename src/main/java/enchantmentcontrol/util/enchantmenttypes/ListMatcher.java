@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ListMatcher implements ITypeMatcher.UsesItemLoc {
+public class ListMatcher implements ITypeMatcher {
     protected final Set<String> ids;
     protected final String name;
     public ListMatcher(String name, Set<String> ids) {

@@ -161,18 +161,18 @@ public class CT_EnchantmentInfo {
         for(Map.Entry<EnchantmentBuilder, String[]> entry : types.entrySet()){
             if(entry.getValue().length == 0) continue;
             Enchantment ench = EnchantmentInfo.getEnchantmentObject(map.get(entry.getKey()));
-            Set<ITypeMatcher> set = ItemTypeConfigProvider.itemTypes.computeIfAbsent(ench, e -> new HashSet<>());
+            Set<enchantmentcontrol.util.matcher.context.ItemTypeMatcherRegistry> set = ItemTypeConfigProvider.itemTypes.computeIfAbsent(ench, e -> new HashSet<>());
             Arrays.stream(entry.getValue())
-                    .map(ItemTypeConfigProvider::getMatcher)
+                    .map(ItemTypeConfigProvider::getMatcherRegistry)
                     .filter(Objects::nonNull)
                     .forEach(set::add);
         }
         for(Map.Entry<EnchantmentBuilder, String[]> entry : typesAnvil.entrySet()){
             if(entry.getValue().length == 0) continue;
             Enchantment ench = EnchantmentInfo.getEnchantmentObject(map.get(entry.getKey()));
-            Set<ITypeMatcher> set = ItemTypeConfigProvider.itemTypesAnvil.computeIfAbsent(ench, e -> new HashSet<>());
+            Set<enchantmentcontrol.util.matcher.context.ItemTypeMatcherRegistry> set = ItemTypeConfigProvider.itemTypesAnvil.computeIfAbsent(ench, e -> new HashSet<>());
             Arrays.stream(entry.getValue())
-                    .map(ItemTypeConfigProvider::getMatcher)
+                    .map(ItemTypeConfigProvider::getMatcherRegistry)
                     .filter(Objects::nonNull)
                     .forEach(set::add);
         }
