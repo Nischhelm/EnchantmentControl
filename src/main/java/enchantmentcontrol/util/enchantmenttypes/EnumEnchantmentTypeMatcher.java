@@ -9,9 +9,9 @@ import net.minecraft.item.ItemStack;
 
 import java.util.*;
 
-public class EnumEnchantmentTypeMatcher implements ITypeMatcher {
+public class EnumEnchantmentTypeMatcher implements ICanApplyMatcher {
     private static final Map<EnumEnchantmentType, EnumEnchantmentTypeMatcher> enchantToTypeMatchers = new HashMap<>();
-    public static List<ITypeMatcher> byEnum(EnumEnchantmentType type){
+    public static List<ICanApplyMatcher> byEnum(EnumEnchantmentType type){
         if(type.ordinal() > 11){ //not vanilla enum
             switch (type.name()) {
                 //some SME 0.x types are just lists of types or renames of existing vanilla Enums

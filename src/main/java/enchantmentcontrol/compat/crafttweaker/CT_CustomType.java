@@ -3,7 +3,7 @@ package enchantmentcontrol.compat.crafttweaker;
 import crafttweaker.annotations.ZenRegister;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
-import enchantmentcontrol.util.enchantmenttypes.ITypeMatcher;
+import enchantmentcontrol.util.enchantmenttypes.ICanApplyMatcher;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 public class CT_CustomType {
     @ZenMethod
     public static void registerCustomType(String name, Predicate<ItemStack> matcher){
-        ItemTypeConfigProvider.registerCustomTypeMatcher(new ITypeMatcher() {
+        ItemTypeConfigProvider.registerCustomTypeMatcher(new ICanApplyMatcher() {
             @Override
             public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName) {
                 return matcher.test(stack);
@@ -33,7 +33,7 @@ public class CT_CustomType {
 
     @ZenMethod
     public static void registerCustomTypeWithMetadata(String name, String itemid, int metadata){
-        ItemTypeConfigProvider.registerCustomTypeMatcher(new ITypeMatcher() {
+        ItemTypeConfigProvider.registerCustomTypeMatcher(new ICanApplyMatcher() {
             @Override
             public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName) {
                 return item.getRegistryName().toString().equals(itemid) && stack.getMetadata() == metadata;

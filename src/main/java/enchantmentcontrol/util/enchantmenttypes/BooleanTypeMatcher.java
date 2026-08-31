@@ -4,7 +4,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class BooleanTypeMatcher implements ITypeMatcher {
+public class BooleanTypeMatcher implements ICanApplyMatcher {
     private final String name;
     private final boolean result;
 

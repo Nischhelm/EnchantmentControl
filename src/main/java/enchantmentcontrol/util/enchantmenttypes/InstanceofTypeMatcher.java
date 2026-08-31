@@ -8,7 +8,7 @@ import net.minecraft.launchwrapper.Launch;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InstanceofTypeMatcher implements ITypeMatcher {
+public class InstanceofTypeMatcher implements ICanApplyMatcher {
     private final String name;
     private final List<Class<? extends Item>> classes = new ArrayList<>();
     private final Item fakeItem;

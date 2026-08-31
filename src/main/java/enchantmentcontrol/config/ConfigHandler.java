@@ -2,6 +2,7 @@ package enchantmentcontrol.config;
 
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.folders.*;
+import enchantmentcontrol.config.matcherregistry.CreatureAttributeTypeTypes;
 import meldexun.betterconfig.api.BetterConfig;
 import meldexun.betterconfig.api.LoadEarly;
 import net.minecraftforge.common.config.Config;
@@ -68,9 +69,9 @@ public class ConfigHandler {
 	})
 	@Config.Name("Creature Attributes")
 	public static Map<String, CustomCreatureAttribute> creatureAttributes = new HashMap<>();
+
 	public static class CustomCreatureAttribute {
-		public enum EnumAttributeType { MOB, MODID, CLASS, REGEX }
-		public EnumAttributeType type = EnumAttributeType.MOB;
+		public CreatureAttributeTypeTypes type = CreatureAttributeTypeTypes.MOB;
 		public LinkedHashSet<String> values = new LinkedHashSet<>();
 		public CustomCreatureAttribute() {}
 	}

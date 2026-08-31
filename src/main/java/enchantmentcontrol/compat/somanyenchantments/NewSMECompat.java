@@ -5,6 +5,7 @@ import com.shultrea.rin.enchantments.base.EnchantmentBase;
 import com.shultrea.rin.registry.EnchantmentRegistry;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.config.matcherregistry.CustomItemTypeTypes;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import net.minecraft.enchantment.Enchantment;
@@ -214,7 +215,7 @@ public class NewSMECompat {
             if(!existingCustomTypeNames.contains(name)) {
                 cfgChanged = true;
                 ItemTypeConfig.CustomItemType customItemType = new ItemTypeConfig.CustomItemType();
-                customItemType.type = ItemTypeConfig.CustomItemType.EnumItemTypeMatcher.REGEX;
+                customItemType.type = CustomItemTypeTypes.REGEX;
                 customItemType.values = Collections.singleton(regex);
                 ConfigHandler.itemTypes.customTypes.put(name, customItemType);
             }

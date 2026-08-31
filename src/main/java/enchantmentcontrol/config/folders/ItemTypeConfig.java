@@ -1,5 +1,6 @@
 package enchantmentcontrol.config.folders;
 
+import enchantmentcontrol.config.matcherregistry.CustomItemTypeTypes;
 import net.minecraftforge.common.config.Config;
 
 import java.util.*;
@@ -25,8 +26,7 @@ public class ItemTypeConfig {
     @Config.Name("Custom Item Types")
     public Map<String, CustomItemType> customTypes = new HashMap<>();
     public static class CustomItemType {
-        public enum EnumItemTypeMatcher { MODID, REGEX, ITEMID, CLASS}
-        public EnumItemTypeMatcher type = EnumItemTypeMatcher.ITEMID;
+        public CustomItemTypeTypes type = CustomItemTypeTypes.ITEMID;
         public Set<String> values = new HashSet<>();
         public CustomItemType(){} //needed for BetterConfig
     }

@@ -4,31 +4,29 @@ import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.compat.somanyenchantments.NewSMECompat;
 import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.config.matcherregistry.DefaultCanApplyTypes;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.util.enchantmenttypes.*;
 import enchantmentcontrol.util.matcher.IMatcher;
-import enchantmentcontrol.util.matcher.matcher.InvertedMatcher;
-import enchantmentcontrol.util.matcher.matcher.ModIdMatcher;
-import enchantmentcontrol.util.matcher.matcher.RegexMatcher;
 import enchantmentcontrol.util.matcher.context.ItemTypeContext;
 import enchantmentcontrol.util.matcher.context.ItemTypeMatcherRegistry;
+import enchantmentcontrol.util.matcher.matcher.InvertedMatcher;
+import enchantmentcontrol.util.matcher.matcher.RegexMatcher;
 import enchantmentcontrol.util.matcher.matcher.StringListMatcher;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ItemTypeConfigProvider {
     private static final HashMap<String, ItemTypeMatcherRegistry> registeredMatchers = new HashMap<>();
-    public static ITypeMatcher getMatcher(String name){
+    public static ICanApplyMatcher getMatcher(String name){
         ItemTypeMatcherRegistry registry = registeredMatchers.get(name);
         if(registry == null) return null;
 
-        return new ITypeMatcher() {
+        return new ICanApplyMatcher() {
             @Override
             public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName) {
                 return registry.getMatcher().matches(new ItemTypeContext(enchantment, stack, item, itemName));
@@ -66,7 +64,7 @@ public class ItemTypeConfigProvider {
         initItemTypeConfig();
     }
 
-    public static void registerCustomTypeMatcher(ITypeMatcher matcher){
+    public static void registerCustomTypeMatcher(ICanApplyMatcher matcher){
         ItemTypeMatcherRegistry registry = new ItemTypeMatcherRegistry(
             matcher.getName(),
             ctx -> matcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
@@ -76,7 +74,7 @@ public class ItemTypeConfigProvider {
         registeredMatchers.put(matcher.getName(), registry);
     }
 
-    public static ITypeMatcher createRegexMatcher(String name, Set<String> regexes) {
+    public static ICanApplyMatcher createRegexMatcher(String name, Set<String> regexes) {
         ItemTypeMatcherRegistry registry = createRegistration(
             name,
             new RegexMatcher<>(regexes, ItemTypeContext::getItemName),
@@ -118,116 +116,14 @@ public class ItemTypeConfigProvider {
             registeredMatchers.put(enumName, registry);
         }
 
-        // Register boolean and instanceof matchers
-        BooleanTypeMatcher anyMatcher = new BooleanTypeMatcher("ANY", true);
-        registeredMatchers.put("ANY", new ItemTypeMatcherRegistry(
-            anyMatcher.getName(),
-            ctx -> anyMatcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-            anyMatcher::isValid,
-            anyMatcher.getFakeStack()
-        ));
+        // Register various default item types, mostly from vanilla EnumEnchantmentType
+        for (DefaultCanApplyTypes type : DefaultCanApplyTypes.values())
+            registeredMatchers.put(type.getTypeName(), type.createRegistry());
 
-        InstanceofTypeMatcher axeMatcher = new InstanceofTypeMatcher("AXE", ItemAxe.class, Items.IRON_AXE);
-        registeredMatchers.put("AXE", new ItemTypeMatcherRegistry(
-            axeMatcher.getName(),
-            ctx -> axeMatcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-            axeMatcher::isValid,
-            axeMatcher.getFakeStack()
-        ));
-
-        InstanceofTypeMatcher pickaxeMatcher = new InstanceofTypeMatcher("PICKAXE", ItemPickaxe.class, Items.IRON_PICKAXE);
-        registeredMatchers.put("PICKAXE", new ItemTypeMatcherRegistry(
-            pickaxeMatcher.getName(),
-            ctx -> pickaxeMatcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-            pickaxeMatcher::isValid,
-            pickaxeMatcher.getFakeStack()
-        ));
-
-        InstanceofTypeMatcher hoeMatcher = new InstanceofTypeMatcher("HOE", ItemHoe.class, Items.IRON_HOE);
-        registeredMatchers.put("HOE", new ItemTypeMatcherRegistry(
-            hoeMatcher.getName(),
-            ctx -> hoeMatcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-            hoeMatcher::isValid,
-            hoeMatcher.getFakeStack()
-        ));
-
-        InstanceofTypeMatcher shovelMatcher = new InstanceofTypeMatcher("SHOVEL", ItemSpade.class, Items.IRON_SHOVEL);
-        registeredMatchers.put("SHOVEL", new ItemTypeMatcherRegistry(
-            shovelMatcher.getName(),
-            ctx -> shovelMatcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-            shovelMatcher::isValid,
-            shovelMatcher.getFakeStack()
-        ));
-
-        InstanceofTypeMatcher shieldMatcher = new InstanceofTypeMatcher("SHIELD", ItemShield.class, Items.SHIELD);
-        registeredMatchers.put("SHIELD", new ItemTypeMatcherRegistry(
-            shieldMatcher.getName(),
-            ctx -> shieldMatcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-            shieldMatcher::isValid,
-            shieldMatcher.getFakeStack()
-        ));
-
-        InstanceofTypeMatcher shearsMatcher = new InstanceofTypeMatcher("SHEARS", ItemShears.class, Items.SHEARS);
-        registeredMatchers.put("SHEARS", new ItemTypeMatcherRegistry(
-            shearsMatcher.getName(),
-            ctx -> shearsMatcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-            shearsMatcher::isValid,
-            shearsMatcher.getFakeStack()
-        ));
-
-        BooleanTypeMatcher noneMatcher = new BooleanTypeMatcher("NONE", false);
-        registeredMatchers.put("NONE", new ItemTypeMatcherRegistry(
-            noneMatcher.getName(),
-            ctx -> noneMatcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-            noneMatcher::isValid,
-            noneMatcher.getFakeStack()
-        ));
-
+        // Create custom types and add them to the list
         for (Map.Entry<String, ItemTypeConfig.CustomItemType> entry : ConfigHandler.itemTypes.customTypes.entrySet()) {
             String name = entry.getKey();
-            Set<String> values = entry.getValue().values;
-
-            ItemTypeMatcherRegistry registry;
-            switch (entry.getValue().type) {
-                case CLASS:
-                    InstanceofTypeMatcher classMatcher = new InstanceofTypeMatcher(name, values.stream().map(String::trim).collect(Collectors.toList()));
-                    registry = new ItemTypeMatcherRegistry(
-                        classMatcher.getName(),
-                        ctx -> classMatcher.matches(ctx.getEnchantment(), ctx.getStack(), ctx.getItem(), ctx.getItemName()),
-                        classMatcher::isValid,
-                        classMatcher.getFakeStack()
-                    );
-                    break;
-                case MODID:
-                    registry = createRegistration(
-                        name,
-                        new ModIdMatcher<>(values, ctx -> {
-                            if (ctx.getItem().getRegistryName() == null) return null;
-                            return ctx.getItem().getRegistryName().getNamespace();
-                        }),
-                        () -> values.stream().anyMatch(net.minecraftforge.fml.common.Loader::isModLoaded),
-                        null
-                    );
-                    break;
-                case ITEMID:
-                    Set<String> trimmed = values.stream().map(String::trim).collect(Collectors.toSet());
-                    registry = createRegistration(
-                        name,
-                        new StringListMatcher<>(trimmed, ItemTypeContext::getItemName),
-                        () -> !trimmed.isEmpty(),
-                        null
-                    );
-                    break;
-                case REGEX:
-                default:
-                    registry = createRegistration(
-                        name,
-                        new RegexMatcher<>(values, ItemTypeContext::getItemName),
-                        () -> !values.isEmpty(),
-                        null
-                    );
-                    break;
-            }
+            ItemTypeMatcherRegistry registry = entry.getValue().type.createRegistry(name, entry.getValue().values);
             if (registry.isValid()) registeredMatchers.put(name, registry);
         }
     }
@@ -360,7 +256,7 @@ public class ItemTypeConfigProvider {
 
     private static boolean needsItemName(IMatcher<ItemTypeContext> matcher) {
         // Check if matcher is one that uses itemName
-        return matcher instanceof ListMatcher ||
+        return matcher instanceof StringListMatcher ||
                matcher instanceof RegexMatcher ||
                (matcher instanceof InvertedMatcher && needsItemName(((InvertedMatcher<ItemTypeContext>) matcher).getInner()));
     }
@@ -386,7 +282,7 @@ public class ItemTypeConfigProvider {
         //Note down each enchants original type
         for (Enchantment ench : Enchantment.REGISTRY) {
             if (ench.type == null) continue;
-            List<ITypeMatcher> matchers = EnumEnchantmentTypeMatcher.byEnum(ench.type);
+            List<ICanApplyMatcher> matchers = EnumEnchantmentTypeMatcher.byEnum(ench.type);
             matchers.forEach(matcher -> {
                 if(matcher.getName().equals("NONE")) return; // If other mods use NONE enum
                 byName.computeIfAbsent(matcher.getName(), k -> new HashSet<>()).add(ench);
