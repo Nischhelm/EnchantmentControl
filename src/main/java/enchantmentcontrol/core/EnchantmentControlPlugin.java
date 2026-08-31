@@ -2,7 +2,7 @@ package enchantmentcontrol.core;
 
 import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.config.EarlyConfigReader;
+import enchantmentcontrol.config.folders.ItemTypeConfig;
 import fermiumbooter.FermiumRegistryAPI;
 import fermiumbooter.util.FermiumJarScanner;
 import io.github.classgraph.ClassGraph;
@@ -10,6 +10,8 @@ import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
 
 import java.util.HashSet;
@@ -20,6 +22,7 @@ import java.util.Set;
 public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 	public static final Set<String> actuallyEarlyEnchants = new HashSet<>();
 	public static final Set<String> enchantmentClasses = new HashSet<>();
+	public static final Logger LOGGER = LogManager.getLogger("enchantmentcontrol");
 
 	public EnchantmentControlPlugin() {
 		MixinBootstrap.init();
@@ -28,8 +31,8 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 			graphClasses(); //this is a good position in the loading process, so we do it here, right during MC init while early jsons are enqueued
 			return true;
 		});
-		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.creativecanapplyoverride.json", () -> !EarlyConfigReader.getString("(MixinToggle) Creative Skips Item Check", ConfigHandler.itemTypes.creativeOptions.toString()).equals("ANVIL"));
-		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.etablemaxlvl.json", () -> !FermiumJarScanner.isModPresent("apotheosis") && EarlyConfigReader.getInt("(MixinToggle) Enchantment Table Max Lvl", ConfigHandler.etable.maxLvl) >= 0);
+		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.creativecanapplyoverride.json", () -> ConfigHandler.itemTypes.creativeOptions != ItemTypeConfig.EnumCreativeAllowed.ANVIL);
+		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.etablemaxlvl.json", () -> !FermiumJarScanner.isModPresent("apotheosis") && ConfigHandler.etable.maxLvl >= 0);
 
 		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.contenttweaker.json", CompatUtil.contenttweaker::isLoaded);
 		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.crafttweaker.json", () -> Loader.isModLoaded("crafttweaker"));

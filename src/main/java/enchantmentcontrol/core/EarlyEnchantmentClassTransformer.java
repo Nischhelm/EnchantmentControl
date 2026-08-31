@@ -1,6 +1,6 @@
 package enchantmentcontrol.core;
 
-import enchantmentcontrol.config.EarlyConfigReader;
+import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.classdump.EnchantmentClassReader;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.*;
@@ -36,8 +36,8 @@ public class EarlyEnchantmentClassTransformer implements IClassTransformer {
             @Override
             public void visitEnd() {
                 Set<String> modifiedEnchClasses = EnchantmentClassReader.getEarlyClasses(); // already doesnt contain early enchants
-                EarlyConfigReader.getClassBlacklistConfig().forEach(modifiedEnchClasses::remove);
-                System.out.println("EnchantmentControl modifying " + modifiedEnchClasses.size() + " early enchantment classes");
+                ConfigHandler.debug.disabledClasses.forEach(modifiedEnchClasses::remove);
+                EnchantmentControlPlugin.LOGGER.warn("EnchantmentControl modifying {} early enchantment classes", modifiedEnchClasses.size());
                 Annotations.setValue(this.node, "targets", new ArrayList<>(modifiedEnchClasses));
             }
         };

@@ -2,6 +2,9 @@ package enchantmentcontrol.config.folders;
 
 import net.minecraftforge.common.config.Config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ItemTypeConfig {
     @Config.Comment("Global Toggle to disable the entire Item Types category")
     @Config.Name("Modification Enabled")
@@ -21,7 +24,7 @@ public class ItemTypeConfig {
             "- and items is a list of item ids"
     })
     @Config.Name("Custom Item Types")
-    public String[] customTypes = {};
+    public List<String> customTypes = new ArrayList<>();
 
     @Config.Comment({
             "Some modded items only pretend to be a specific item type without actually being them (wolf armor being SWORD and ARMOR_FEET, better survival items being SWORD etc).",
@@ -39,7 +42,7 @@ public class ItemTypeConfig {
             " - If modded behaviors are generally disallowed, items listed here will have their modded behavior be allowed anyway",
     })
     @Config.Name("Item Blacklist")
-    public String[] blacklist = {};
+    public List<String> blacklist = new ArrayList<>();
 
     @Config.Comment("Whenever enchantments are checked against items to possibly apply the enchantment, the rules in here are checked, to a modifiably varying degree.")
     @Config.Name("General")
@@ -77,7 +80,7 @@ public class ItemTypeConfig {
                 " This will disallow any item that matches the given matcher from using the given enchantments (except if allowed custom behavior gets priority and overrides)"
         })
         @Config.Name("Item Types")
-        public String[] itemTypes = {};
+        public List<String> itemTypes = new ArrayList<>();
 
         @Config.Comment({
                 "Enchantments listed here will run against what is set in \"Allow Modded Enchantment Behaviors\":",
@@ -85,7 +88,7 @@ public class ItemTypeConfig {
                 " - If modded behaviors are generally disallowed, enchants listed here will have their modded behavior be allowed anyway",
         })
         @Config.Name("Blacklist")
-        public String[] blacklist = {};
+        public List<String> blacklist = new ArrayList<>();
     }
 
     @Config.Comment({
@@ -120,7 +123,7 @@ public class ItemTypeConfig {
                 " Any type name from \"General.Item Types\" and \"Custom Item Types\" can be used here too, including inverted(!) ones."
         })
         @Config.Name("Item Types")
-        public String[] itemTypes = {};
+        public List<String> itemTypes = new ArrayList<>();
 
         @Config.Comment({
                 "Enchantments listed here will run against what is set in \"Allow Modded Enchantment Behaviors\":",
@@ -128,6 +131,6 @@ public class ItemTypeConfig {
                 " - If modded behaviors are generally disallowed, enchants listed here will have their modded behavior be allowed anyway"
         })
         @Config.Name("Blacklist")
-        public String[] blacklist = {};
+        public List<String> blacklist = new ArrayList<>();
     }
 }

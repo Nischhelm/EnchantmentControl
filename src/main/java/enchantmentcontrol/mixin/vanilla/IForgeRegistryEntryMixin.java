@@ -2,7 +2,7 @@ package enchantmentcontrol.mixin.vanilla;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.config.EarlyConfigReader;
+import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,10 +21,10 @@ public abstract class IForgeRegistryEntryMixin {
     private ResourceLocation ec_modifyRegistryNames(ResourceLocation original){
         if(this.getRegistryType() != Enchantment.class) return original;
 
-        ResourceLocation remap = EarlyConfigReader.getRemap(original.toString());
+        String remap = ConfigHandler.dev.idRemaps.get(original.toString());
         if(remap != null){
             EnchantmentControl.LOGGER.info("Remapping Enchantment {} to {}", original, remap);
-            return remap;
+            return new ResourceLocation(remap);
         }
         return original;
     }

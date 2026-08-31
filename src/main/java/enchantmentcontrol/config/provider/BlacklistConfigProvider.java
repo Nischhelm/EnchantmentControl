@@ -7,7 +7,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class BlacklistConfigProvider {
@@ -15,7 +14,6 @@ public class BlacklistConfigProvider {
     private static List<Enchantment> randomEnchantsBlacklist = null;
     private static List<Enchantment> librarianEnchantsBlacklist = null;
     private static List<Enchantment> enchantTableEnchantsBlacklist = null;
-    private static List<String> registryEnchantsBlacklist = null;
 
     public static void onResetConfig(){
         randomLevelEnchantsBlacklist = null;
@@ -48,13 +46,7 @@ public class BlacklistConfigProvider {
         return enchantTableEnchantsBlacklist;
     }
 
-    public static List<String> getRegistryEnchantsBlacklist(){
-        if(registryEnchantsBlacklist == null)
-            registryEnchantsBlacklist = Arrays.asList(ConfigHandler.blacklists.blacklistedRegistryEnchants);
-        return registryEnchantsBlacklist;
-    }
-
-    private static List<Enchantment> populateEnchantmentList(String[] names) {
+    private static List<Enchantment> populateEnchantmentList(List<String> names) {
         List<Enchantment> list = new ArrayList<>();
         for(String name : names) {
             name = name.trim();

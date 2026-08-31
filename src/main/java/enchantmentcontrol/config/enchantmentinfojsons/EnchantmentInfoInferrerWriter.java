@@ -3,7 +3,6 @@ package enchantmentcontrol.config.enchantmentinfojsons;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.mixin.vanilla.accessor.EnchantmentAccessor;
-import enchantmentcontrol.util.ConfigRef;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.MaxEnchantabilityMode;
 import net.minecraft.enchantment.Enchantment;

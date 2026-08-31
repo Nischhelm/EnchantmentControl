@@ -1,9 +1,10 @@
 package enchantmentcontrol.config.folders;
 
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.util.ConfigRef;
 import fermiumbooter.annotations.MixinConfig;
 import net.minecraftforge.common.config.Config;
+
+import java.util.ArrayList;
 
 @MixinConfig(name = EnchantmentControl.MODID)
 public class DebugConfig {
@@ -12,9 +13,9 @@ public class DebugConfig {
             "You can find the class name in config/enchantmentcontrol/tmp/enchclasses.dump\n" +
             "Class names noted here need to look like net.minecraft.enchantment.EnchantmentDamage\n" +
             "Vanilla enchants will always be targeted, so putting their classes in here won't do anything")
-    @Config.Name(ConfigRef.BLACKLIST_CONFIG_NAME)
+    @Config.Name("Blacklisted Enchantment Classes")
     @Config.RequiresMcRestart
-    public String[] disabledClasses = {};
+    public ArrayList<String> disabledClasses = new ArrayList<>();
 
     @Config.Comment("If enabled, writes all currently loaded enchantment infos to /config/enchantmentcontrol/loaded/ during startup. Can be used to check if a given config json is actually loaded (and loaded correctly).")
     @Config.Name("Print Loaded Enchantment Infos")

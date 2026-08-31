@@ -1,47 +1,36 @@
 package enchantmentcontrol.config.provider;
 
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.config.EarlyConfigReader;
-import enchantmentcontrol.util.ConfigRef;
+import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 public class CreatureAttributeProvider {
     private static Map<EnumCreatureAttribute, IEntityMatcher> attributes = new HashMap<>(); //gets overwritten during EnumCreatureAttribute.<clinit>
 
     public static void registerAttributes(Function<String, EnumCreatureAttribute> constructor) {
-        attributes = EarlyConfigReader.readConfigMap(ConfigRef.CREAT_ATTR_CONFIG_NAME, constructor, value -> {
-            String[] parts = value.split(",");
-            if (parts.length < 2){
-                EnchantmentControl.LOGGER.warn("Invalid creature attribute definition, this creature attribute will not work: {}", value);
-                return new ModIdListMatcher(Collections.emptySet());
+        attributes = new HashMap<>();
+        ConfigHandler.creatureAttributes.forEach((attributeName, attr) -> {
+            if(attributeName.isEmpty()) return;
+            if(attr.values.isEmpty()) return;
+            IEntityMatcher matcher;
+            switch (attr.type) {
+                case MODID: matcher = new ModIdListMatcher(attr.values); break;
+                case CLASS: matcher = new ClassMatcher(attr.values); break;
+                case MOB: default: matcher = new ListMatcher(attr.values); break;
             }
 
-            String type = parts[0].trim().toLowerCase();
-
-            switch (type) {
-                case "modid":
-                    Set<String> modIds = new HashSet<>();
-                    for (int i = 1; i < parts.length; i++)
-                        modIds.add(parts[i].trim());
-                    return new ModIdListMatcher(modIds);
-                case "mob":
-                    Set<String> registryNames = new HashSet<>();
-                    for (int i = 1; i < parts.length; i++)
-                        registryNames.add(parts[i].trim());
-                    return new ListMatcher(registryNames);
-                case "class":
-                    return new ClassMatcher(parts[1].trim());
-            }
-
-            EnchantmentControl.LOGGER.warn("Invalid creature attribute definition, needs to start with \"mob\", \"modid\", or \"class\": {}", value);
-            return new ModIdListMatcher(Collections.emptySet());
+            EnumCreatureAttribute attribute = constructor.apply(attributeName);
+            attributes.put(attribute, matcher);
         });
     }
 
@@ -57,21 +46,22 @@ public class CreatureAttributeProvider {
     public interface IEntityMatcher { boolean matches(Entity entity, ResourceLocation loc);}
 
     public static class ClassMatcher implements IEntityMatcher {
-        private Class<? extends Entity> entityClass;
+        private final Set<Class<? extends Entity>> entityClasses = new HashSet<>();
 
         @SuppressWarnings("unchecked")
-        public ClassMatcher(String className) {
-            try {
-                this.entityClass = (Class<? extends Entity>) Class.forName(className);
-            } catch (ClassNotFoundException e) {
-                EnchantmentControl.LOGGER.warn("Could not find entity class {} for custom creature attribute", className);
-                this.entityClass = null;
-            }
+        public ClassMatcher(Set<String> classNames) {
+            classNames.forEach(className -> {
+                try {
+                    this.entityClasses.add((Class<? extends Entity>) Class.forName(className));
+                } catch (ClassNotFoundException e) {
+                    EnchantmentControl.LOGGER.warn("Could not find entity class {} for custom creature attribute", className);
+                }
+            });
         }
 
         @Override
         public boolean matches(Entity entity, ResourceLocation loc) {
-            return entityClass != null && entityClass.isInstance(entity);
+            return !entityClasses.isEmpty() && entityClasses.stream().anyMatch(entityClass -> entityClass.isInstance(entity));
         }
     }
 

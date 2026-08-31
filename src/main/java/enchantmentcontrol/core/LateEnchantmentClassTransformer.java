@@ -1,6 +1,6 @@
 package enchantmentcontrol.core;
 
-import enchantmentcontrol.config.EarlyConfigReader;
+import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -43,8 +43,8 @@ public class LateEnchantmentClassTransformer implements IClassTransformer {
             public void visitEnd() {
                 Set<String> modifiedEnchClasses = new HashSet<>(EnchantmentControlPlugin.enchantmentClasses);
                 modifiedEnchClasses.removeAll(EnchantmentControlPlugin.actuallyEarlyEnchants);
-                EarlyConfigReader.getClassBlacklistConfig().forEach(modifiedEnchClasses::remove);
-                System.out.println("EnchantmentControl modifying " + modifiedEnchClasses.size() + " late enchantment classes");
+                ConfigHandler.debug.disabledClasses.forEach(modifiedEnchClasses::remove);
+                EnchantmentControlPlugin.LOGGER.warn("EnchantmentControl modifying {} late enchantment classes", modifiedEnchClasses.size());
                 Annotations.setValue(this.node, "targets", new ArrayList<>(modifiedEnchClasses));
             }
         };

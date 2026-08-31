@@ -4,7 +4,6 @@ import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.compat.somanyenchantments.NewSMECompat;
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.util.ConfigRef;
 import enchantmentcontrol.util.enchantmenttypes.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -99,7 +98,7 @@ public class ItemTypeConfigProvider {
 
     public static final Map<Enchantment, Set<ITypeMatcher>> itemTypes = new HashMap<>();
     public static final Map<Enchantment, Set<ITypeMatcher>> itemTypesAnvil = new HashMap<>();
-    private static void initItemTypes(String[] config, Map<Enchantment, Set<ITypeMatcher>> mapOut){
+    private static void initItemTypes(List<String> config, Map<Enchantment, Set<ITypeMatcher>> mapOut){
         for(String s : config){
             String[] split = s.split("=");
             if(split.length < 2) continue;
@@ -133,15 +132,15 @@ public class ItemTypeConfigProvider {
     private static final Set<Item> blacklistedItems = new HashSet<>();
     private static final Set<Enchantment> blacklistedEnchantments = new HashSet<>();
     private static final Set<Enchantment> blacklistedEnchantmentsAnvil = new HashSet<>();
-    private static void initBlacklist(String[] cfg, Set<Enchantment> set) {
-        Arrays.stream(cfg)
+    private static void initBlacklist(List<String> cfg, Set<Enchantment> set) {
+        cfg.stream()
                 .map(String::trim)
                 .map(Enchantment::getEnchantmentByLocation)
                 .filter(Objects::nonNull)
                 .forEach(set::add);
     }
-    private static void initItemBlacklist(String[] cfg, Set<Item> set) {
-        Arrays.stream(cfg)
+    private static void initItemBlacklist(List<String> cfg, Set<Item> set) {
+        cfg.stream()
                 .map(String::trim)
                 .map(Item::getByNameOrId)
                 .filter(Objects::nonNull)
@@ -269,9 +268,7 @@ public class ItemTypeConfigProvider {
                         )
                 )
         );
-        String[] outarr = out.toArray(new String[0]);
-        EnchantmentControl.CONFIG.get("general.item types.general", "Item Types", ConfigHandler.itemTypes.general.itemTypes).set(outarr);
-        ConfigHandler.itemTypes.general.itemTypes = outarr;
+        ConfigHandler.itemTypes.general.itemTypes = out;
 
         //Also for anvil
 
@@ -290,13 +287,10 @@ public class ItemTypeConfigProvider {
                 );
             }
         );
-        String[] outarrAnv = outAnv.toArray(new String[0]);
-        EnchantmentControl.CONFIG.get("general.item types.anvil", "Item Types", ConfigHandler.itemTypes.anvil.itemTypes).set(outarrAnv);
-        ConfigHandler.itemTypes.anvil.itemTypes = outarrAnv;
+        ConfigHandler.itemTypes.anvil.itemTypes = outAnv;
 
         //Reset print toggle
 
-        EnchantmentControl.CONFIG.get("general.first setup", ConfigRef.PRINT_TYPES_CONFIG_NAME, ConfigHandler.dev.printTypes).set(false);
         ConfigHandler.dev.printTypes = false;
         EnchantmentControl.configNeedsSaving = true;
     }
@@ -390,22 +384,13 @@ public class ItemTypeConfigProvider {
             if(hasOverride) itemBlacklist.add(loc.toString());
         }
 
-        String[] outarr = blacklist.toArray(new String[0]);
-        EnchantmentControl.CONFIG.get("general.item types.general", "Blacklist", ConfigHandler.itemTypes.general.blacklist).set(outarr);
-        ConfigHandler.itemTypes.general.blacklist = outarr;
-        EnchantmentControl.CONFIG.get("general.item types.general", "Allow Modded Enchantment Behaviors", ConfigHandler.itemTypes.general.allowCustomEnchantments).set(false);
+        ConfigHandler.itemTypes.general.blacklist = blacklist;
         ConfigHandler.itemTypes.general.allowCustomEnchantments = false;
 
-        String[] outarrAnv = blacklistAnvil.toArray(new String[0]);
-        EnchantmentControl.CONFIG.get("general.item types.anvil", "Blacklist", ConfigHandler.itemTypes.anvil.blacklist).set(outarrAnv);
-        ConfigHandler.itemTypes.anvil.blacklist = outarrAnv;
-        EnchantmentControl.CONFIG.get("general.item types.anvil", "Allow Modded Enchantment Behaviors", ConfigHandler.itemTypes.anvil.allowCustomEnchantments).set(false);
+        ConfigHandler.itemTypes.anvil.blacklist = blacklistAnvil;
         ConfigHandler.itemTypes.anvil.allowCustomEnchantments = false;
 
-        String[] outarrItem = itemBlacklist.toArray(new String[0]);
-        EnchantmentControl.CONFIG.get("general.item types", "Item Blacklist", ConfigHandler.itemTypes.blacklist).set(outarrItem);
-        ConfigHandler.itemTypes.blacklist = outarrItem;
-        EnchantmentControl.CONFIG.get("general.item types", "Allow Modded Item Behaviors", ConfigHandler.itemTypes.allowCustomItems).set(false);
+        ConfigHandler.itemTypes.blacklist = itemBlacklist;
         ConfigHandler.itemTypes.allowCustomItems = false;
     }
 }

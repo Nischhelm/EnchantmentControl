@@ -1,7 +1,7 @@
 package enchantmentcontrol.mixin.vanilla;
 
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.config.EarlyConfigReader;
+import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
@@ -47,13 +47,13 @@ public class ForgeRegistryCustomIDMixin<V extends IForgeRegistryEntry<V>> {
             ec$enchantmentIdsReserved = true;
         }
 
-        if (EarlyConfigReader.getCustomNumericIdsConfig().isEmpty()) return idToUse;
+        if (ConfigHandler.dev.customNumericIds.isEmpty()) return idToUse;
 
         ResourceLocation loc = value.getRegistryName();
         if (loc == null) return idToUse;
         String enchantmentName = loc.toString();
 
-        Integer customId = EarlyConfigReader.getCustomNumericId(enchantmentName);
+        Integer customId = ConfigHandler.dev.customNumericIds.get(enchantmentName);
         if (customId == null) return idToUse;
 
         // Check if ID is actually occupied, not just reserved
@@ -69,7 +69,7 @@ public class ForgeRegistryCustomIDMixin<V extends IForgeRegistryEntry<V>> {
 
     @Unique
     private void ec$reserveCustomIds() {
-        for (Integer customId : EarlyConfigReader.getCustomNumericIdsConfig().values()) {
+        for (Integer customId : ConfigHandler.dev.customNumericIds.values()) {
             if (customId < 0) continue;
 
             if (!availabilityMap.get(customId)) {

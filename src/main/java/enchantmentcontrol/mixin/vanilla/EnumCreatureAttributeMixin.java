@@ -13,6 +13,11 @@ import java.util.List;
 public abstract class EnumCreatureAttributeMixin {
     @SuppressWarnings("target") @Shadow @Final @Mutable private static EnumCreatureAttribute[] $VALUES;
 
+    @Shadow
+    public static EnumCreatureAttribute[] values() {
+        throw new UnsupportedOperationException("Implemented via mixin");
+    }
+
     @Invoker("<init>") private static EnumCreatureAttribute ec_invokeInit(String internalName, int internalID){ throw new AssertionError("EnchantmentControl couldn't find constructor for EnumCreatureAttribute");}
 
     static {
@@ -22,17 +27,15 @@ public abstract class EnumCreatureAttributeMixin {
 
     @Unique
     private static EnumCreatureAttribute ec$addEnumCreatureAttribute(String name){
-        switch (name) { //vanilla attributes don't need to be constructed
-            case "UNDEFINED": return EnumCreatureAttribute.UNDEFINED;
-            case "UNDEAD": return EnumCreatureAttribute.UNDEAD;
-            case "ILLAGER": return EnumCreatureAttribute.ILLAGER;
-            case "ARTHROPOD": return EnumCreatureAttribute.ARTHROPOD;
-        }
+        for(EnumCreatureAttribute attr : EnumCreatureAttribute.values()) //existing attributes don't need to be constructed
+            if(attr.name().equals(name))
+                return attr;
+
         List<EnumCreatureAttribute> variants = new ArrayList<>(Arrays.asList($VALUES));
-        EnumCreatureAttribute newRarity = ec_invokeInit(name, ec$nextId(variants));
-        variants.add(newRarity);
+        EnumCreatureAttribute newAttr = ec_invokeInit(name, ec$nextId(variants));
+        variants.add(newAttr);
         $VALUES = variants.toArray(new EnumCreatureAttribute[0]);
-        return newRarity;
+        return newAttr;
     }
 
     @Unique

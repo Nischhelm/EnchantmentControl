@@ -1,5 +1,7 @@
 package enchantmentcontrol.config.classdump;
 
+import enchantmentcontrol.core.EnchantmentControlPlugin;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,7 +28,7 @@ public class EnchantmentClassReader {
                 }
             }
             catch(IOException exception) {
-                System.out.println("EnchantmentControl failed to read earlyclasses.dat");
+                EnchantmentControlPlugin.LOGGER.warn("EnchantmentControl failed to read earlyclasses.dat");
             }
         }
 

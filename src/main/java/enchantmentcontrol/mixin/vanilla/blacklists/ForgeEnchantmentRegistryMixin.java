@@ -1,7 +1,7 @@
 package enchantmentcontrol.mixin.vanilla.blacklists;
 
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.config.provider.BlacklistConfigProvider;
+import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
@@ -17,13 +17,13 @@ public abstract class ForgeEnchantmentRegistryMixin<V extends IForgeRegistryEntr
     @Inject(method = "register", at = @At("HEAD"), cancellable = true, remap = false)
     private void onRegister(V value, CallbackInfo ci) {
         if (!(value instanceof Enchantment)) return;
-        if(BlacklistConfigProvider.getRegistryEnchantsBlacklist().isEmpty()) return;
+        if(ConfigHandler.blacklists.blacklistedRegistryEnchants.isEmpty()) return;
         
         ResourceLocation loc = value.getRegistryName();
         if (loc == null) return;
 
         //Prevent registration of config defined enchants
-        if (BlacklistConfigProvider.getRegistryEnchantsBlacklist().contains(loc.toString())) {
+        if (ConfigHandler.blacklists.blacklistedRegistryEnchants.contains(loc.toString())) {
             EnchantmentControl.LOGGER.info("Preventing registration of enchantment {}", loc.toString());
             ci.cancel();
         }

@@ -1,6 +1,6 @@
 package enchantmentcontrol.config.provider;
 
-import enchantmentcontrol.config.EarlyConfigReader;
+import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 
 import java.util.HashMap;
@@ -11,7 +11,7 @@ public class RarityProvider {
     public static final Map<String, Enchantment.Rarity> rarities = new HashMap<>(); //technically not needed as Enchantment.Rarity.valueOf also works
 
     public static void registerRarities(Function<String, Enchantment.Rarity> constructor){
-        for(String s : EarlyConfigReader.getRarityConfig().keySet())
+        for(String s : ConfigHandler.rarityWeights.keySet())
             rarities.put(s, constructor.apply(s));
     }
 }

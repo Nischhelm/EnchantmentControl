@@ -4,7 +4,6 @@ import enchantmentcontrol.bloodanvil.FeatureBloodAnvil;
 import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.compat.crafttweaker.CT_EnchantmentInfo;
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.config.EarlyConfigReader;
 import enchantmentcontrol.config.classdump.EnchantmentClassWriter;
 import enchantmentcontrol.config.descriptions.DescriptionReader;
 import enchantmentcontrol.config.descriptions.EmptyEnchantmentWriter;
@@ -17,20 +16,15 @@ import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.handler.AnvilUseTooltipHandler;
 import enchantmentcontrol.handler.ReEnchantTooltipHandler;
 import enchantmentcontrol.loot.SetEnchantments;
+import meldexun.betterconfig.ConfigManager;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.lang.reflect.Field;
-import java.util.Map;
 
 @Mod(
         modid = EnchantmentControl.MODID,
@@ -47,22 +41,11 @@ public class EnchantmentControl {
     public static final String NAME = "EnchantmentControl";
     public static final Logger LOGGER = LogManager.getLogger(EnchantmentControl.NAME);
     public static final String SEP = ",";
-    public static Configuration CONFIG = null;
     public static boolean configNeedsSaving = false;
     public static boolean loadingComplete = false;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        try {
-            Field field = ConfigManager.class.getDeclaredField("CONFIGS");
-            field.setAccessible(true);
-            @SuppressWarnings("unchecked")
-            Map<String, Configuration> map = (Map<String, Configuration>) field.get(null);
-            CONFIG = map.get(event.getSuggestedConfigurationFile().getAbsolutePath());
-        } catch (Exception e){
-            CONFIG = new Configuration(event.getSuggestedConfigurationFile());
-        }
-
         if(ConfigHandler.anvil.bloodAnvil.enabled) {
             MinecraftForge.EVENT_BUS.register(FeatureBloodAnvil.class);
             FeatureBloodAnvil.onPreInit();
@@ -105,10 +88,7 @@ public class EnchantmentControl {
 
         if(CompatUtil.contenttweaker.isLoaded()) CT_EnchantmentInfo.postInit();
 
-        if(configNeedsSaving) ConfigManager.sync(MODID, Config.Type.INSTANCE);
-
-        //this just as cache clear
-        EarlyConfigReader.clearLines();
+        if(configNeedsSaving) ConfigManager.sync(MODID);
 
         loadingComplete = true;
     }

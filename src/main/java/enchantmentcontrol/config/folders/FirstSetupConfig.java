@@ -1,7 +1,6 @@
 package enchantmentcontrol.config.folders;
 
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.util.ConfigRef;
 import fermiumbooter.annotations.MixinConfig;
 import net.minecraftforge.common.config.Config;
 
@@ -10,7 +9,7 @@ import java.util.Map;
 
 @MixinConfig(name = EnchantmentControl.MODID)
 public class FirstSetupConfig {
-    @Config.Comment("Enable if you want to remap enchantment ids (numerical or name). Warning: See Warnings in \""+ConfigRef.IDREMAP_CONFIG_NAME+"\" and \""+ConfigRef.CUSTOM_NUMERIC_IDS_CONFIG_NAME+"\"")
+    @Config.Comment("Enable if you want to remap enchantment ids (numerical or name). Warning: See Warnings in \"Enchantment Id Remaps\" and \"Enchantment Numeric Id Remaps\"")
     @Config.Name("(MixinToggle) Enable Registry Remapping")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.registryremap.json", defaultValue = false)
@@ -22,7 +21,7 @@ public class FirstSetupConfig {
             "Pattern: S:\"modid:oldenchid\"=modid:newenchid",
             "Requires Mixin Toggle \"Enable Registry Remapping\""
     })
-    @Config.Name(ConfigRef.IDREMAP_CONFIG_NAME)
+    @Config.Name("Enchantment Id Remaps")
     @Config.RequiresMcRestart
     public Map<String, String> idRemaps = new HashMap<>();
 
@@ -33,7 +32,7 @@ public class FirstSetupConfig {
             "Pattern: I:\"modid:enchid\"=id",
             "Requires Mixin Toggle \"Enable Registry Remapping\""
     })
-    @Config.Name(ConfigRef.CUSTOM_NUMERIC_IDS_CONFIG_NAME)
+    @Config.Name("Enchantment Numeric Id Remaps")
     @Config.RequiresMcRestart
     public Map<String, Integer> customNumericIds = new HashMap<>();
 
@@ -46,7 +45,7 @@ public class FirstSetupConfig {
             "DEBUG: These can also be used to check if the changes you apply to the enchantments are actually applied, which would reflect in the inferred files (except \"types\")",
             "WARNING: All files in /inferred-inactive/ will be overwritten every time you start the game with this option enabled"
     })
-    @Config.Name(ConfigRef.DO_INFER_CONFIG_NAME)
+    @Config.Name("Print Inferred Enchantment Infos")
     @Config.RequiresMcRestart
     public boolean printInferred = true;
 
@@ -75,7 +74,7 @@ public class FirstSetupConfig {
             "",
             "WARNING: this will overwrite your current \"Incompatible Groups\" setup on restart!"
     })
-    @Config.Name(ConfigRef.PRINT_INCOMPAT_CONFIG_NAME)
+    @Config.Name("Print Default Incompatibilities")
     @Config.RequiresMcRestart
     public boolean printIncompats = true;
 
@@ -92,7 +91,7 @@ public class FirstSetupConfig {
             "",
             "WARNING: enabling this will overwrite your current \"Item Types\" setup on restart!"
     })
-    @Config.Name(ConfigRef.PRINT_TYPES_CONFIG_NAME)
+    @Config.Name("Print Default Item Types")
     @Config.RequiresMcRestart
     public boolean printTypes = true;
 }

@@ -5,7 +5,6 @@ import com.shultrea.rin.enchantments.base.EnchantmentBase;
 import com.shultrea.rin.registry.EnchantmentRegistry;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.config.EarlyConfigReader;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.util.enchantmenttypes.CustomTypeMatcher;
 import net.minecraft.enchantment.Enchantment;
@@ -180,7 +179,7 @@ public class NewSMECompat {
         }
         for (EnchantmentBase ench : smeEnchants) {
             if(!ench.isEnabled()) continue;
-            if(ench.getRegistryName() == null && EarlyConfigReader.getRegistrationBlacklist().contains(ench.getRegistryName().toString())) continue;
+            if(ench.getRegistryName() == null && ConfigHandler.blacklists.blacklistedRegistryEnchants.contains(ench.getRegistryName().toString())) continue;
             //Direct copy, not being extra intelligent
             for(String smeType : getNewSMETypes(ench, false)){
                 byName.computeIfAbsent(smeType, k -> new LinkedHashSet<>()).add(ench);
@@ -194,8 +193,7 @@ public class NewSMECompat {
     }
 
     public static void addNewSMECustomTypes(){
-        List<String> existingCustomTypeCfgs = Arrays.stream(ConfigHandler.itemTypes.customTypes).collect(Collectors.toList());
-        Set<String> existingCustomTypeNames = existingCustomTypeCfgs.stream().map(cfg -> cfg.split(";")[0].trim()).collect(Collectors.toSet());
+        Set<String> existingCustomTypeNames = ConfigHandler.itemTypes.customTypes.stream().map(cfg -> cfg.split(";")[0].trim()).collect(Collectors.toSet());
         String[] smeCustomTypes = ModConfig.canApply.customTypes;
         if(smeCustomTypes.length == 0) return;
 
@@ -216,15 +214,11 @@ public class NewSMECompat {
             //Add matcher for config
             if(!existingCustomTypeNames.contains(name)) {
                 cfgChanged = true;
-                existingCustomTypeCfgs.add(name + EnchantmentControl.SEP + " regex" + EnchantmentControl.SEP + " " + regex);
+                ConfigHandler.itemTypes.customTypes.add(name + EnchantmentControl.SEP + " regex" + EnchantmentControl.SEP + " " + regex);
             }
         }
-        if(!cfgChanged) return; //Nothing added, no need to write cfg
-        String[] enchCtrlCustomTypes = existingCustomTypeCfgs.toArray(new String[0]);
 
         //Write custom types config
-        EnchantmentControl.CONFIG.get("general.item types","Custom Item Types", new String[0]).set(enchCtrlCustomTypes);
-        ConfigHandler.itemTypes.customTypes = enchCtrlCustomTypes;
-        EnchantmentControl.configNeedsSaving = true;
+        if(cfgChanged) EnchantmentControl.configNeedsSaving = true;
     }
 }

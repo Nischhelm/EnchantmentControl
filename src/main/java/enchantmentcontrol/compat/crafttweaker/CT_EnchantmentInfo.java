@@ -4,7 +4,7 @@ import com.teamacronymcoders.contenttweaker.modules.vanilla.enchantments.Enchant
 import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.config.EarlyConfigReader;
+import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.util.EnchantmentInfo;
@@ -13,7 +13,6 @@ import enchantmentcontrol.util.enchantmenttypes.ITypeMatcher;
 import enchantmentcontrol.util.vanillasystem.VanillaSystem;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import stanhebben.zenscript.annotations.ZenExpansion;
 import stanhebben.zenscript.annotations.ZenGetter;
@@ -33,8 +32,8 @@ public class CT_EnchantmentInfo {
     public static void onBuilderCreate(EnchantmentBuilder builder, String name){
         String id = builder.domain + ":" + name;
 
-        ResourceLocation remap = EarlyConfigReader.getRemap(id);
-        if(remap != null) id = remap.toString();
+        String remap = ConfigHandler.dev.idRemaps.get(id);
+        if(remap != null) id = remap;
 
         EnchantmentInfo info = EnchantmentInfo.get(id);
         if(info == null) info = new EnchantmentInfo(builder.domain, name); //if no json

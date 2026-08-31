@@ -2,11 +2,13 @@ package enchantmentcontrol.config.folders;
 
 import net.minecraftforge.common.config.Config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BlacklistConfig {
     @Config.Comment("Librarians will not be able to generate enchantments in this list")
     @Config.Name("Librarian Enchantment Blacklist")
-    public String[] blacklistedLibrarianEnchants = {
-    };
+    public List<String> blacklistedLibrarianEnchants = new ArrayList<>();
 
     @Config.Comment("Enchantment blacklist will be treated as a Whitelist")
     @Config.Name("Librarian Enchantment Whitelist Toggle")
@@ -14,8 +16,7 @@ public class BlacklistConfig {
 
     @Config.Comment("Loot enchanted with levels (enchant_with_levels) will not be able to generate enchantments in this list")
     @Config.Name("Level Enchantment Blacklist")
-    public String[] blacklistedRandomLevelEnchants = {
-    };
+    public List<String> blacklistedRandomLevelEnchants = new ArrayList<>();
 
     @Config.Comment("Level Enchantment blacklist will be treated as a Whitelist")
     @Config.Name("Level Enchantment Whitelist Toggle")
@@ -23,8 +24,7 @@ public class BlacklistConfig {
 
     @Config.Comment("Enchanting table will not be able to generate enchantments in this list")
     @Config.Name("Enchanting Table Blacklist")
-    public String[] blacklistedEnchTableEnchants = {
-    };
+    public List<String> blacklistedEnchTableEnchants = new ArrayList<>();
 
     @Config.Comment("Enchantment Table blacklist will be treated as a Whitelist")
     @Config.Name("Enchantment Table Whitelist Toggle")
@@ -32,8 +32,7 @@ public class BlacklistConfig {
 
     @Config.Comment("Fully random books (enchant_randomly) will not be able to generate enchantments in this list")
     @Config.Name("Random Enchantment Blacklist")
-    public String[] blacklistedRandomEnchants = {
-    };
+    public List<String> blacklistedRandomEnchants = new ArrayList<>();
 
     @Config.Comment("Random Enchantment blacklist will be treated as a Whitelist")
     @Config.Name("Random Enchantment Whitelist Toggle")
@@ -42,6 +41,5 @@ public class BlacklistConfig {
     @Config.Comment("Enchants in this list will be prevented from being registered in the game. There will be no way to access them at all.")
     @Config.Name("Registered Enchantment Blacklist")
     @Config.RequiresMcRestart
-    public String[] blacklistedRegistryEnchants = {
-    };
+    public List<String> blacklistedRegistryEnchants = new ArrayList<>();
 }

@@ -1,23 +1,15 @@
 package enchantmentcontrol.config;
 
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.bloodanvil.FeatureBloodAnvil;
 import enchantmentcontrol.config.folders.*;
-import enchantmentcontrol.config.provider.BlacklistConfigProvider;
-import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
-import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
-import enchantmentcontrol.util.ConfigRef;
 import meldexun.betterconfig.api.BetterConfig;
+import meldexun.betterconfig.api.LoadEarly;
 import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.*;
 
-@Config(modid = EnchantmentControl.MODID)
-@BetterConfig
+@BetterConfig(modid = EnchantmentControl.MODID)
+@LoadEarly
 public class ConfigHandler {
 
 	@Config.Comment("If you're a modpack dev just starting to set up this mod, you probably want to start here.")
@@ -27,7 +19,7 @@ public class ConfigHandler {
 	@Config.Comment({
 			"Each line is a group of mutually exclusive enchantments",
 			"  like Smite, Sharpness and BoA",
-			"Can be auto filled using \"First Setup."+ConfigRef.PRINT_INCOMPAT_CONFIG_NAME+"\"",
+			"Can be auto filled using \"First Setup.Print Default Incompatibilities\"",
 			"Warning: this mod takes full control of enchantments incompatibilities with each other",
 			"  so run the first setup every time you add mods that have enchants, then compare with what you set up to stay up to date"
 	})
@@ -49,7 +41,7 @@ public class ConfigHandler {
 			"  I:VERY_RARE=2",
 			"  I:LEGENDARY=1"
 	})
-	@Config.Name(ConfigRef.RARITY_CONFIG_NAME)
+	@Config.Name("Rarities")
 	@Config.RequiresMcRestart
 	public static Map<String, Integer> rarityWeights = new HashMap<>();
 
@@ -62,19 +54,26 @@ public class ConfigHandler {
 	public static ItemTypeConfig itemTypes = new ItemTypeConfig();
 
 	@Config.Comment({
+			"Creature attributes are used to know when to increase dmg on Smite/BoA or custom versions of them.",
 			"Define custom creature attributes and how to match them to entities.",
-			"Pattern: S:MY_ATTR_NAME=type, string1, string2, string3, ...",
 			"Available types: ",
-			"  modid: only check modid(s) ",
-			"  mob: check against 1 or more mob registry names ",
-			"  class: check if given class is in java class hierarchy of the mob",
+			"  MODID: only check modid(s) ",
+			"  MOB: check against 1 or more mob registry names ",
+			"  CLASS: check if any of the given java class names is in class hierarchy of the mob",
 			"Examples:",
-			"  S:LYCANITE=modid, lycanitesmobs",
-			"  S:DRAGON=mob, minecraft:ender_dragon, iceandfire:firedragon, iceandfire:icedragon",
-			"  S:ANIMAL=class, net.minecraft.entity.EntityAgeable"
+			"  LYCANITE, MODID, [lycanitesmobs]",
+			"  DRAGON, MOB, [minecraft:ender_dragon, iceandfire:firedragon, iceandfire:icedragon]",
+			"  ANIMAL, CLASS, [net.minecraft.entity.EntityAgeable]",
+			"Note: this can also add mobs to existing creature attributes like UNDEAD, ARTHROPOD, ILLAGER"
 	})
-	@Config.Name(ConfigRef.CREAT_ATTR_CONFIG_NAME)
-	public static Map<String, String> creatureAttributes = new HashMap<>();
+	@Config.Name("Creature Attributes")
+	public static Map<String, CustomCreatureAttribute> creatureAttributes = new HashMap<>();
+	public static class CustomCreatureAttribute {
+		public enum EnumAttributeType { MOB, MODID, CLASS }
+		public EnumAttributeType type = EnumAttributeType.MOB;
+		public LinkedHashSet<String> values = new LinkedHashSet<>();
+		public CustomCreatureAttribute() {}
+	}
 
 	@Config.Comment("Debug Options")
 	@Config.Name("Debug")
@@ -95,20 +94,4 @@ public class ConfigHandler {
 	@Config.Comment("Mixin Toggles")
 	@Config.Name("Mixin Toggles")
 	public static MixinToggleConfig mixintoggles = new MixinToggleConfig();
-
-	@Mod.EventBusSubscriber(modid = EnchantmentControl.MODID)
-	private static class EventHandler {
-		@SubscribeEvent
-		public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-			if(event.getModID().equals(EnchantmentControl.MODID)) {
-				ConfigManager.sync(EnchantmentControl.MODID, Config.Type.INSTANCE);
-
-				ItemTypeConfigProvider.onResetConfig();
-				BlacklistConfigProvider.onResetConfig();
-				IncompatibleConfigProvider.onResetConfig();
-
-				FeatureBloodAnvil.resetConfigValues();
-			}
-		}
-	}
 }
