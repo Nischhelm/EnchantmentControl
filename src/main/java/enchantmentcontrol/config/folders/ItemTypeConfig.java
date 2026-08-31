@@ -2,8 +2,7 @@ package enchantmentcontrol.config.folders;
 
 import net.minecraftforge.common.config.Config;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ItemTypeConfig {
     @Config.Comment("Global Toggle to disable the entire Item Types category")
@@ -24,7 +23,13 @@ public class ItemTypeConfig {
             "- and items is a list of item ids"
     })
     @Config.Name("Custom Item Types")
-    public List<String> customTypes = new ArrayList<>();
+    public Map<String, CustomItemType> customTypes = new HashMap<>();
+    public static class CustomItemType {
+        public enum EnumItemTypeMatcher { MODID, REGEX, ITEMID, CLASS}
+        public EnumItemTypeMatcher type = EnumItemTypeMatcher.ITEMID;
+        public Set<String> values = new HashSet<>();
+        public CustomItemType(){} //needed for BetterConfig
+    }
 
     @Config.Comment({
             "Some modded items only pretend to be a specific item type without actually being them (wolf armor being SWORD and ARMOR_FEET, better survival items being SWORD etc).",

@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 public class ListMatcher implements ITypeMatcher.UsesItemLoc {
     protected final Set<String> ids;
     protected final String name;
-    public ListMatcher(String name, String[] ids) {
+    public ListMatcher(String name, Set<String> ids) {
         this.name = name;
-        this.ids = Arrays.stream(ids).map(String::trim).collect(Collectors.toSet());
+        this.ids = ids.stream().map(String::trim).collect(Collectors.toSet());
     }
 
     @Override

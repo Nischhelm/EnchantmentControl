@@ -1,17 +1,17 @@
 package enchantmentcontrol.config.provider;
 
-import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
-import net.minecraft.entity.Entity;
+import enchantmentcontrol.config.provider.matchers.ClassMatcher;
+import enchantmentcontrol.config.provider.matchers.IEntityMatcher;
+import enchantmentcontrol.config.provider.matchers.ListMatcher;
+import enchantmentcontrol.config.provider.matchers.ModIdListMatcher;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 public class CreatureAttributeProvider {
@@ -43,44 +43,4 @@ public class CreatureAttributeProvider {
         return EnumCreatureAttribute.UNDEFINED;
     }
 
-    public interface IEntityMatcher { boolean matches(Entity entity, ResourceLocation loc);}
-
-    public static class ClassMatcher implements IEntityMatcher {
-        private final Set<Class<? extends Entity>> entityClasses = new HashSet<>();
-
-        @SuppressWarnings("unchecked")
-        public ClassMatcher(Set<String> classNames) {
-            classNames.forEach(className -> {
-                try {
-                    this.entityClasses.add((Class<? extends Entity>) Class.forName(className));
-                } catch (ClassNotFoundException e) {
-                    EnchantmentControl.LOGGER.warn("Could not find entity class {} for custom creature attribute", className);
-                }
-            });
-        }
-
-        @Override
-        public boolean matches(Entity entity, ResourceLocation loc) {
-            return !entityClasses.isEmpty() && entityClasses.stream().anyMatch(entityClass -> entityClass.isInstance(entity));
-        }
-    }
-
-    public static class ListMatcher implements IEntityMatcher {
-        protected final Set<String> ids;
-        public ListMatcher(Set<String> ids) {this.ids = ids;}
-
-        @Override
-        public boolean matches(Entity entity, ResourceLocation loc) {
-            return ids.contains(loc.toString());
-        }
-    }
-
-    public static class ModIdListMatcher extends ListMatcher {
-        public ModIdListMatcher(Set<String> ids) {super(ids);}
-
-        @Override
-        public boolean matches(Entity entity, ResourceLocation loc) {
-            return ids.contains(loc.getNamespace());
-        }
-    }
 }

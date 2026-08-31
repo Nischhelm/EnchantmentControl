@@ -4,17 +4,19 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import java.util.Set;
+
 public class CustomTypeMatcher implements ITypeMatcher.UsesItemLoc {
     private final String name;
-    private final String regex;
+    private final Set<String> regexes;
 
-    public CustomTypeMatcher(String name, String regex) {
+    public CustomTypeMatcher(String name, Set<String> regexes) {
         this.name = name;
-        this.regex = regex;
+        this.regexes = regexes;
     }
 
     public boolean isValid() {
-        return !this.name.isEmpty() && !this.regex.isEmpty();
+        return !this.name.isEmpty() && !this.regexes.isEmpty();
     }
 
     public String getName() {
@@ -23,6 +25,6 @@ public class CustomTypeMatcher implements ITypeMatcher.UsesItemLoc {
 
     @Override
     public boolean matches(Enchantment enchantment, ItemStack stack, Item item, String itemName) {
-        return itemName.matches(this.regex);
+        return this.regexes.stream().anyMatch(itemName::matches);
     }
 }

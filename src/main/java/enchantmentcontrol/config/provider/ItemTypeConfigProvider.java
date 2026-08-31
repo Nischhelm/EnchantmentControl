@@ -4,6 +4,7 @@ import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.compat.somanyenchantments.NewSMECompat;
 import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.util.enchantmenttypes.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -63,25 +64,15 @@ public class ItemTypeConfigProvider {
         registeredMatchers.put("SHEARS", new InstanceofTypeMatcher("SHEARS", ItemShears.class, Items.SHEARS));
         registeredMatchers.put("NONE", new BooleanTypeMatcher("NONE", false));
 
-        for (String s : ConfigHandler.itemTypes.customTypes) {
-            String[] split = s.split(EnchantmentControl.SEP);
-
-            String type;
-            if (split.length < 2) {
-                EnchantmentControl.LOGGER.warn("Invalid custom item type definition, skipping: {}", s);
-                continue;
-            } else if(split.length == 2) type = "regex_default";
-            else type = split[1].trim();
-
-            String name = split[0].trim();
+        for (Map.Entry<String, ItemTypeConfig.CustomItemType> entry : ConfigHandler.itemTypes.customTypes.entrySet()) {
+            String name = entry.getKey();
 
             ITypeMatcher matcher;
-            switch (type) {
-                case "class" : matcher = new InstanceofTypeMatcher(name, Arrays.stream(Arrays.copyOfRange(split, 2, split.length)).map(String::trim).collect(Collectors.toList())); break;
-                case "modid" : matcher = new ModidMatcher(name, split[2].trim()); break;
-                case "items" : matcher = new ListMatcher(name, Arrays.copyOfRange(split, 2, split.length)); break;
-                case "regex" : matcher = new CustomTypeMatcher(name, split[2].trim()); break;
-                default      : matcher = new CustomTypeMatcher(name, split[1].trim()); //split[1] cause this is the default where no type was named
+            switch (entry.getValue().type) {
+                case CLASS : matcher = new InstanceofTypeMatcher(name, entry.getValue().values.stream().map(String::trim).collect(Collectors.toList())); break;
+                case MODID : matcher = new ModidMatcher(name, entry.getValue().values); break;
+                case ITEMID: matcher = new ListMatcher(name, entry.getValue().values); break;
+                case REGEX : default: matcher = new CustomTypeMatcher(name, entry.getValue().values); break;
             }
             if (matcher.isValid()) registeredMatchers.put(name, matcher);
         }
