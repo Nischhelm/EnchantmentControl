@@ -1,6 +1,7 @@
 package enchantmentcontrol.config.folders;
 
 import enchantmentcontrol.config.matcherregistry.CustomItemTypeCreator;
+import meldexun.betterconfig.api.Order;
 import net.minecraftforge.common.config.Config;
 
 import java.util.*;
@@ -8,22 +9,20 @@ import java.util.*;
 public class ItemTypeConfig {
     @Config.Comment("Global Toggle to disable the entire Item Types category")
     @Config.Name("Modification Enabled")
+    @Order(0)
     public boolean enable = true;
 
     @Config.Comment({
             "Enchantments are allowed on items using matchers. Define custom matchers here.",
-            "Pattern: MatcherName, Type, Arguments",
-            "Available Types with Arguments:",
-            "  modid, somemodid",
-            "  regex, regexToMatchAgainstItemId",
-            "  items, minecraft:iron_sword, mymod:mysword, ...",
-            "  class, some.org.somemodid.item.ItemSpecialSword, ...",
-            "Where ",
-            "- class matches when item class extends the named item classes",
-            "- regex uses regular expressions and has to match the full modid:itemid",
-            "- and items is a list of item ids"
+            "Pattern: MatcherName -> Type + List of values",
+            "Available Types:",
+            "  MODID: matches items against whole modid(s)",
+            "  REGEX: matches item ids against regex(es)",
+            "  ITEMID: matches item id(s) exactly",
+            "  CLASS: matches items that have given class(es) in java inheritance hierarchy, write as some.org.some.modid.item.ItemSpecialSword, ...",
     })
     @Config.Name("Custom Item Types")
+    @Order(1)
     public Map<String, CustomItemType> customTypes = new HashMap<>();
     public static class CustomItemType {
         public CustomItemTypeCreator type = CustomItemTypeCreator.ITEMID;
@@ -39,6 +38,7 @@ public class ItemTypeConfig {
             "DEV NOTE: this toggle decides whether CustomItem.canApplyAtEnchantingTable is checked"
     })
     @Config.Name("Allow Modded Item Behaviors")
+    @Order(2)
     public boolean allowCustomItems = true;
 
     @Config.Comment({
@@ -46,11 +46,13 @@ public class ItemTypeConfig {
             " - If modded behaviors are generally allowed, items listed here will not have their modded behavior allowed",
             " - If modded behaviors are generally disallowed, items listed here will have their modded behavior be allowed anyway",
     })
-    @Config.Name("Item Blacklist")
+    @Config.Name("Allow Modded Item Blacklist")
+    @Order(3)
     public List<String> blacklist = new ArrayList<>();
 
     @Config.Comment("Whenever enchantments are checked against items to possibly apply the enchantment, the rules in here are checked, to a modifiably varying degree.")
     @Config.Name("General")
+    @Order(4)
     public GeneralTypeConfig general = new GeneralTypeConfig();
 
     @Config.Comment({
@@ -59,12 +61,14 @@ public class ItemTypeConfig {
             "Set to ANVIL to disable mixin (requires restart)"
     })
     @Config.Name("(MixinToggle) Creative Skips Item Check")
+    @Order(6)
     public EnumCreativeAllowed creativeOptions = EnumCreativeAllowed.NONE;
     public enum EnumCreativeAllowed { BOTH, ANVIL, CMD, NONE}
     
     public static class GeneralTypeConfig {
         @Config.Comment("Global Toggle to disable the entire General Item Types category")
-        @Config.Name("Modification Enabled")
+        @Config.Name("Section Enabled")
+        @Order(0)
         public boolean enable = true;
 
         @Config.Comment({
@@ -76,24 +80,27 @@ public class ItemTypeConfig {
                 "DEV NOTE: this toggle decides whether only CustomEnchantment.canApplyAtEnchantingTable is checked vs only against Item Types config"
         })
         @Config.Name("Allow Modded Enchantment Behaviors")
+        @Order(1)
         public boolean allowCustomEnchantments = true;
-
-        @Config.Comment({
-                "(Custom) Item Type name and a list of enchantments that can go on items with this type",
-                " Pattern: TYPE = modid:enchid, modid:enchid2, ...",
-                " You can also invert item type matches by adding a \"!\" in front of the type name (first character)",
-                " This will disallow any item that matches the given matcher from using the given enchantments (except if allowed custom behavior gets priority and overrides)"
-        })
-        @Config.Name("Item Types")
-        public List<String> itemTypes = new ArrayList<>();
 
         @Config.Comment({
                 "Enchantments listed here will run against what is set in \"Allow Modded Enchantment Behaviors\":",
                 " - If modded behaviors are generally allowed, enchants listed here will not have their modded behavior allowed",
                 " - If modded behaviors are generally disallowed, enchants listed here will have their modded behavior be allowed anyway",
         })
-        @Config.Name("Blacklist")
+        @Config.Name("Allow Modded Enchantment Blacklist")
+        @Order(2)
         public List<String> blacklist = new ArrayList<>();
+
+        @Config.Comment({
+                "(Custom) Item Type name and a list of enchantments that can go on items with this type",
+                " Pattern: type name -> list of enchantments",
+                " You can also invert item type matches by adding a \"!\" in front of the type name (first character)",
+                " This will disallow any item that matches the given matcher from using the given enchantments (except if allowed custom behavior gets priority and overrides)"
+        })
+        @Config.Name("Item Types")
+        @Order(3)
+        public Map<String, ArrayList<String>> itemTypes = new LinkedHashMap<>();
     }
 
     @Config.Comment({
@@ -104,11 +111,13 @@ public class ItemTypeConfig {
             "The behavior in here is usually added on top of the general behavior, if modded enchantments don't change that up (and they are allowed to)"
     })
     @Config.Name("Anvil")
+    @Order(5)
     public AnvilTypeConfig anvil = new AnvilTypeConfig();
     
     public static class AnvilTypeConfig {
         @Config.Comment("Global Toggle to disable the entire Anvil-specific Item Types category")
-        @Config.Name("Modification Enabled")
+        @Config.Name("Section Enabled")
+        @Order(0)
         public boolean enable = true;
 
         @Config.Comment({
@@ -121,21 +130,24 @@ public class ItemTypeConfig {
                 "DEV NOTE: this toggle decides whether only CustomEnchantment.canApply is checked vs Item Types config || super.canApply"
         })
         @Config.Name("Allow Modded Enchantment Behaviors")
+        @Order(1)
         public boolean allowCustomEnchantments = true;
-
-        @Config.Comment({
-                "(Custom) Item Type name and a list of enchantments that can go on items with this type when using the anvil (and the /enchant command), additionally to the \"General.Item Types\"",
-                " Any type name from \"General.Item Types\" and \"Custom Item Types\" can be used here too, including inverted(!) ones."
-        })
-        @Config.Name("Item Types")
-        public List<String> itemTypes = new ArrayList<>();
 
         @Config.Comment({
                 "Enchantments listed here will run against what is set in \"Allow Modded Enchantment Behaviors\":",
                 " - If modded behaviors are generally allowed, enchants listed here will not have their modded behavior allowed",
                 " - If modded behaviors are generally disallowed, enchants listed here will have their modded behavior be allowed anyway"
         })
-        @Config.Name("Blacklist")
+        @Config.Name("Allow Modded Enchantment Blacklist")
+        @Order(2)
         public List<String> blacklist = new ArrayList<>();
+
+        @Config.Comment({
+                "(Custom) Item Type name and a list of enchantments that can go on items with this type when using the anvil (and the /enchant command), additionally to the \"General.Item Types\"",
+                " Any type name from \"General.Item Types\" and \"Custom Item Types\" can be used here too, including inverted(!) ones."
+        })
+        @Config.Name("Item Types")
+        @Order(3)
+        public Map<String, ArrayList<String>> itemTypes = new LinkedHashMap<>();
     }
 }

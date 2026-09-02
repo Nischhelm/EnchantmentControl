@@ -7,6 +7,7 @@ import meldexun.betterconfig.api.BetterConfig;
 import meldexun.betterconfig.api.LoadEarly;
 import net.minecraftforge.common.config.Config;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 @BetterConfig(modid = EnchantmentControl.MODID)
@@ -25,7 +26,7 @@ public class ConfigHandler {
 			"  so run the first setup every time you add mods that have enchants, then compare with what you set up to stay up to date"
 	})
 	@Config.Name("Incompatible Groups")
-	public static Map<String, List<String>> incompatibleGroups = new LinkedHashMap<>();
+	public static Map<String, ArrayList<String>> incompatibleGroups = new LinkedHashMap<>();
 
 	@Config.Comment("Global Toggle to disable the entire Incompatible groups override")
 	@Config.Name("Incompatible Groups Enabled")

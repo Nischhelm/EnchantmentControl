@@ -74,7 +74,9 @@ public class IncompatibleConfigProvider {
                 if(ench.getRegistryName() == null) continue;
                 groupList.add(ench.getRegistryName().toString());
             }
+            Collections.sort(groupList);
             defaultIncompats.put("Group " + (counter++), groupList);
+            //TODO: default names if default incompat groups from vanilla
         }
 
         ConfigHandler.incompatibleGroups.clear();

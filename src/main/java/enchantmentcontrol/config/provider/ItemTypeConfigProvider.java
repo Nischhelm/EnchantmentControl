@@ -21,7 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.*;
 
 public class ItemTypeConfigProvider {
-    private static final HashMap<String, CanApplyMatcher> registeredMatchers = new HashMap<>();
+    private static final HashMap<String, CanApplyMatcher> registeredMatchers = new LinkedHashMap<>();
     public static CanApplyMatcher getMatcher(String name){
         return registeredMatchers.get(name);
     }
@@ -95,13 +95,9 @@ public class ItemTypeConfigProvider {
 
     public static final Map<Enchantment, Set<CanApplyMatcher>> itemTypes = new HashMap<>();
     public static final Map<Enchantment, Set<CanApplyMatcher>> itemTypesAnvil = new HashMap<>();
-    private static void initItemTypes(List<String> config, Map<Enchantment, Set<CanApplyMatcher>> mapOut){
-        for(String s : config){
-            String[] split = s.split("=");
-            if(split.length < 2) continue;
-
-            String typeName = split[0].trim();
-
+    private static void initItemTypes(Map<String, ArrayList<String>> config, Map<Enchantment, Set<CanApplyMatcher>> mapOut){
+        for(Map.Entry<String, ArrayList<String>> entry : config.entrySet()){
+            String typeName = entry.getKey().trim();
             boolean inverted = typeName.startsWith("!");
             if(inverted) typeName = typeName.substring(1);
             typeName = typeRenames.getOrDefault(typeName, typeName); // user config might have an old type name, treat internally as if it was renamed
@@ -113,10 +109,10 @@ public class ItemTypeConfigProvider {
             }
             if(inverted) {
                 // Wrap the matcher in InvertedMatcher
-                matcher = new CanApplyMatcher(typeName, new InvertedMatcher<>(matcher.getMatcher()));
+                matcher = new CanApplyMatcher("!"+typeName, new InvertedMatcher<>(matcher.getMatcher()));
             }
 
-            for(String enchName : split[1].split(EnchantmentControl.SEP)){
+            for(String enchName : entry.getValue()){
                 enchName = enchName.trim();
                 if(enchName.isEmpty()) continue;
                 Enchantment ench = Enchantment.getEnchantmentByLocation(enchName);
@@ -124,7 +120,7 @@ public class ItemTypeConfigProvider {
                     EnchantmentControl.LOGGER.warn("Could not find enchantment {} while reading enchants per item type {}", enchName, typeName);
                     continue;
                 }
-                mapOut.computeIfAbsent(ench, k -> new HashSet<>()).add((CanApplyMatcher) matcher);
+                mapOut.computeIfAbsent(ench, k -> new HashSet<>()).add(matcher);
             }
         }
     }
@@ -220,13 +216,13 @@ public class ItemTypeConfigProvider {
         if(CompatUtil.somanyenchantments.isLoaded() && CompatUtil.versionInRange(CompatUtil.somanyenchantments, "[1.0.0,)"))
             NewSMECompat.addNewSMECustomTypes(); //as early as possible so others can override these. its mainly for having something available for the names
 
-        Map<String, Set<Enchantment>> byName = new HashMap<>();
-        Map<String, Set<Enchantment>> byNameAnvil = new HashMap<>();
+        Map<String, Set<Enchantment>> byName = new LinkedHashMap<>();
+        Map<String, Set<Enchantment>> byNameAnvil = new LinkedHashMap<>();
         Map<Enchantment, Set<String>> byEnchantment = new HashMap<>(); //byEnchantment view of the map only exists to make the simplification easier
         Map<Enchantment, Set<String>> byEnchantmentAnvil = new HashMap<>();
 
         registeredMatchers.keySet().forEach(k -> byName.put(k, new LinkedHashSet<>())); //each matcher name gets at least an empty line MATCHER =
-        //anvil config doesn't get init with all types so it stays shorter
+        //but anvil config doesn't get init with all types so it stays shorter
 
         //Note down each enchants original type
         for (Enchantment ench : Enchantment.REGISTRY) {
@@ -265,46 +261,28 @@ public class ItemTypeConfigProvider {
         simplify(byNameAnvil, byEnchantmentAnvil);
 
         //Write that down
-
-        List<String> out = new ArrayList<>();
-        byName.forEach((matcherName, enchs) ->
-                out.add(
-                        matcherName + " = "
-                        + String.join(
-                        EnchantmentControl.SEP + " ",
-                                enchs.stream()
-                                    .map(Enchantment::getRegistryName)
-                                    .filter(Objects::nonNull)
-                                    .map(ResourceLocation::toString)
-                                    .toArray(String[]::new)
-                        )
-                )
-        );
-        ConfigHandler.itemTypes.general.itemTypes = out;
-
-        //Also for anvil
-
-        List<String> outAnv = new ArrayList<>();
-        byNameAnvil.forEach((matcherName, enchs) -> {
-                if(enchs.isEmpty()) return;
-                outAnv.add(
-                        matcherName + " = " + String.join(
-                        EnchantmentControl.SEP + " ",
-                                enchs.stream()
-                                    .map(Enchantment::getRegistryName)
-                                    .filter(Objects::nonNull)
-                                    .map(ResourceLocation::toString)
-                                    .toArray(String[]::new)
-                        )
-                );
-            }
-        );
-        ConfigHandler.itemTypes.anvil.itemTypes = outAnv;
+        ConfigHandler.itemTypes.general.itemTypes = mapToConfigMap(byName);
+        ConfigHandler.itemTypes.anvil.itemTypes = mapToConfigMap(byNameAnvil);
 
         //Reset print toggle
-
         ConfigHandler.dev.printTypes = false;
+
         EnchantmentControl.configNeedsSaving = true;
+    }
+
+    private static Map<String, ArrayList<String>> mapToConfigMap(Map<String, Set<Enchantment>> byName){
+        Map<String, ArrayList<String>> out = new LinkedHashMap<>();
+        byName.forEach((matcherName, enchs) -> {
+            ArrayList<String> list = new ArrayList<>();
+            enchs.stream()
+                    .map(Enchantment::getRegistryName)
+                    .filter(Objects::nonNull)
+                    .map(ResourceLocation::toString)
+                    .forEach(list::add);
+            Collections.sort(list);
+            out.put(matcherName, list);
+        });
+        return out;
     }
 
     private static void simplify(Map<String, Set<Enchantment>> byName, Map<Enchantment, Set<String>> byEnch) {

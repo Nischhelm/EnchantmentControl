@@ -30,7 +30,7 @@ public class EnumEnchantmentTypeMatcher extends CanApplyMatcher {
                 case "All Tools": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.DIGGER), enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON));
                 case "Combat": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON), DefaultCanApplyTypes.getMatcher(DefaultCanApplyTypes.Types.AXE));
                 case "Combat Weapon": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.BOW), enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON), DefaultCanApplyTypes.getMatcher(DefaultCanApplyTypes.Types.AXE));
-                case "Golden Apple": return Collections.singletonList(CustomItemTypeCreator.ITEMID.createMatcher("", Collections.singleton("minecraft:golden_apple")));
+                case "Golden Apple": return Collections.singletonList(CustomItemTypeCreator.ITEMID.createMatcher("GOLD_APPLE", Collections.singleton("minecraft:golden_apple")));
             }
         }
         return single(enchantToTypeMatchers.getOrDefault(type, new EnumEnchantmentTypeMatcher(type)));

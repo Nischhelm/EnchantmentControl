@@ -30,10 +30,9 @@ public class DefaultCanApplyTypes {
         createDefaultMatcher(Types.SHEARS, createClassMatcher(ItemShears.class), Items.SHEARS);
     }
 
-    private static CanApplyMatcher createDefaultMatcher(Types type, IMatcher<ItemTypeContext> innerMatcher, Item item) {
+    private static void createDefaultMatcher(Types type, IMatcher<ItemTypeContext> innerMatcher, Item item) {
         CanApplyMatcher matcher = new CanApplyMatcher(type.name(), innerMatcher, item != null ? new ItemStack(item) : null);
         registeredMatchers.put(type, matcher);
-        return matcher;
     }
 
     private static ClassMatcher<ItemTypeContext> createClassMatcher(Class<? extends Item> clazz){
