@@ -68,8 +68,10 @@ public class ItemTypeConfigProvider {
         }
 
         // Register various default item types, mostly from vanilla EnumEnchantmentType
-        for (DefaultCanApplyTypes type : DefaultCanApplyTypes.values())
-            registeredMatchers.put(type.getTypeName(), type.getMatcher());
+        for (DefaultCanApplyTypes.Types type : DefaultCanApplyTypes.Types.values()) {
+            CanApplyMatcher matcher = DefaultCanApplyTypes.getMatcher(type);
+            registeredMatchers.put(matcher.getName(), matcher);
+        }
 
         // Create custom types and add them to the list
         for (Map.Entry<String, ItemTypeConfig.CustomItemType> entry : ConfigHandler.itemTypes.customTypes.entrySet()) {
@@ -111,7 +113,7 @@ public class ItemTypeConfigProvider {
             }
             if(inverted) {
                 // Wrap the matcher in InvertedMatcher
-                matcher = new CanApplyMatcher("!"+matcher.getName(), new InvertedMatcher<>(matcher.getMatcher()));
+                matcher = new CanApplyMatcher(typeName, new InvertedMatcher<>(matcher.getMatcher()));
             }
 
             for(String enchName : split[1].split(EnchantmentControl.SEP)){

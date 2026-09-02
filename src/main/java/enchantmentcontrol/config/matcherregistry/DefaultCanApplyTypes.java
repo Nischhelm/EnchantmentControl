@@ -8,32 +8,32 @@ import enchantmentcontrol.util.matcher.matcher.ClassMatcher;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 
-public enum DefaultCanApplyTypes {
-    ANY("ANY", new BooleanMatcher<>(true)),
-    NONE("NONE", new BooleanMatcher<>(false)),
-    AXE("AXE", createClassMatcher(ItemAxe.class), Items.IRON_AXE),
-    PICKAXE("PICKAXE", createClassMatcher(ItemPickaxe.class), Items.IRON_PICKAXE),
-    HOE("HOE", createClassMatcher(ItemHoe.class), Items.IRON_HOE),
-    SHOVEL("SHOVEL", createClassMatcher(ItemSpade.class), Items.IRON_SHOVEL),
-    SHIELD("SHIELD", createClassMatcher(ItemShield.class), Items.SHIELD),
-    SHEARS("SHEARS", createClassMatcher(ItemShears.class), Items.SHEARS);
+import java.util.EnumMap;
 
-    private final CanApplyMatcher matcher;
+public class DefaultCanApplyTypes {
 
-    DefaultCanApplyTypes(String name, IMatcher<ItemTypeContext> matcher) {
-        this(name, matcher, null);
+    private static final EnumMap<Types, CanApplyMatcher> registeredMatchers = new EnumMap<>(Types.class);
+
+    public static CanApplyMatcher getMatcher(Types type) {
+        return registeredMatchers.get(type);
     }
 
-    DefaultCanApplyTypes(String name, IMatcher<ItemTypeContext> matcher, Item fakeItem) {
-        this.matcher = new CanApplyMatcher(name,matcher, new ItemStack(fakeItem));
+    public enum Types {ANY, NONE, AXE, PICKAXE, HOE, SHOVEL, SHIELD, SHEARS}
+    static {
+        createDefaultMatcher(Types.ANY, new BooleanMatcher<>(true), null);
+        createDefaultMatcher(Types.NONE, new BooleanMatcher<>(false), null);
+        createDefaultMatcher(Types.AXE, createClassMatcher(ItemAxe.class), Items.IRON_AXE);
+        createDefaultMatcher(Types.PICKAXE, createClassMatcher(ItemPickaxe.class), Items.IRON_PICKAXE);
+        createDefaultMatcher(Types.HOE, createClassMatcher(ItemHoe.class), Items.IRON_HOE);
+        createDefaultMatcher(Types.SHOVEL, createClassMatcher(ItemSpade.class), Items.IRON_SHOVEL);
+        createDefaultMatcher(Types.SHIELD, createClassMatcher(ItemShield.class), Items.SHIELD);
+        createDefaultMatcher(Types.SHEARS, createClassMatcher(ItemShears.class), Items.SHEARS);
     }
 
-    public String getTypeName() {
-        return matcher.getName();
-    }
-
-    public CanApplyMatcher getMatcher() {
-        return this.matcher;
+    private static CanApplyMatcher createDefaultMatcher(Types type, IMatcher<ItemTypeContext> innerMatcher, Item item) {
+        CanApplyMatcher matcher = new CanApplyMatcher(type.name(), innerMatcher, item != null ? new ItemStack(item) : null);
+        registeredMatchers.put(type, matcher);
+        return matcher;
     }
 
     private static ClassMatcher<ItemTypeContext> createClassMatcher(Class<? extends Item> clazz){

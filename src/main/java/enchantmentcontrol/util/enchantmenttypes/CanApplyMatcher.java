@@ -4,8 +4,11 @@ import enchantmentcontrol.util.matcher.IMatcher;
 import enchantmentcontrol.util.matcher.context.ItemTypeContext;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nullable;
+
 public class CanApplyMatcher {
     private final String name;
+    @Nullable
     private final ItemStack fakeStack;
     private final IMatcher<ItemTypeContext> matcher;
 
@@ -13,7 +16,7 @@ public class CanApplyMatcher {
         this(name, matcher, null);
     }
 
-    public CanApplyMatcher(String name, IMatcher<ItemTypeContext> matcher, ItemStack fakeStack) {
+    public CanApplyMatcher(String name, IMatcher<ItemTypeContext> matcher, @Nullable ItemStack fakeStack) {
         this.name = name;
         this.matcher = matcher;
         this.fakeStack = fakeStack;
@@ -27,6 +30,7 @@ public class CanApplyMatcher {
         return matcher;
     }
 
+    @Nullable
     public ItemStack getFakeStack(){return fakeStack;}
 
     public String getName() {

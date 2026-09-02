@@ -1,5 +1,7 @@
 package enchantmentcontrol.util.enchantmenttypes;
 
+import enchantmentcontrol.config.matcherregistry.CustomItemTypeCreator;
+import enchantmentcontrol.config.matcherregistry.DefaultCanApplyTypes;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.util.matcher.context.ItemTypeContext;
 import net.minecraft.enchantment.Enchantment;
@@ -16,22 +18,26 @@ public class EnumEnchantmentTypeMatcher extends CanApplyMatcher {
         if(type.ordinal() > 11){ //not vanilla enum
             switch (type.name()) {
                 //some SME 0.x types are just lists of types or renames of existing vanilla Enums
-                case "Combat Shield": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("SHIELD"));
-                case "Tool Pickaxe": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("PICKAXE"));
-                case "Tool Hoe": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("HOE"));
+                case "Combat Shield": return single(DefaultCanApplyTypes.getMatcher(DefaultCanApplyTypes.Types.SHIELD));
+                case "Tool Pickaxe": return single(DefaultCanApplyTypes.getMatcher(DefaultCanApplyTypes.Types.PICKAXE));
+                case "Tool Hoe": return single(DefaultCanApplyTypes.getMatcher(DefaultCanApplyTypes.Types.HOE));
                 case "Damageable": return byEnum(EnumEnchantmentType.BREAKABLE);
                 case "Combat Tool": return byEnum(EnumEnchantmentType.DIGGER);
-                case "Combat Sword": return Collections.singletonList(enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON));
-                case "Combat Axe": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("AXE"));
-                case "None": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("NONE"));
-                case "All": return Collections.singletonList(ItemTypeConfigProvider.getMatcher("ANY"));
+                case "Combat Sword": return single(enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON));
+                case "Combat Axe": return single(DefaultCanApplyTypes.getMatcher(DefaultCanApplyTypes.Types.AXE));
+                case "None": return single(DefaultCanApplyTypes.getMatcher(DefaultCanApplyTypes.Types.NONE));
+                case "All": return single(DefaultCanApplyTypes.getMatcher(DefaultCanApplyTypes.Types.ANY));
                 case "All Tools": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.DIGGER), enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON));
-                case "Combat": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON), ItemTypeConfigProvider.getMatcher("AXE"));
-                case "Combat Weapon": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.BOW), enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON), ItemTypeConfigProvider.getMatcher("AXE"));
-                //In theory would need old SME Golden Apple matcher here but im too lazy to register a new one just for that
+                case "Combat": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON), DefaultCanApplyTypes.getMatcher(DefaultCanApplyTypes.Types.AXE));
+                case "Combat Weapon": return Arrays.asList(enchantToTypeMatchers.get(EnumEnchantmentType.BOW), enchantToTypeMatchers.get(EnumEnchantmentType.WEAPON), DefaultCanApplyTypes.getMatcher(DefaultCanApplyTypes.Types.AXE));
+                case "Golden Apple": return Collections.singletonList(CustomItemTypeCreator.ITEMID.createMatcher("", Collections.singleton("minecraft:golden_apple")));
             }
         }
-        return Collections.singletonList(enchantToTypeMatchers.getOrDefault(type, new EnumEnchantmentTypeMatcher(type)));
+        return single(enchantToTypeMatchers.getOrDefault(type, new EnumEnchantmentTypeMatcher(type)));
+    }
+
+    private static List<CanApplyMatcher> single(CanApplyMatcher matcher){
+        return Collections.singletonList(matcher);
     }
 
     private final EnumEnchantmentType type;
