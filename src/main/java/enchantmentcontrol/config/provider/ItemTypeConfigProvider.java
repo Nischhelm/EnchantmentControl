@@ -3,8 +3,9 @@ package enchantmentcontrol.config.provider;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.compat.somanyenchantments.NewSMECompat;
+import enchantmentcontrol.compat.somanyenchantments.OldSMECompat;
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.util.matchers.DefaultItemTypes;
+import enchantmentcontrol.util.enchantmenttypes.DefaultItemTypes;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.util.enchantmenttypes.*;
 import enchantmentcontrol.util.matchers.IMatcher;
@@ -45,34 +46,35 @@ public class ItemTypeConfigProvider {
 
     private static final Map<String, String> typeRenames = new HashMap<>();
     static {
-        typeRenames.put("ALL", "ANY_TYPE");
+        typeRenames.put("ALL", "ANY");
         typeRenames.put("WEAPON", "SWORD");
         typeRenames.put("DIGGER", "TOOL");
     }
-    private static final List<String> oldSMETypes = Arrays.asList("Combat Weapon", "Damageable", "Golden Apple", "Combat Tool", "Combat Axe", "Tool Axe", "Tool Pickaxe", "Tool Hoe", "Combat Sword", "Tool Shovel", "Combat Shield", "Combat", "All Tools", "All", "None");
 
     public static void initRegisteredItemTypesFromConfig(){
+        // Register various default item types, mostly from vanilla EnumEnchantmentType
+        for (DefaultItemTypes.Type type : DefaultItemTypes.Type.values()) {
+            ItemTypeMatcher matcher = DefaultItemTypes.get(type);
+            registeredMatchers.put(matcher.getName(), matcher);
+        }
+
+        // Register from further EnumEnchantmentType if mods added some
         for (EnumEnchantmentType registeredEnum : EnumEnchantmentType.values()){
             String enumName = registeredEnum.name();
             enumName = typeRenames.getOrDefault(enumName, enumName); // some vanilla names suck
 
-            if (oldSMETypes.contains(enumName)) continue; //filter out additional enum types by old (pre 1.x) somanyenchantments
+            if (OldSMECompat.oldSMETypes.contains(enumName)) continue; //filter out additional enum types by old (pre 1.x) somanyenchantments
+            if (registeredMatchers.containsKey(enumName)) continue; //filter out already registered ones (the renamed ones and potentially other modded ones)
 
-            EnumEnchantmentTypeMatcher oldMatcher = new EnumEnchantmentTypeMatcher(enumName, registeredEnum);
+            EnumEnchantmentTypeMatcher oldMatcher = new EnumEnchantmentTypeMatcher(registeredEnum, null);
             registeredMatchers.put(enumName, oldMatcher);
-        }
-
-        // Register various default item types, mostly from vanilla EnumEnchantmentType
-        for (DefaultItemTypes.DefaultType type : DefaultItemTypes.DefaultType.values()) {
-            ItemTypeMatcher matcher = DefaultItemTypes.get(type);
-            registeredMatchers.put(matcher.getName(), matcher);
         }
 
         // Create custom types and add them to the list
         for (Map.Entry<String, ItemTypeConfig.CustomItemType> entry : ConfigHandler.itemTypes.customTypes.entrySet()) {
             if(entry.getValue().values.isEmpty()) continue;
 
-            String name = entry.getKey();
+            String name = entry.getKey().trim();
             ItemTypeMatcher matcher = new ItemTypeMatcher(name, MatcherCreator.ITEM_TYPE.createMatcher(entry.getValue().values, entry.getValue().type));
 
             registeredMatchers.put(name, matcher);
@@ -219,10 +221,14 @@ public class ItemTypeConfigProvider {
         registeredMatchers.keySet().forEach(k -> byName.put(k, new LinkedHashSet<>())); //each matcher name gets at least an empty line MATCHER =
         //but anvil config doesn't get init with all types so it stays shorter
 
-        //Note down each enchants original type
+        //Note down each enchantment's original type(s)
         for (Enchantment ench : Enchantment.REGISTRY) {
             if (ench.type == null) continue;
-            List<ItemTypeMatcher> matchers = EnumEnchantmentTypeMatcher.byEnum(ench.type);
+            List<ItemTypeMatcher> matchers = Arrays.asList(registeredMatchers.get(ench.type.name()));
+
+            if(OldSMECompat.oldSMETypes.contains(ench.type.name()))
+                matchers.addAll(OldSMECompat.getMatchersForEnumType(ench.type));
+
             matchers.forEach(matcher -> {
                 if(matcher.getName().equals("NONE")) return; // If other mods use NONE enum
                 byName.computeIfAbsent(matcher.getName(), k -> new HashSet<>()).add(ench);
@@ -297,15 +303,15 @@ public class ItemTypeConfigProvider {
                 byName.computeIfAbsent("TOOL", k -> new HashSet<>()).add(entry.getKey());
             }
             //DIGGER is TOOL
-            if(entry.getValue().contains("DIGGER")){
-                byName.get("DIGGER").remove(entry.getKey());
-                byName.computeIfAbsent("TOOL", k -> new HashSet<>()).add(entry.getKey());
-            }
-            //WEAPON is SWORD
-            if(entry.getValue().contains("WEAPON")) {
-                byName.get("WEAPON").remove(entry.getKey());
-                byName.computeIfAbsent("SWORD", k -> new HashSet<>()).add(entry.getKey());
-            }
+//            if(entry.getValue().contains("DIGGER")){
+//                byName.get("DIGGER").remove(entry.getKey());
+//                byName.computeIfAbsent("TOOL", k -> new HashSet<>()).add(entry.getKey());
+//            }
+//            //WEAPON is SWORD
+//            if(entry.getValue().contains("WEAPON")) {
+//                byName.get("WEAPON").remove(entry.getKey());
+//                byName.computeIfAbsent("SWORD", k -> new HashSet<>()).add(entry.getKey());
+//            }
             //Both BATTLEAXE and WEAPON -> only WEAPON
             if(entry.getValue().contains("BATTLEAXE") && entry.getValue().contains("WEAPON")){
                 byName.get("BATTLEAXE").remove(entry.getKey());
@@ -323,10 +329,10 @@ public class ItemTypeConfigProvider {
         }
 
         //Remove enums that shouldn't be used for inference at all
-        byName.remove("WEAPON");
-        byName.remove("DIGGER");
+//        byName.remove("WEAPON");
+//        byName.remove("DIGGER");
         byName.remove("ANY_TYPE");
-        byName.remove("ALL");
+//        byName.remove("ALL");
         byName.remove("ALL_TYPES");
         byName.remove("ALL_ITEMS");
     }

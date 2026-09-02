@@ -40,7 +40,7 @@ public class AdvancedConfig {
     })
     @Config.Name("Creature Attributes")
     @Order(1)
-    public static Map<String, CustomCreatureAttribute> creatureAttributes = new HashMap<>();
+    public Map<String, CustomCreatureAttribute> creatureAttributes = new HashMap<>();
     public static class CustomCreatureAttribute {
         public EnumMatcherType type = EnumMatcherType.EXACT;
         public LinkedHashSet<String> values = new LinkedHashSet<>();
