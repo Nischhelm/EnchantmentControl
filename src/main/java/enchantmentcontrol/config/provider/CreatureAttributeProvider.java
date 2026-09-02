@@ -1,8 +1,9 @@
 package enchantmentcontrol.config.provider;
 
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.util.matcher.IMatcher;
-import enchantmentcontrol.util.matcher.context.EntityMatcherContext;
+import enchantmentcontrol.util.matchers.IMatcher;
+import enchantmentcontrol.util.matchers.MatcherCreator;
+import enchantmentcontrol.util.matchers.context.EntityMatcherContext;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
@@ -17,11 +18,11 @@ public class CreatureAttributeProvider {
 
     public static void registerAttributes(Function<String, EnumCreatureAttribute> constructor) {
         attributes = new HashMap<>();
-        ConfigHandler.creatureAttributes.forEach((attributeName, attr) -> {
+        ConfigHandler.advanced.creatureAttributes.forEach((attributeName, attr) -> {
             if(attributeName.isEmpty()) return;
             if(attr.values.isEmpty()) return;
 
-            IMatcher<EntityMatcherContext> matcher = attr.type.createMatcher(attr.values);
+            IMatcher<EntityMatcherContext> matcher = MatcherCreator.ENTITY.createMatcher(attr.values, attr.type);
             EnumCreatureAttribute attribute = constructor.apply(attributeName);
             attributes.put(attribute, matcher);
         });

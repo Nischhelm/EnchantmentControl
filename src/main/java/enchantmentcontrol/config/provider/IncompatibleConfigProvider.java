@@ -14,7 +14,7 @@ public class IncompatibleConfigProvider {
         List<Set<Enchantment>> incompatibleGroups = new ArrayList<>();
 
         // Add an entry for each enchantment listed
-        ConfigHandler.incompatibleGroups.values().forEach(group ->
+        ConfigHandler.incompatible.incompatibleGroups.values().forEach(group ->
                 incompatibleGroups.add(group.stream()
                         .map(Enchantment::getEnchantmentByLocation)
                         .filter(Objects::nonNull)
@@ -79,8 +79,8 @@ public class IncompatibleConfigProvider {
             //TODO: default names if default incompat groups from vanilla
         }
 
-        ConfigHandler.incompatibleGroups.clear();
-        ConfigHandler.incompatibleGroups.putAll(defaultIncompats);
+        ConfigHandler.incompatible.incompatibleGroups.clear();
+        ConfigHandler.incompatible.incompatibleGroups.putAll(defaultIncompats);
         ConfigHandler.dev.printIncompats = false;
         EnchantmentControl.configNeedsSaving = true;
     }

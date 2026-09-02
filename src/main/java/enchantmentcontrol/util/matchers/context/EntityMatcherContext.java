@@ -1,9 +1,9 @@
-package enchantmentcontrol.util.matcher.context;
+package enchantmentcontrol.util.matchers.context;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-public class EntityMatcherContext {
+public class EntityMatcherContext implements IContext {
     private final Entity entity;
     private final ResourceLocation location;
 
@@ -16,7 +16,13 @@ public class EntityMatcherContext {
         return entity;
     }
 
+    @Override
     public ResourceLocation getLocation() {
         return location;
+    }
+
+    @Override
+    public Object getObject() {
+        return entity;
     }
 }

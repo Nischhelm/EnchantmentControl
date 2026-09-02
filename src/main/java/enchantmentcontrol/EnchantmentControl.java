@@ -56,7 +56,8 @@ public class EnchantmentControl {
         if(ConfigHandler.etable.allowReEnchant && ConfigHandler.etable.addEnchCountTooltip && event.getSide() == Side.CLIENT)
             MinecraftForge.EVENT_BUS.register(ReEnchantTooltipHandler.class);
 
-        LootFunctionManager.registerFunction(new SetEnchantments.Serializer());
+        if(ConfigHandler.debug.enableSetEnchantmentsLootFunction)
+            LootFunctionManager.registerFunction(new SetEnchantments.Serializer());
 
         EnchantmentInfoConfigReader.preInit(); //read EnchantmentInfo's from /enchantments
     }

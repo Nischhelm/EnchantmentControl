@@ -1,6 +1,6 @@
-package enchantmentcontrol.util.matcher.matcher;
+package enchantmentcontrol.util.matchers.matcher;
 
-import enchantmentcontrol.util.matcher.IMatcher;
+import enchantmentcontrol.util.matchers.IMatcher;
 
 import java.util.Set;
 import java.util.function.Function;

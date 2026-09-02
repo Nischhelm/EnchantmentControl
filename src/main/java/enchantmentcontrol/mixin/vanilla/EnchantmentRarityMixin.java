@@ -26,7 +26,7 @@ public abstract class EnchantmentRarityMixin {
 
     @Inject(method = "<init>(Ljava/lang/String;II)V", at = @At("TAIL"))
     private void ec_overrideRarityWeights(String internalName, int internalId, int weight, CallbackInfo ci){
-        this.weight = ConfigHandler.rarityWeights.getOrDefault(internalName, weight);
+        this.weight = ConfigHandler.advanced.rarityWeights.getOrDefault(internalName, weight);
     }
 
     @Unique

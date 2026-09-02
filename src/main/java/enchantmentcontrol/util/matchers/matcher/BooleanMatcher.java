@@ -1,6 +1,6 @@
-package enchantmentcontrol.util.matcher.matcher;
+package enchantmentcontrol.util.matchers.matcher;
 
-import enchantmentcontrol.util.matcher.IMatcher;
+import enchantmentcontrol.util.matchers.IMatcher;
 
 public class BooleanMatcher<CTX> implements IMatcher<CTX> {
     private final boolean result;

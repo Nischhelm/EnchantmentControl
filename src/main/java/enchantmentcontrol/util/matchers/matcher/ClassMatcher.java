@@ -1,7 +1,7 @@
-package enchantmentcontrol.util.matcher.matcher;
+package enchantmentcontrol.util.matchers.matcher;
 
 import enchantmentcontrol.EnchantmentControl;
-import enchantmentcontrol.util.matcher.IMatcher;
+import enchantmentcontrol.util.matchers.IMatcher;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,10 +17,10 @@ public class ClassMatcher<CTX> implements IMatcher<CTX> {
         classNames.forEach(this::addClass);
     }
 
-    public ClassMatcher(String className, Function<CTX, Object> instanceExtractor) {
+    public ClassMatcher(Class<?> clazz, Function<CTX, Object> instanceExtractor) {
         this.classes = new HashSet<>();
+        this.classes.add(clazz);
         this.instanceExtractor = instanceExtractor;
-        addClass(className);
     }
 
     private void addClass(String className){

@@ -1,4 +1,4 @@
-package enchantmentcontrol.util.matcher;
+package enchantmentcontrol.util.matchers;
 
 public interface IMatcher<CTX> {
     boolean matches(CTX t);

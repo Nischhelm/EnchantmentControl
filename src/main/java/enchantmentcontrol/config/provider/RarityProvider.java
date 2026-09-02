@@ -11,7 +11,7 @@ public class RarityProvider {
     public static final Map<String, Enchantment.Rarity> rarities = new HashMap<>(); //technically not needed as Enchantment.Rarity.valueOf also works
 
     public static void registerRarities(Function<String, Enchantment.Rarity> constructor){
-        for(String s : ConfigHandler.rarityWeights.keySet())
+        for(String s : ConfigHandler.advanced.rarityWeights.keySet())
             rarities.put(s, constructor.apply(s));
     }
 }

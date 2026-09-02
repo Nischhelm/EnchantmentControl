@@ -1,6 +1,6 @@
 package enchantmentcontrol.config.folders;
 
-import enchantmentcontrol.config.matcherregistry.CustomItemTypeCreator;
+import enchantmentcontrol.util.matchers.EnumMatcherType;
 import meldexun.betterconfig.api.Order;
 import net.minecraftforge.common.config.Config;
 
@@ -8,7 +8,7 @@ import java.util.*;
 
 public class ItemTypeConfig {
     @Config.Comment("Global Toggle to disable the entire Item Types category")
-    @Config.Name("Modification Enabled")
+    @Config.Name("Section Enabled")
     @Order(0)
     public boolean enable = true;
 
@@ -25,7 +25,7 @@ public class ItemTypeConfig {
     @Order(1)
     public Map<String, CustomItemType> customTypes = new HashMap<>();
     public static class CustomItemType {
-        public CustomItemTypeCreator type = CustomItemTypeCreator.ITEMID;
+        public EnumMatcherType type = EnumMatcherType.EXACT;
         public Set<String> values = new HashSet<>();
         public CustomItemType(){} //needed for BetterConfig
     }

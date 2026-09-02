@@ -1,10 +1,11 @@
-package enchantmentcontrol.util.matcher.context;
+package enchantmentcontrol.util.matchers.context;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
-public class ItemTypeContext {
+public class ItemTypeContext implements IContext {
     private final Enchantment enchantment;
     private final ItemStack stack;
     private final Item item;
@@ -35,5 +36,15 @@ public class ItemTypeContext {
 
     public int getMetadata() {
         return stack.getMetadata();
+    }
+
+    @Override
+    public ResourceLocation getLocation() {
+        return item.getRegistryName();
+    }
+
+    @Override
+    public Object getObject() {
+        return item;
     }
 }

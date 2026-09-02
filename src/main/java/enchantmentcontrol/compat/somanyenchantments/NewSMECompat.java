@@ -5,9 +5,11 @@ import com.shultrea.rin.enchantments.base.EnchantmentBase;
 import com.shultrea.rin.registry.EnchantmentRegistry;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.config.matcherregistry.CustomItemTypeCreator;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
+import enchantmentcontrol.util.enchantmenttypes.ItemTypeMatcher;
+import enchantmentcontrol.util.matchers.EnumMatcherType;
+import enchantmentcontrol.util.matchers.MatcherCreator;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
@@ -209,13 +211,13 @@ public class NewSMECompat {
                 regex = "";
             }
             //Add matcher internally
-            ItemTypeConfigProvider.registerCustomTypeMatcher(ItemTypeConfigProvider.createRegexMatcher(name, Collections.singleton(regex)));
+            ItemTypeConfigProvider.registerCustomTypeMatcher(new ItemTypeMatcher(name, MatcherCreator.ITEM_TYPE.createRegexMatcher(regex)));
 
             //Add matcher for config
             if(!existingCustomTypeNames.contains(name)) {
                 cfgChanged = true;
                 ItemTypeConfig.CustomItemType customItemType = new ItemTypeConfig.CustomItemType();
-                customItemType.type = CustomItemTypeCreator.REGEX;
+                customItemType.type = EnumMatcherType.REGEX;
                 customItemType.values = Collections.singleton(regex);
                 ConfigHandler.itemTypes.customTypes.put(name, customItemType);
             }
