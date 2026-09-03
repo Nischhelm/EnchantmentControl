@@ -7,7 +7,12 @@ import meldexun.betterconfig.api.LoadEarly;
 import meldexun.betterconfig.api.Order;
 import net.minecraftforge.common.config.Config;
 
-@BetterConfig(modid = EnchantmentControl.MODID, elementOrder = {BetterConfig.ConfigComparator.CATEGORIES_LAST, BetterConfig.ConfigComparator.NAME_CASE_INSENSITIVE})
+@BetterConfig(
+		modid = EnchantmentControl.MODID,
+		bigCategoryComments = false,
+		lowerCaseCategories = false,
+		removeDeprecatedEntries = true
+)
 @LoadEarly
 public class ConfigHandler {
 

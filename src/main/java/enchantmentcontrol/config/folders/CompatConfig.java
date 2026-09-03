@@ -2,6 +2,7 @@ package enchantmentcontrol.config.folders;
 
 import enchantmentcontrol.EnchantmentControl;
 import fermiumbooter.annotations.MixinConfig;
+import meldexun.betterconfig.api.Order;
 import net.minecraftforge.common.config.Config;
 
 public class CompatConfig {
@@ -12,46 +13,55 @@ public class CompatConfig {
         @Config.Comment("Global toggle for enchantment info JEI Plugin")
         @Config.Name("Enabled Enchantment Info Plugin")
         @Config.RequiresMcRestart
+        @Order(0)
         public boolean jeiInfoEnabled = true;
 
         @Config.Comment("Adds information about rarity, treasure and curse status to enchanted books in JEI")
         @Config.Name("Add JEI Rarity, Trasure, Curse Info")
         @Config.RequiresMcRestart
+        @Order(1)
         public boolean jeiRarityTreasureInfo = true;
 
         @Config.Comment("Adds information about incompatible enchantments to enchanted books in JEI")
         @Config.Name("Add JEI Incompat Info")
         @Config.RequiresMcRestart
+        @Order(2)
         public boolean jeiIncompatInfo = true;
 
         @Config.Comment("Adds information about item types to enchanted books in JEI")
         @Config.Name("Add JEI Item Types Info")
         @Config.RequiresMcRestart
+        @Order(3)
         public boolean jeiItemTypesInfo = true;
 
         @Config.Comment("Adds information about which equipment slots enchantments are searched at to enchanted books in JEI")
         @Config.Name("Add JEI Applicable Slot Id Info")
         @Config.RequiresMcRestart
+        @Order(4)
         public boolean jeiSlotInfo = false;
 
         @Config.Comment("Adds information about xp price (when on book/when on item) on anvil and potential emerald price range on Librarians to enchanted books in JEI")
         @Config.Name("Add JEI XP & Emerald Price Info")
         @Config.RequiresMcRestart
+        @Order(5)
         public boolean jeiXPEmeraldPriceInfo = false;
 
         @Config.Comment("Adds information about enchantability levels to enchanted books in JEI")
         @Config.Name("Add JEI Enchantability Info")
         @Config.RequiresMcRestart
+        @Order(6)
         public boolean jeiEnchantabilityInfo = true;
 
         @Config.Comment("Adds information about enchantment descriptions to enchanted books in JEI")
         @Config.Name("Add JEI Enchantment Description Info")
         @Config.RequiresMcRestart
+        @Order(7)
         public boolean jeiDescriptionInfo = true;
 
         @Config.Comment("Adds information about enchantment id (modid:enchid) to enchanted books in JEI")
         @Config.Name("Add JEI Enchantment Id Info")
         @Config.RequiresMcRestart
+        @Order(8)
         public boolean jeiEnchIdInfo = true;
     }
 
