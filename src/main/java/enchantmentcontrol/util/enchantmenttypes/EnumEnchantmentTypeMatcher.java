@@ -15,8 +15,8 @@ import java.util.*;
 public class EnumEnchantmentTypeMatcher extends ItemTypeMatcher {
     private final EnumEnchantmentType type;
 
-    public EnumEnchantmentTypeMatcher(EnumEnchantmentType type, Item item) {
-        super(type.name(), null, item == null ? null : new ItemStack(item));
+    public EnumEnchantmentTypeMatcher(String name, EnumEnchantmentType type, Item item) {
+        super(name, null, item == null ? null : new ItemStack(item));
         this.type = type;
     }
 

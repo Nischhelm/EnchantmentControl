@@ -66,7 +66,7 @@ public class ItemTypeConfigProvider {
             if (OldSMECompat.oldSMETypes.contains(enumName)) continue; //filter out additional enum types by old (pre 1.x) somanyenchantments
             if (registeredMatchers.containsKey(enumName)) continue; //filter out already registered ones (the renamed ones and potentially other modded ones)
 
-            EnumEnchantmentTypeMatcher oldMatcher = new EnumEnchantmentTypeMatcher(registeredEnum, null);
+            EnumEnchantmentTypeMatcher oldMatcher = new EnumEnchantmentTypeMatcher(enumName, registeredEnum, null);
             registeredMatchers.put(enumName, oldMatcher);
         }
 
@@ -224,10 +224,15 @@ public class ItemTypeConfigProvider {
         //Note down each enchantment's original type(s)
         for (Enchantment ench : Enchantment.REGISTRY) {
             if (ench.type == null) continue;
-            List<ItemTypeMatcher> matchers = Arrays.asList(registeredMatchers.get(ench.type.name()));
+            String enumName = typeRenames.getOrDefault(ench.type.name(), ench.type.name());
 
-            if(OldSMECompat.oldSMETypes.contains(ench.type.name()))
-                matchers.addAll(OldSMECompat.getMatchersForEnumType(ench.type));
+            List<ItemTypeMatcher> matchers;
+            if(registeredMatchers.containsKey(enumName)) // this should work for all enums except the filtered ones from old SME
+                matchers = Collections.singletonList(registeredMatchers.get(enumName));
+            else if(OldSMECompat.oldSMETypes.contains(ench.type.name()))
+                matchers = OldSMECompat.getMatchersForEnumType(ench.type);
+            else // This should never happen
+                matchers = Collections.emptyList();
 
             matchers.forEach(matcher -> {
                 if(matcher.getName().equals("NONE")) return; // If other mods use NONE enum

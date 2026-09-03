@@ -27,7 +27,7 @@ public class DefaultItemTypes {
         AXE, PICKAXE, HOE, SHOVEL, SHIELD, SHEARS
     }
     static {
-        createDefaultEnumMatcher(Type.ARMOR_HEAD, EnumEnchantmentType.ARMOR);
+        createDefaultEnumMatcher(Type.ARMOR, EnumEnchantmentType.ARMOR);
         createDefaultEnumMatcher(Type.ARMOR_HEAD, EnumEnchantmentType.ARMOR_HEAD, Items.IRON_HELMET);
         createDefaultEnumMatcher(Type.ARMOR_CHEST, EnumEnchantmentType.ARMOR_CHEST, Items.IRON_CHESTPLATE);
         createDefaultEnumMatcher(Type.ARMOR_LEGS, EnumEnchantmentType.ARMOR_LEGS, Items.IRON_LEGGINGS);
@@ -70,6 +70,6 @@ public class DefaultItemTypes {
     }
 
     private static void createDefaultEnumMatcher(Type type, EnumEnchantmentType enm, Item item) {
-        registeredDefaultMatchers.put(type, new EnumEnchantmentTypeMatcher(enm, item));
+        registeredDefaultMatchers.put(type, new EnumEnchantmentTypeMatcher(type.name(), enm, item));
     }
 }

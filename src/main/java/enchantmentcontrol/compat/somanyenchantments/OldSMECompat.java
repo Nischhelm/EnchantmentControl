@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class OldSMECompat {
-    public static final List<String> oldSMETypes = Arrays.asList("Combat Weapon", "Damageable", "Golden Apple", "Combat Tool", "Combat Axe", "Tool Axe", "Tool Pickaxe", "Tool Hoe", "Combat Sword", "Tool Shovel", "Combat Shield", "Combat", "All Tools", "All", "None");
+    public static final List<String> oldSMETypes = Arrays.asList("Combat Weapon", "Damageable", /*"Golden Apple",*/ "Combat Tool", "Combat Axe", "Tool Axe", "Tool Pickaxe", "Tool Hoe", "Combat Sword", "Tool Shovel", "Combat Shield", "Combat", "All Tools", "All", "None");
 
     public static List<ItemTypeMatcher> getMatchersForEnumType(EnumEnchantmentType type) {
         if (type.ordinal() > 11) { //not vanilla enum
