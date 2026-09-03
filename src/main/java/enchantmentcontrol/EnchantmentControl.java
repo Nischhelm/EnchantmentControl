@@ -16,7 +16,7 @@ import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.handler.AnvilUseTooltipHandler;
 import enchantmentcontrol.handler.ReEnchantTooltipHandler;
 import enchantmentcontrol.loot.SetEnchantments;
-import meldexun.betterconfig.ConfigManager;
+import meldexun.betterconfig.api.BetterConfigManager;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Logger;
         name = EnchantmentControl.NAME,
         dependencies =
                 "required-after:fermiumbooter@[1.5.0,);" +
+                "required-after:betterconfig;" +
                 "before:contenttweaker;" +
                 "after:somanyenchantments;"
 )
@@ -40,7 +41,6 @@ public class EnchantmentControl {
     public static final String VERSION = "1.1.2.2";
     public static final String NAME = "EnchantmentControl";
     public static final Logger LOGGER = LogManager.getLogger(EnchantmentControl.NAME);
-    public static final String SEP = ",";
     public static boolean configNeedsSaving = false;
     public static boolean loadingComplete = false;
 
@@ -89,7 +89,7 @@ public class EnchantmentControl {
 
         if(CompatUtil.contenttweaker.isLoaded()) CT_EnchantmentInfo.postInit();
 
-        if(configNeedsSaving) ConfigManager.sync(MODID);
+        if(configNeedsSaving) BetterConfigManager.sync(MODID);
 
         loadingComplete = true;
     }
