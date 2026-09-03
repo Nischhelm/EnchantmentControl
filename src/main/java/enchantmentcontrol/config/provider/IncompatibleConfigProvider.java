@@ -2,6 +2,7 @@ package enchantmentcontrol.config.provider;
 
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.util.DefaultIncompatibleGroups;
 import net.minecraft.enchantment.Enchantment;
 
 import java.util.*;
@@ -75,8 +76,11 @@ public class IncompatibleConfigProvider {
                 groupList.add(ench.getRegistryName().toString());
             }
             Collections.sort(groupList);
-            defaultIncompats.put("Group " + (counter++), groupList);
-            //TODO: default names if default incompat groups from vanilla
+
+            String groupName = DefaultIncompatibleGroups.getName(groupList);
+            if(groupName == null)
+                groupName = "Group " + (counter++);
+            defaultIncompats.put(groupName, groupList);
         }
 
         ConfigHandler.incompatible.incompatibleGroups.clear();
