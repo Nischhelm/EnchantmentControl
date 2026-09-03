@@ -23,16 +23,18 @@ public class ConfigMigrator {
 					return;
 				}
 
-				// Perform migrations in dependency order
+				migrateFirstSetup(general);
 				migrateIncompatibleGroups(general);
 				migrateRarities(general);
-				moveSubCategory(general, general, "blacklists", "Blacklists");
 				migrateCreatureAttributes(general);
 				migrateItemTypes(general);
+				migrateAnvilMechanics(general);
+				migrateCompat(general);
+				migrateMixinToggles(general);
 
-				// Remove old categories that were moved to new locations
-				general.getSubCategories().remove("creature attributes");
-				general.getSubCategories().remove("rarities");
+				renameSubCategory(general, "blacklists", "Blacklists");
+				renameSubCategory(general, "debug", "Debug");
+				renameSubCategory(general, "enchantment table mechanics", "Enchantment Table Mechanics");
 
 				config.setVersion(ConfigHandler.class.getName(), "1.0.0");
 
@@ -42,6 +44,19 @@ public class ConfigMigrator {
 				throw new RuntimeException("Config migration failed", e);
 			}
 		}
+	}
+
+	private static void migrateMixinToggles(ConfigCategory general) {
+		ConfigCategory cat = renameSubCategory(general, "mixin toggles", "Mixin Toggles");
+		renameElement(cat, "(MixinToggle) Render First Enchant Bold", "(MixinToggle) Render First Enchant Underscored");
+	}
+
+	private static void migrateFirstSetup(ConfigCategory general) {
+		ConfigCategory oldCat = renameSubCategory(general, "first setup", "First Setup");
+		if (oldCat == null) return;
+
+		renameSubCategory(oldCat, "enchantment id remaps", "Enchantment Id Remaps");
+		renameSubCategory(oldCat, "enchantment numeric id remaps", "Enchantment Numeric Id Remaps");
 	}
 
 	private static void migrateIncompatibleGroups(ConfigCategory general) {
@@ -87,7 +102,7 @@ public class ConfigMigrator {
 		general.getElements().remove("Incompatible Groups");
 
 		// Also migrate the enabled toggle
-		moveElement(general, incompatCat, "Incompatible Groups Enabled", "Incompatible Groups Enabled");
+		moveElement(general, incompatCat, "Incompatible Groups Enabled");
 	}
 
 	private static void migrateRarities(ConfigCategory general) {
@@ -95,16 +110,16 @@ public class ConfigMigrator {
 		ConfigCategory advanced = general.getSubCategories()
 			.computeIfAbsent("Advanced", k -> new ConfigCategory());
 
-		// Move rarities subcategory to advanced
-		moveSubCategory(general, advanced, "rarities", "Rarities");
+		// Move rarities subcategory to advanced and rename
+		moveSubCategory(general, advanced, "rarities");
+		renameSubCategory(advanced, "rarities", "Rarities");
 	}
 
 	private static void migrateCreatureAttributes(ConfigCategory general) {
-		ConfigCategory oldCreatureAttr = general.getSubCategories().get("creature attributes");
-		if (oldCreatureAttr == null || oldCreatureAttr.getElements().isEmpty()) return;
+		ConfigCategory oldCreatureAttr = general.getSubCategories().remove("creature attributes");
+		if (oldCreatureAttr == null) return;
 
-		ConfigCategory advanced = general.getSubCategories()
-			.computeIfAbsent("Advanced", k -> new ConfigCategory());
+		ConfigCategory advanced = general.getSubCategories().computeIfAbsent("Advanced", k -> new ConfigCategory());
 		ConfigCategory newCreatureAttr = new ConfigCategory();
 
 		// Parse each entry: "ATTR_NAME" -> "type, val1, val2, ..."
@@ -143,14 +158,11 @@ public class ConfigMigrator {
 		}
 
 		advanced.getSubCategories().put("Creature Attributes", newCreatureAttr);
-		general.getSubCategories().remove("creature attributes");
 	}
 
 	private static void migrateItemTypes(ConfigCategory general) {
-		ConfigCategory itemTypes = general.getSubCategories().get("item types");
+		ConfigCategory itemTypes = renameSubCategory(general, "item types", "Item Types");
 		if (itemTypes == null) return;
-
-		// Migrate in-place (item types category stays at the same location)
 
 		// Migrate custom types
 		migrateCustomItemTypes(itemTypes);
@@ -162,8 +174,19 @@ public class ConfigMigrator {
 		migrateAnvilSection(itemTypes);
 
 		// Migrate top-level item types settings (rename some fields)
-		moveElement(itemTypes, itemTypes, "Item Blacklist", "Allow Modded Item Blacklist");
-		moveElement(itemTypes, itemTypes, "Modification Enabled", "Section Enabled");
+		renameElement(itemTypes, "Item Blacklist", "Allow Modded Item Blacklist");
+		renameElement(itemTypes, "Modification Enabled", "Section Enabled");
+	}
+
+	private static void migrateAnvilMechanics(ConfigCategory general) {
+		ConfigCategory cat = renameSubCategory(general, "anvil mechanics", "Anvil Mechanics");
+		renameSubCategory(cat, "blood anvil", "Blood Anvil");
+		cat.getElements().remove("(MixinToggle) Anvil Use Count UpgPot Compat (SoManyEnchantments)");
+	}
+
+	private static void migrateCompat(ConfigCategory general) {
+		ConfigCategory cat = renameSubCategory(general, "compat", "Compat");
+		renameSubCategory(cat, "newsme", "newSME");
 	}
 
 	private static void migrateCustomItemTypes(ConfigCategory itemTypes) {
@@ -226,7 +249,7 @@ public class ConfigMigrator {
 	}
 
 	private static void migrateGeneralSection(ConfigCategory itemTypes) {
-		ConfigCategory general = itemTypes.getSubCategories().remove("general");
+		ConfigCategory general = renameSubCategory(itemTypes, "general", "General");
 		if (general == null) return;
 
 		// Migrate Item Types list
@@ -237,14 +260,12 @@ public class ConfigMigrator {
 		}
 
 		// Migrate settings with name changes
-		moveElement(general, general, "Blacklist", "Allow Modded Enchantment Blacklist");
-		moveElement(general, general, "Modification Enabled", "Section Enabled");
-
-		itemTypes.getSubCategories().put("General", general);
+		renameElement(general, "Blacklist", "Allow Modded Enchantment Blacklist");
+		renameElement(general, "Modification Enabled", "Section Enabled");
 	}
 
 	private static void migrateAnvilSection(ConfigCategory itemTypes) {
-		ConfigCategory anvil = itemTypes.getSubCategories().remove("anvil");
+		ConfigCategory anvil = renameSubCategory(itemTypes, "anvil", "Anvil");
 		if (anvil == null) return;
 
 		// Migrate Item Types list
@@ -255,10 +276,8 @@ public class ConfigMigrator {
 		}
 
 		// Migrate settings with name changes
-		moveElement(anvil, anvil, "Blacklist", "Allow Modded Enchantment Blacklist");
-		moveElement(anvil, anvil, "Modification Enabled", "Section Enabled");
-
-		itemTypes.getSubCategories().put("Anvil", anvil);
+		renameElement(anvil, "Blacklist", "Allow Modded Enchantment Blacklist");
+		renameElement(anvil, "Modification Enabled", "Section Enabled");
 	}
 
 	private static ConfigCategory parseItemTypesListToMap(ConfigList oldList) {
@@ -298,30 +317,55 @@ public class ConfigMigrator {
 	// Helper methods
 
 	/**
-	 * Move a subcategory from one category to another (optionally renaming it)
+	 * Move a subcategory from one category to another (keeps the same name)
 	 * @param from Source category
 	 * @param to Destination category
-	 * @param oldName Name in source category
-	 * @param newName Name in destination category (can be same as oldName)
+	 * @param name Name of the subcategory
 	 */
-	private static void moveSubCategory(ConfigCategory from, ConfigCategory to, String oldName, String newName) {
-		ConfigCategory subCat = from.getSubCategories().remove(oldName);
+	private static void moveSubCategory(ConfigCategory from, ConfigCategory to, String name) {
+		ConfigCategory subCat = from.getSubCategories().remove(name);
 		if (subCat != null) {
-			to.getSubCategories().put(newName, subCat);
+			to.getSubCategories().put(name, subCat);
 		}
 	}
 
 	/**
-	 * Move a config element from one category to another (optionally renaming it)
+	 * Rename a subcategory within the same parent category
+	 * @param category Parent category
+	 * @param oldName Current name
+	 * @param newName New name
+	 */
+	private static ConfigCategory renameSubCategory(ConfigCategory category, String oldName, String newName) {
+		ConfigCategory subCat = category.getSubCategories().remove(oldName);
+		if (subCat != null) {
+			category.getSubCategories().put(newName, subCat);
+		}
+		return subCat;
+	}
+
+	/**
+	 * Move a config element from one category to another (keeps the same name)
 	 * @param from Source category
 	 * @param to Destination category
-	 * @param oldName Name in source category
-	 * @param newName Name in destination category (can be same as oldName)
+	 * @param name Name of the element
 	 */
-	private static void moveElement(ConfigCategory from, ConfigCategory to, String oldName, String newName) {
-		ConfigElement element = from.getElements().remove(oldName);
+	private static void moveElement(ConfigCategory from, ConfigCategory to, String name) {
+		ConfigElement element = from.getElements().remove(name);
 		if (element != null) {
-			to.getElements().put(newName, element);
+			to.getElements().put(name, element);
+		}
+	}
+
+	/**
+	 * Rename a config element within the same category
+	 * @param category Parent category
+	 * @param oldName Current name
+	 * @param newName New name
+	 */
+	private static void renameElement(ConfigCategory category, String oldName, String newName) {
+		ConfigElement element = category.getElements().remove(oldName);
+		if (element != null) {
+			category.getElements().put(newName, element);
 		}
 	}
 

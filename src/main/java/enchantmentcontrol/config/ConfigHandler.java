@@ -12,15 +12,17 @@ import net.minecraftforge.common.config.Config;
 		bigCategoryComments = false,
 		lowerCaseCategories = false,
 		removeDeprecatedEntries = true,
-		version = "1.0.0"
+		version = ConfigHandler.VERSION
 )
 @LoadEarly
 public class ConfigHandler {
+	@Config.Ignore
+	public static final String VERSION = "1.0.0";
 
 	@BetterConfig.AfterRead
 	@SuppressWarnings("unused")
-	public static void migrateConfigs(meldexun.betterconfig.Config config, BetterConfig settings, Class<?> cfgClass){
-		ConfigMigrator.handleMigration(config, config.getVersion(cfgClass.getName()), settings.version());
+	public static void migrateConfigs(meldexun.betterconfig.Config config){
+		ConfigMigrator.handleMigration(config, config.getVersion(ConfigHandler.class.getName()), VERSION);
 	}
 
 	@Config.Comment("If you're a modpack dev just starting to set up this mod, you probably want to start here.")
