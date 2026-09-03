@@ -9,7 +9,7 @@ import meldexun.betterconfig.ConfigValue;
 
 import java.util.Map;
 
-// Here is where i'm paying for my sins
+// Here is where I pay for my sins
 public class ConfigMigrator {
 	public static void handleMigration(Config config, String fileVersion, String classVersion) {
 		// Migration is needed when fileVersion is empty (old config has no version)
