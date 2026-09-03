@@ -11,10 +11,17 @@ import net.minecraftforge.common.config.Config;
 		modid = EnchantmentControl.MODID,
 		bigCategoryComments = false,
 		lowerCaseCategories = false,
-		removeDeprecatedEntries = true
+		removeDeprecatedEntries = true,
+		version = "1.0.0"
 )
 @LoadEarly
 public class ConfigHandler {
+
+	@BetterConfig.AfterRead
+	@SuppressWarnings("unused")
+	public static void migrateConfigs(meldexun.betterconfig.Config config, BetterConfig settings, Class<?> cfgClass){
+		ConfigMigrator.handleMigration(config, config.getVersion(cfgClass.getName()), settings.version());
+	}
 
 	@Config.Comment("If you're a modpack dev just starting to set up this mod, you probably want to start here.")
 	@Config.Name("First Setup")
