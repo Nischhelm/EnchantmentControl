@@ -1,8 +1,7 @@
 package enchantmentcontrol.compat.somanyenchantments;
 
-import enchantmentcontrol.util.enchantmenttypes.DefaultItemTypes;
-import enchantmentcontrol.util.enchantmenttypes.EnumEnchantmentTypeMatcher;
-import enchantmentcontrol.util.enchantmenttypes.ItemTypeMatcher;
+import enchantmentcontrol.util.matchers.itemtypes.DefaultItemTypes;
+import enchantmentcontrol.util.matchers.itemtypes.ItemTypeMatcher;
 import enchantmentcontrol.util.matchers.MatcherCreator;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Items;

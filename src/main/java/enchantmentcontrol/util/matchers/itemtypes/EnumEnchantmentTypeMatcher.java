@@ -1,16 +1,11 @@
-package enchantmentcontrol.util.enchantmenttypes;
+package enchantmentcontrol.util.matchers.itemtypes;
 
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
-import enchantmentcontrol.util.matchers.MatcherCreator;
 import enchantmentcontrol.util.matchers.context.ItemTypeContext;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemAppleGold;
 import net.minecraft.item.ItemStack;
-
-import java.util.*;
 
 public class EnumEnchantmentTypeMatcher extends ItemTypeMatcher {
     private final EnumEnchantmentType type;

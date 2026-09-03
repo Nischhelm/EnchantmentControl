@@ -7,7 +7,7 @@ import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
-import enchantmentcontrol.util.enchantmenttypes.ItemTypeMatcher;
+import enchantmentcontrol.util.matchers.itemtypes.ItemTypeMatcher;
 import enchantmentcontrol.util.matchers.EnumMatcherType;
 import enchantmentcontrol.util.matchers.MatcherCreator;
 import net.minecraft.enchantment.Enchantment;

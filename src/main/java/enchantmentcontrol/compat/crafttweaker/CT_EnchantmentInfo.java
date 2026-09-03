@@ -9,7 +9,7 @@ import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.MaxEnchantabilityMode;
-import enchantmentcontrol.util.enchantmenttypes.ItemTypeMatcher;
+import enchantmentcontrol.util.matchers.itemtypes.ItemTypeMatcher;
 import enchantmentcontrol.util.vanillasystem.VanillaSystem;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EntityEquipmentSlot;

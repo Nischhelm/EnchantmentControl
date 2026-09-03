@@ -1,4 +1,4 @@
-package enchantmentcontrol.util.enchantmenttypes;
+package enchantmentcontrol.util.matchers.itemtypes;
 
 import enchantmentcontrol.util.matchers.IMatcher;
 import enchantmentcontrol.util.matchers.MatcherCreator;

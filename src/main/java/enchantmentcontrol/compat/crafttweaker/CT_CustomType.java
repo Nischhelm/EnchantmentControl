@@ -3,7 +3,7 @@ package enchantmentcontrol.compat.crafttweaker;
 import crafttweaker.annotations.ZenRegister;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
-import enchantmentcontrol.util.enchantmenttypes.ItemTypeMatcher;
+import enchantmentcontrol.util.matchers.itemtypes.ItemTypeMatcher;
 import enchantmentcontrol.util.matchers.context.ItemTypeContext;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
