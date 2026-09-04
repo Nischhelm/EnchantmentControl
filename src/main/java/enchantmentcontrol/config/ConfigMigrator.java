@@ -13,8 +13,7 @@ import java.util.Map;
 // Here is where I pay for my sins
 public class ConfigMigrator {
 	public static <T extends IConfigCategory<T>> void handleMigration(IConfigCategory<T> general, ArtifactVersion fileVersion) {
-		if (fileVersion == null || fileVersion.getVersionString().isEmpty())
-			migrateTo1_2_0(general);
+		if (fileVersion == null) migrateTo1_2_0(general); // migrate from pre 1.2.0 where there was no version yet
 	}
 
 	private static <T extends IConfigCategory<T>> void migrateTo1_2_0(IConfigCategory<T> general) {

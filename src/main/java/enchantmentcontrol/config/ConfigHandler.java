@@ -18,13 +18,6 @@ import net.minecraftforge.fml.common.versioning.ArtifactVersion;
 )
 @LoadEarly
 public class ConfigHandler {
-
-	@BetterConfig.AfterRead
-	@SuppressWarnings("unused")
-	public static <T extends IConfigCategory<T>> void migrateConfigs(IConfigCategory<T> category, ArtifactVersion version){
-		ConfigMigrator.handleMigration(category, version);
-	}
-
 	@Config.Comment("If you're a modpack dev just starting to set up this mod, you probably want to start here.")
 	@Config.Name("First Setup")
 	@Order(0)
@@ -74,4 +67,10 @@ public class ConfigHandler {
 	@Config.Name("Debug")
 	@Order(9)
 	public static DebugConfig debug = new DebugConfig();
+
+	@SuppressWarnings("unused")
+	@BetterConfig.AfterRead
+	public static <T extends IConfigCategory<T>> void migrateConfigs(IConfigCategory<T> category, ArtifactVersion version){
+		ConfigMigrator.handleMigration(category, version);
+	}
 }
