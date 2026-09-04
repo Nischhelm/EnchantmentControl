@@ -2,27 +2,24 @@ package enchantmentcontrol.config;
 
 import enchantmentcontrol.EnchantmentControl;
 import meldexun.betterconfig.api.ConfigMigrationHelper;
-import meldexun.betterconfig.api.tree.IConfigCategory;
-import meldexun.betterconfig.api.tree.IConfigElement;
-import meldexun.betterconfig.api.tree.IConfigList;
-import meldexun.betterconfig.api.tree.IConfigValue;
+import meldexun.betterconfig.api.tree.*;
 import net.minecraftforge.fml.common.versioning.ArtifactVersion;
 
 import java.util.Map;
 
 // Here is where I pay for my sins
 public class ConfigMigrator {
-	public static <T extends IConfigCategory<T>> void handleMigration(IConfigCategory<T> general, ArtifactVersion fileVersion) {
-		if (fileVersion == null) migrateTo1_2_0(general); // migrate from pre 1.2.0 where there was no version yet
+	public static <T extends IConfigContext<T>> void handleMigration(IConfigCategory<T> general, T context, ArtifactVersion fileVersion) {
+		if (fileVersion == null) migrateTo1_2_0(general, context); // migrate from pre 1.2.0 where there was no version yet
 	}
 
-	private static <T extends IConfigCategory<T>> void migrateTo1_2_0(IConfigCategory<T> general) {
+	private static <T extends IConfigContext<T>> void migrateTo1_2_0(IConfigCategory<T> general, T context) {
 		try {
 			migrateFirstSetup(general);
-			migrateIncompatibleGroups(general);
-			migrateRarities(general);
-			migrateCreatureAttributes(general);
-			migrateItemTypes(general);
+			migrateIncompatibleGroups(general, context);
+			migrateRarities(general, context);
+			migrateCreatureAttributes(general, context);
+			migrateItemTypes(general, context);
 			IConfigCategory<T> anvilMechanics = migrateAnvilMechanics(general);
 			migrateCompat(general);
 			IConfigCategory<T> mixinToggles = migrateMixinToggles(general);
@@ -39,13 +36,13 @@ public class ConfigMigrator {
 		}
 	}
 
-	private static <T extends IConfigCategory<T>> IConfigCategory<T> migrateMixinToggles(IConfigCategory<T> general) {
+	private static <T extends IConfigContext<T>> IConfigCategory<T> migrateMixinToggles(IConfigCategory<T> general) {
 		IConfigCategory<T> cat = ConfigMigrationHelper.renameCategory(general, "mixin toggles", "Mixin Toggles");
 		ConfigMigrationHelper.renameElement(cat, "(MixinToggle) Render First Enchant Bold", "(MixinToggle) Render First Enchant Underscored");
 		return cat;
 	}
 
-	private static <T extends IConfigCategory<T>> void migrateFirstSetup(IConfigCategory<T> general) {
+	private static <T extends IConfigContext<T>> void migrateFirstSetup(IConfigCategory<T> general) {
 		IConfigCategory<T> oldCat = ConfigMigrationHelper.renameCategory(general, "first setup", "First Setup");
 		if (oldCat == null) return;
 
@@ -53,7 +50,7 @@ public class ConfigMigrator {
 		ConfigMigrationHelper.renameCategory(oldCat, "enchantment numeric id remaps", "Enchantment Numeric Id Remaps");
 	}
 
-	private static <T extends IConfigCategory<T>> void migrateIncompatibleGroups(IConfigCategory<T> general) {
+	private static <T extends IConfigContext<T>> void migrateIncompatibleGroups(IConfigCategory<T> general, T context) {
 		IConfigElement<T> oldElement = general.getElements().get("Incompatible Groups");
 		if (!(oldElement instanceof IConfigList)) return;
 
@@ -61,8 +58,8 @@ public class ConfigMigrator {
 
 		// Create new category structure
 		IConfigCategory<T> incompatCat = general.getSubCategories()
-			.computeIfAbsent("Incompatible Enchantments", k -> general.createCategory());
-		IConfigCategory<T> groupsCategory = general.createCategory();
+			.computeIfAbsent("Incompatible Enchantments", k -> context.createCategory());
+		IConfigCategory<T> groupsCategory = context.createCategory();
 
 		int groupIndex = 1;
 		for (IConfigElement<T> item : oldList.getList()) {
@@ -74,11 +71,11 @@ public class ConfigMigrator {
 				String[] enchantments = line.split(",");
 				if (enchantments.length == 0) continue;
 
-				IConfigList<T> groupList = general.createList();
+				IConfigList<T> groupList = context.createList();
 				for (String ench : enchantments) {
 					String enchName = ench.trim();
 					if (!enchName.isEmpty()) {
-						IConfigValue<T> cv = general.createValue();
+						IConfigValue<T> cv = context.createValue();
 						cv.setValue(enchName);
 						groupList.getList().add(cv);
 					}
@@ -99,22 +96,22 @@ public class ConfigMigrator {
 		ConfigMigrationHelper.moveElement("Incompatible Groups Enabled", general, incompatCat);
 	}
 
-	private static <T extends IConfigCategory<T>> void migrateRarities(IConfigCategory<T> general) {
+	private static <T extends IConfigContext<T>> void migrateRarities(IConfigCategory<T> general, T context) {
 		// Create Advanced category
 		IConfigCategory<T> advanced = general.getSubCategories()
-			.computeIfAbsent("Advanced", k -> general.createCategory());
+			.computeIfAbsent("Advanced", k -> context.createCategory());
 
 		// Move rarities subcategory to advanced and rename
 		ConfigMigrationHelper.moveCategory("rarities", general, advanced);
 		ConfigMigrationHelper.renameCategory(advanced, "rarities", "Rarities");
 	}
 
-	private static <T extends IConfigCategory<T>> void migrateCreatureAttributes(IConfigCategory<T> general) {
+	private static <T extends IConfigContext<T>> void migrateCreatureAttributes(IConfigCategory<T> general, T context) {
 		IConfigCategory<T> oldCreatureAttr = general.getSubCategories().remove("creature attributes");
 		if (oldCreatureAttr == null) return;
 
-		IConfigCategory<T> advanced = general.getSubCategories().computeIfAbsent("Advanced", k -> general.createCategory());
-		IConfigCategory<T> newCreatureAttr = general.createCategory();
+		IConfigCategory<T> advanced = general.getSubCategories().computeIfAbsent("Advanced", k -> context.createCategory());
+		IConfigCategory<T> newCreatureAttr = context.createCategory();
 
 		// Parse each entry: "ATTR_NAME" -> "type, val1, val2, ..."
 		for (Map.Entry<String, IConfigElement<T>> entry : oldCreatureAttr.getElements().entrySet()) {
@@ -127,21 +124,21 @@ public class ConfigMigrator {
 			if (parts.length < 2) continue;
 
 			// Create subcategory for this attribute
-			IConfigCategory<T> attrCat = general.createCategory();
+			IConfigCategory<T> attrCat = context.createCategory();
 
 			// Map type: modid/mob/class → MODID/EXACT/CLASS
 			String typeStr = parts[0].trim();
 			String enumType = mapCreatureAttributeTypeToEnum(typeStr);
-			IConfigValue<T> typeValue = general.createValue();
+			IConfigValue<T> typeValue = context.createValue();
 			typeValue.setValue(enumType);
 			attrCat.getElements().put("type", typeValue);
 
 			// Create values list (LinkedHashSet<String>)
-			IConfigList<T> valuesList = general.createList();
+			IConfigList<T> valuesList = context.createList();
 			for (int i = 1; i < parts.length; i++) {
 				String val = parts[i].trim();
 				if (!val.isEmpty()) {
-					IConfigValue<T> cv = general.createValue();
+					IConfigValue<T> cv = context.createValue();
 					cv.setValue(val);
 					valuesList.getList().add(cv);
 				}
@@ -154,41 +151,41 @@ public class ConfigMigrator {
 		advanced.getSubCategories().put("Creature Attributes", newCreatureAttr);
 	}
 
-	private static <T extends IConfigCategory<T>> void migrateItemTypes(IConfigCategory<T> general) {
+	private static <T extends IConfigContext<T>> void migrateItemTypes(IConfigCategory<T> general, T context) {
 		IConfigCategory<T> itemTypes = ConfigMigrationHelper.renameCategory(general, "item types", "Item Types");
 		if (itemTypes == null) return;
 
 		// Migrate custom types
-		migrateCustomItemTypes(itemTypes);
+		migrateCustomItemTypes(itemTypes, context);
 
 		// Migrate general item types
-		migrateGeneralSection(itemTypes);
+		migrateGeneralSection(itemTypes, context);
 
 		// Migrate anvil item types
-		migrateAnvilSection(itemTypes);
+		migrateAnvilSection(itemTypes, context);
 
 		// Migrate top-level item types settings (rename some fields)
 		ConfigMigrationHelper.renameElement(itemTypes, "Item Blacklist", "Allow Modded Item Blacklist");
 		ConfigMigrationHelper.renameElement(itemTypes, "Modification Enabled", "Section Enabled");
 	}
 
-	private static <T extends IConfigCategory<T>> IConfigCategory<T> migrateAnvilMechanics(IConfigCategory<T> general) {
+	private static <T extends IConfigContext<T>> IConfigCategory<T> migrateAnvilMechanics(IConfigCategory<T> general) {
 		IConfigCategory<T> cat = ConfigMigrationHelper.renameCategory(general, "anvil mechanics", "Anvil Mechanics");
 		ConfigMigrationHelper.renameCategory(cat, "blood anvil", "Blood Anvil");
 		return cat;
 	}
 
-	private static <T extends IConfigCategory<T>> void migrateCompat(IConfigCategory<T> general) {
+	private static <T extends IConfigContext<T>> void migrateCompat(IConfigCategory<T> general) {
 		IConfigCategory<T> cat = ConfigMigrationHelper.renameCategory(general, "compat", "Compat");
 		ConfigMigrationHelper.renameCategory(cat, "newsme", "newSME");
 	}
 
-	private static <T extends IConfigCategory<T>> void migrateCustomItemTypes(IConfigCategory<T> itemTypes) {
+	private static <T extends IConfigContext<T>> void migrateCustomItemTypes(IConfigCategory<T> itemTypes, T context) {
 		IConfigElement<T> oldCustomTypesElement = itemTypes.getElements().get("Custom Item Types");
 		if (!(oldCustomTypesElement instanceof IConfigList)) return;
 
 		IConfigList<T> oldList = (IConfigList<T>) oldCustomTypesElement;
-		IConfigCategory<T> newCustomTypes = itemTypes.createCategory();
+		IConfigCategory<T> newCustomTypes = context.createCategory();
 
 		// Parse CSV: "MatcherName, type, value1, value2, ..." OR "MatcherName, value1, value2, ..." (defaults to REGEX)
 		for (IConfigElement<T> item : oldList.getList()) {
@@ -217,18 +214,18 @@ public class ConfigMigrator {
 			}
 
 			// Create subcategory for this matcher
-			IConfigCategory<T> matcherCat = itemTypes.createCategory();
+			IConfigCategory<T> matcherCat = context.createCategory();
 
-			IConfigValue<T> typeValue = itemTypes.createValue();
+			IConfigValue<T> typeValue = context.createValue();
 			typeValue.setValue(enumType);
 			matcherCat.getElements().put("type", typeValue);
 
 			// Create values list (Set<String>)
-			IConfigList<T> valuesList = itemTypes.createList();
+			IConfigList<T> valuesList = context.createList();
 			for (int i = valueStartIndex; i < parts.length; i++) {
 				String val = parts[i].trim();
 				if (!val.isEmpty()) {
-					IConfigValue<T> cv = itemTypes.createValue();
+					IConfigValue<T> cv = context.createValue();
 					cv.setValue(val);
 					valuesList.getList().add(cv);
 				}
@@ -242,14 +239,14 @@ public class ConfigMigrator {
 		itemTypes.getElements().remove("Custom Item Types");
 	}
 
-	private static <T extends IConfigCategory<T>> void migrateGeneralSection(IConfigCategory<T> itemTypes) {
+	private static <T extends IConfigContext<T>> void migrateGeneralSection(IConfigCategory<T> itemTypes, T context) {
 		IConfigCategory<T> general = ConfigMigrationHelper.renameCategory(itemTypes, "general", "General");
 		if (general == null) return;
 
 		// Migrate Item Types list
 		IConfigElement<T> oldTypesElement = general.getElements().remove("Item Types");
 		if (oldTypesElement instanceof IConfigList) {
-			IConfigCategory<T> newTypesMap = parseItemTypesListToMap(itemTypes, (IConfigList<T>) oldTypesElement);
+			IConfigCategory<T> newTypesMap = parseItemTypesListToMap((IConfigList<T>) oldTypesElement, context);
 			general.getSubCategories().put("Item Types", newTypesMap);
 		}
 
@@ -258,14 +255,14 @@ public class ConfigMigrator {
 		ConfigMigrationHelper.renameElement(general, "Modification Enabled", "Section Enabled");
 	}
 
-	private static <T extends IConfigCategory<T>> void migrateAnvilSection(IConfigCategory<T> itemTypes) {
+	private static <T extends IConfigContext<T>> void migrateAnvilSection(IConfigCategory<T> itemTypes, T context) {
 		IConfigCategory<T> anvil = ConfigMigrationHelper.renameCategory(itemTypes, "anvil", "Anvil");
 		if (anvil == null) return;
 
 		// Migrate Item Types list
 		IConfigElement<T> oldTypesElement = anvil.getElements().remove("Item Types");
 		if (oldTypesElement instanceof IConfigList) {
-			IConfigCategory<T> newTypesMap = parseItemTypesListToMap(itemTypes, (IConfigList<T>) oldTypesElement);
+			IConfigCategory<T> newTypesMap = parseItemTypesListToMap((IConfigList<T>) oldTypesElement, context);
 			anvil.getSubCategories().put("Item Types", newTypesMap);
 		}
 
@@ -274,8 +271,8 @@ public class ConfigMigrator {
 		ConfigMigrationHelper.renameElement(anvil, "Modification Enabled", "Section Enabled");
 	}
 
-	private static <T extends IConfigCategory<T>> IConfigCategory<T> parseItemTypesListToMap(IConfigCategory<T> category, IConfigList<T> oldList) {
-		IConfigCategory<T> typesMap = category.createCategory();
+	private static <T extends IConfigContext<T>> IConfigCategory<T> parseItemTypesListToMap(IConfigList<T> oldList, T context) {
+		IConfigCategory<T> typesMap = context.createCategory();
 
 		// Parse lines like "TYPE = ench1, ench2, ench3"
 		for (IConfigElement<T> item : oldList.getList()) {
@@ -290,11 +287,11 @@ public class ConfigMigrator {
 			String[] enchantments = parts[1].split(",");
 
 			// Create ConfigList for this type (Map<String, ArrayList<String>>)
-			IConfigList<T> enchList = category.createList();
+			IConfigList<T> enchList = context.createList();
 			for (String ench : enchantments) {
 				String enchName = ench.trim();
 				if (!enchName.isEmpty()) {
-					IConfigValue<T> cv = category.createValue();
+					IConfigValue<T> cv = context.createValue();
 					cv.setValue(enchName);
 					enchList.getList().add(cv);
 				}

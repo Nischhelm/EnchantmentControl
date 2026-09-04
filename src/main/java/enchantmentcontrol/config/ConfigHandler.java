@@ -6,6 +6,7 @@ import meldexun.betterconfig.api.BetterConfig;
 import meldexun.betterconfig.api.LoadEarly;
 import meldexun.betterconfig.api.Order;
 import meldexun.betterconfig.api.tree.IConfigCategory;
+import meldexun.betterconfig.api.tree.IConfigContext;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.fml.common.versioning.ArtifactVersion;
 
@@ -70,7 +71,7 @@ public class ConfigHandler {
 
 	@SuppressWarnings("unused")
 	@BetterConfig.AfterRead
-	public static <T extends IConfigCategory<T>> void migrateConfigs(IConfigCategory<T> category, ArtifactVersion version){
-		ConfigMigrator.handleMigration(category, version);
+	public static <T extends IConfigContext<T>> void migrateConfigs(IConfigCategory<T> category, T context, ArtifactVersion version){
+		ConfigMigrator.handleMigration(category, context, version);
 	}
 }
