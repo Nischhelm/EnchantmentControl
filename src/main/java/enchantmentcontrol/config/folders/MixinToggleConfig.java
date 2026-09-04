@@ -1,10 +1,10 @@
 package enchantmentcontrol.config.folders;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import fermiumbooter.annotations.MixinConfig;
 import net.minecraftforge.common.config.Config;
 
-@MixinConfig(name = EnchantmentControl.MODID)
+@MixinConfig(name = Tags.MODID)
 @SuppressWarnings("unused")
 public class MixinToggleConfig {
     @Config.Comment("When rendering enchantments on an ItemStack, render the first one in underscored")

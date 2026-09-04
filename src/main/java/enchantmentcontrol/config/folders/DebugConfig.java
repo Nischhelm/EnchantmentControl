@@ -1,12 +1,12 @@
 package enchantmentcontrol.config.folders;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import fermiumbooter.annotations.MixinConfig;
 import net.minecraftforge.common.config.Config;
 
 import java.util.ArrayList;
 
-@MixinConfig(name = EnchantmentControl.MODID)
+@MixinConfig(name = Tags.MODID)
 public class DebugConfig {
     @Config.Comment("Enchantment classes that should not be modified at all by this mod. \n" +
             "Use this if there are crashes when this mod tries to automatically modify some mods enchantments. \n" +

@@ -1,6 +1,6 @@
 package enchantmentcontrol.bloodanvil;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
@@ -33,7 +33,7 @@ public class BlockBloodAnvil extends BlockFalling {
 
     protected BlockBloodAnvil() {
         super(Material.ANVIL);
-        this.setRegistryName(new ResourceLocation(EnchantmentControl.MODID, "blood_anvil"));
+        this.setRegistryName(new ResourceLocation(Tags.MODID, "blood_anvil"));
         this.setTranslationKey("blood_anvil");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 
@@ -100,7 +100,7 @@ public class BlockBloodAnvil extends BlockFalling {
     @Override
     public boolean onBlockActivated(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state, @Nonnull EntityPlayer player, @Nonnull EnumHand hand, @Nonnull EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!world.isRemote)
-            player.openGui(EnchantmentControl.MODID, 0, world, pos.getX(), pos.getY(), pos.getZ());
+            player.openGui(Tags.MODID, 0, world, pos.getX(), pos.getY(), pos.getZ());
 
         return true;
     }

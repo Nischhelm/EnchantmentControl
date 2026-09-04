@@ -11,7 +11,7 @@ import crafttweaker.api.minecraft.CraftTweakerMC;
 import crafttweaker.api.util.IRandom;
 import crafttweaker.mc1120.enchantments.MCEnchantment;
 import crafttweaker.mc1120.util.MCRandom;
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.mixin.modded.crafttweaker.MCRandomAccessor;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -29,7 +29,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @ZenRegister
-@ZenClass("mods."+ EnchantmentControl.MODID +".EnchantmentHelper")
+@ZenClass("mods."+ Tags.MODID +".EnchantmentHelper")
 @SuppressWarnings("unused")
 public class CT_EnchantmentHelper {
     @ZenMethod

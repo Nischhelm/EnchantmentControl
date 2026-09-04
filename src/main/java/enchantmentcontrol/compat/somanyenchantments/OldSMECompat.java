@@ -1,8 +1,8 @@
 package enchantmentcontrol.compat.somanyenchantments;
 
+import enchantmentcontrol.util.matchers.MatcherCreator;
 import enchantmentcontrol.util.matchers.itemtypes.DefaultItemTypes;
 import enchantmentcontrol.util.matchers.itemtypes.ItemTypeMatcher;
-import enchantmentcontrol.util.matchers.MatcherCreator;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAppleGold;

@@ -1,10 +1,10 @@
 package enchantmentcontrol.config.folders;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import fermiumbooter.annotations.MixinConfig;
 import net.minecraftforge.common.config.Config;
 
-@MixinConfig(name = EnchantmentControl.MODID)
+@MixinConfig(name = Tags.MODID)
 public class EnchTableConfig {
     @Config.Comment({
             "Max level the vanilla enchanting table can roll. ",

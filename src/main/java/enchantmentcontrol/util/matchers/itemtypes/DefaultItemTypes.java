@@ -8,7 +8,8 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Map;
 
 public class DefaultItemTypes {
 

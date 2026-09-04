@@ -1,10 +1,10 @@
 package enchantmentcontrol.compat.crafttweaker;
 
 import crafttweaker.annotations.ZenRegister;
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
-import enchantmentcontrol.util.matchers.itemtypes.ItemTypeMatcher;
 import enchantmentcontrol.util.matchers.context.ItemTypeContext;
+import enchantmentcontrol.util.matchers.itemtypes.ItemTypeMatcher;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -12,7 +12,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 import java.util.function.Predicate;
 
 @ZenRegister
-@ZenClass("mods."+ EnchantmentControl.MODID+".CustomTypes")
+@ZenClass("mods."+ Tags.MODID+".CustomTypes")
 @SuppressWarnings("unused")
 public class CT_CustomType {
     @ZenMethod

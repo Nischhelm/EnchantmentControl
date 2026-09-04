@@ -1,6 +1,6 @@
 package enchantmentcontrol.config.folders;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import fermiumbooter.annotations.MixinConfig;
 import meldexun.betterconfig.api.Order;
 import net.minecraftforge.common.config.Config;
@@ -67,7 +67,7 @@ public class CompatConfig {
 
     public NewSMECompat newSME = new NewSMECompat();
 
-    @MixinConfig(name = EnchantmentControl.MODID)
+    @MixinConfig(name = Tags.MODID)
     public static class NewSMECompat {
         @Config.Comment({
                 "Sets Anvil Use Count to 0 if Upgraded Potentials is used on an enchanted items.",

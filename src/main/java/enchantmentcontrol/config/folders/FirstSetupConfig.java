@@ -1,13 +1,13 @@
 package enchantmentcontrol.config.folders;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import fermiumbooter.annotations.MixinConfig;
 import net.minecraftforge.common.config.Config;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@MixinConfig(name = EnchantmentControl.MODID)
+@MixinConfig(name = Tags.MODID)
 public class FirstSetupConfig {
     @Config.Comment("Enable if you want to remap enchantment ids (numerical or name). Warning: See Warnings in \"Enchantment Id Remaps\" and \"Enchantment Numeric Id Remaps\"")
     @Config.Name("(MixinToggle) Enable Registry Remapping")

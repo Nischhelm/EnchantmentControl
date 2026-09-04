@@ -27,9 +27,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(
-        modid = EnchantmentControl.MODID,
-        version = EnchantmentControl.VERSION,
-        name = EnchantmentControl.NAME,
+        modid = Tags.MODID,
+        version = Tags.VERSION,
+        name = Tags.NAME,
         dependencies =
                 "required-after:fermiumbooter@[1.5.0,);" +
                 "required-after:betterconfig;" +
@@ -37,10 +37,7 @@ import org.apache.logging.log4j.Logger;
                 "after:somanyenchantments;"
 )
 public class EnchantmentControl {
-    public static final String MODID = "enchantmentcontrol";
-    public static final String VERSION = "1.1.2.2";
-    public static final String NAME = "EnchantmentControl";
-    public static final Logger LOGGER = LogManager.getLogger(EnchantmentControl.NAME);
+    public static final Logger LOGGER = LogManager.getLogger(Tags.NAME);
     public static boolean configNeedsSaving = false;
     public static boolean loadingComplete = false;
 
@@ -89,7 +86,7 @@ public class EnchantmentControl {
 
         if(CompatUtil.contenttweaker.isLoaded()) CT_EnchantmentInfo.postInit();
 
-        if(configNeedsSaving) BetterConfigManager.sync(MODID);
+        if(configNeedsSaving) BetterConfigManager.sync(Tags.MODID);
 
         loadingComplete = true;
     }

@@ -1,6 +1,6 @@
 package enchantmentcontrol.bloodanvil;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -24,7 +24,7 @@ public class FeatureBloodAnvil {
     public static Set<String> blacklistedItems = null;
 
     public static void onPreInit(){
-        NetworkRegistry.INSTANCE.registerGuiHandler(EnchantmentControl.MODID, new FeatureBloodAnvil.GuiHandlerBloodAnvil());
+        NetworkRegistry.INSTANCE.registerGuiHandler(Tags.MODID, new FeatureBloodAnvil.GuiHandlerBloodAnvil());
     }
 
     public static void resetConfigValues(){
@@ -38,7 +38,7 @@ public class FeatureBloodAnvil {
 
     @SubscribeEvent
     public static void onItemRegistry(RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(new ItemBlock(BLOOD_ANVIL).setRegistryName(EnchantmentControl.MODID, "blood_anvil").setTranslationKey("blood_anvil"));
+        event.getRegistry().register(new ItemBlock(BLOOD_ANVIL).setRegistryName(Tags.MODID, "blood_anvil").setTranslationKey("blood_anvil"));
     }
 
     @SubscribeEvent

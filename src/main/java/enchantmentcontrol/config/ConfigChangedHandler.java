@@ -1,6 +1,6 @@
 package enchantmentcontrol.config;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.bloodanvil.FeatureBloodAnvil;
 import enchantmentcontrol.config.provider.BlacklistConfigProvider;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
@@ -10,12 +10,12 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber(modid = EnchantmentControl.MODID)
+@Mod.EventBusSubscriber
 public class ConfigChangedHandler {
 	@SubscribeEvent
 	public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-		if (event.getModID().equals(EnchantmentControl.MODID)) {
-			BetterConfigManager.sync(EnchantmentControl.MODID);
+		if (event.getModID().equals(Tags.MODID)) {
+			BetterConfigManager.sync(Tags.MODID);
 
 			ItemTypeConfigProvider.onResetConfig();
 			BlacklistConfigProvider.onResetConfig();
