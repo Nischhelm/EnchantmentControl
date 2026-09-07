@@ -27,7 +27,6 @@ public class ConfigMigrator {
 			ConfigMigrationHelper.moveCategory("(MixinToggle) Anvil Use Count UpgPot Compat (SoManyEnchantments)", anvilMechanics, mixinToggles);
 
 			ConfigMigrationHelper.renameCategory(general, "blacklists", "Blacklists");
-			ConfigMigrationHelper.renameCategory(general, "blacklists", "Blacklists");
 			ConfigMigrationHelper.renameCategory(general, "debug", "Debug");
 			ConfigMigrationHelper.renameCategory(general, "enchantment table mechanics", "Enchantment Table Mechanics");
 		} catch (Exception e) {
