@@ -108,7 +108,7 @@ public class ItemTypeConfigProvider {
             }
             if(inverted) {
                 // Wrap the matcher in InvertedMatcher
-                matcher = new ItemTypeMatcher("!"+typeName, MatcherCreator.ITEM_TYPE.createInvertedMatcher(matcher.getMatcher()));
+                matcher = new ItemTypeMatcher("!"+typeName, MatcherCreator.ITEM_TYPE.createInvertedMatcher(matcher));
             }
 
             for(String enchName : entry.getValue()){

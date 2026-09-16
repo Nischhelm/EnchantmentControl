@@ -11,7 +11,7 @@ public class InvertedMatcher<CTX> implements IMatcher<CTX> {
 
     @Override
     public boolean matches(CTX context) {
-        return this.inner.matches(context);
+        return !this.inner.matches(context);
     }
 
     public IMatcher<CTX> getInner() {
