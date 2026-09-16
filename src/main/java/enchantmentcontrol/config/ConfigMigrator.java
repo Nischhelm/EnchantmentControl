@@ -10,6 +10,7 @@ import java.util.Map;
 // Here is where I pay for my sins
 public class ConfigMigrator {
 	public static <T extends IConfigContext<T>> void handleMigration(IConfigCategory<T> general, T context, ArtifactVersion fileVersion) {
+		if(general.getElements().isEmpty() && general.getSubCategories().isEmpty()) return;
 		if (fileVersion == null) migrateTo1_2_0(general, context); // migrate from pre 1.2.0 where there was no version yet
 	}
 
@@ -24,7 +25,7 @@ public class ConfigMigrator {
 			migrateCompat(general);
 			IConfigCategory<T> mixinToggles = migrateMixinToggles(general);
 
-			ConfigMigrationHelper.moveCategory("(MixinToggle) Anvil Use Count UpgPot Compat (SoManyEnchantments)", anvilMechanics, mixinToggles);
+			ConfigMigrationHelper.moveCategory(anvilMechanics, "(MixinToggle) Anvil Use Count UpgPot Compat (SoManyEnchantments)", mixinToggles);
 
 			ConfigMigrationHelper.renameCategory(general, "blacklists", "Blacklists");
 			ConfigMigrationHelper.renameCategory(general, "debug", "Debug");
@@ -92,7 +93,7 @@ public class ConfigMigrator {
 		general.getElements().remove("Incompatible Groups");
 
 		// Also migrate the enabled toggle
-		ConfigMigrationHelper.moveElement("Incompatible Groups Enabled", general, incompatCat);
+		ConfigMigrationHelper.moveElement(general, "Incompatible Groups Enabled", incompatCat);
 	}
 
 	private static <T extends IConfigContext<T>> void migrateRarities(IConfigCategory<T> general, T context) {
@@ -101,7 +102,7 @@ public class ConfigMigrator {
 			.computeIfAbsent("Advanced", k -> context.createCategory());
 
 		// Move rarities subcategory to advanced and rename
-		ConfigMigrationHelper.moveCategory("rarities", general, advanced);
+		ConfigMigrationHelper.moveCategory(general, "rarities", advanced);
 		ConfigMigrationHelper.renameCategory(advanced, "rarities", "Rarities");
 	}
 
