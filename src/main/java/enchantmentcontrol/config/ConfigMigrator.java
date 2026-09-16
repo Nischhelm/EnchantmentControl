@@ -25,7 +25,7 @@ public class ConfigMigrator {
 			migrateCompat(general);
 			IConfigCategory<T> mixinToggles = migrateMixinToggles(general);
 
-			ConfigMigrationHelper.moveCategory(anvilMechanics, "(MixinToggle) Anvil Use Count UpgPot Compat (SoManyEnchantments)", mixinToggles);
+			ConfigMigrationHelper.moveElement(anvilMechanics, "(MixinToggle) Anvil Use Count UpgPot Compat (SoManyEnchantments)", mixinToggles);
 
 			ConfigMigrationHelper.renameCategory(general, "blacklists", "Blacklists");
 			ConfigMigrationHelper.renameCategory(general, "debug", "Debug");
