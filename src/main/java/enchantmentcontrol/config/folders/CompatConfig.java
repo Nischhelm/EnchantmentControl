@@ -7,6 +7,7 @@ import net.minecraftforge.common.config.Config;
 
 public class CompatConfig {
 
+    @Config.Name("Just Enough Items")
     public JeiCompatConfig jei = new JeiCompatConfig();
 
     public static class JeiCompatConfig {
@@ -65,6 +66,7 @@ public class CompatConfig {
         public boolean jeiEnchIdInfo = true;
     }
 
+    @Config.Name("So Many Enchantments 1.0.0+")
     public NewSMECompat newSME = new NewSMECompat();
 
     @MixinConfig(name = Tags.MODID)

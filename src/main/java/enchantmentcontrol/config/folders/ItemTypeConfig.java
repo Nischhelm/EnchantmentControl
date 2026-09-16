@@ -23,10 +23,10 @@ public class ItemTypeConfig {
     })
     @Config.Name("Custom Item Types")
     @Order(1)
-    public Map<String, CustomItemType> customTypes = new HashMap<>();
+    public Map<String, CustomItemType> customTypes = new LinkedHashMap<>();
     public static class CustomItemType {
         public EnumMatcherType type = EnumMatcherType.EXACT;
-        public Set<String> values = new HashSet<>();
+        public LinkedHashSet<String> values = new LinkedHashSet<>();
         public CustomItemType(){} //needed for BetterConfig
     }
 

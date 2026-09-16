@@ -4,7 +4,7 @@ import enchantmentcontrol.Tags;
 import fermiumbooter.annotations.MixinConfig;
 import net.minecraftforge.common.config.Config;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @MixinConfig(name = Tags.MODID)
@@ -23,7 +23,7 @@ public class FirstSetupConfig {
     })
     @Config.Name("Enchantment Id Remaps")
     @Config.RequiresMcRestart
-    public Map<String, String> idRemaps = new HashMap<>();
+    public Map<String, String> idRemaps = new LinkedHashMap<>();
 
     @Config.Comment({
             "Assign custom numeric ids to enchantments.",
@@ -34,7 +34,7 @@ public class FirstSetupConfig {
     })
     @Config.Name("Enchantment Numeric Id Remaps")
     @Config.RequiresMcRestart
-    public Map<String, Integer> customNumericIds = new HashMap<>();
+    public Map<String, Integer> customNumericIds = new LinkedHashMap<>();
 
     @Config.Comment({
             "!Disables itself after a one time use!",

@@ -218,7 +218,7 @@ public class NewSMECompat {
                 cfgChanged = true;
                 ItemTypeConfig.CustomItemType customItemType = new ItemTypeConfig.CustomItemType();
                 customItemType.type = EnumMatcherType.REGEX;
-                customItemType.values = Collections.singleton(regex);
+                customItemType.values.add(regex);
                 ConfigHandler.itemTypes.customTypes.put(name, customItemType);
             }
         }

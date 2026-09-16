@@ -4,7 +4,7 @@ import enchantmentcontrol.util.matchers.EnumMatcherType;
 import meldexun.betterconfig.api.Order;
 import net.minecraftforge.common.config.Config;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
@@ -23,7 +23,7 @@ public class AdvancedConfig {
     @Config.Name("Rarities")
     @Config.RequiresMcRestart
     @Order(0)
-    public Map<String, Integer> rarityWeights = new HashMap<>();
+    public Map<String, Integer> rarityWeights = new LinkedHashMap<>();
 
     @Config.Comment({
             "Creature attributes are used to know when to increase dmg on Smite/BoA or custom versions of them.",
@@ -40,7 +40,7 @@ public class AdvancedConfig {
     })
     @Config.Name("Creature Attributes")
     @Order(1)
-    public Map<String, CustomCreatureAttribute> creatureAttributes = new HashMap<>();
+    public Map<String, CustomCreatureAttribute> creatureAttributes = new LinkedHashMap<>();
     public static class CustomCreatureAttribute {
         public EnumMatcherType type = EnumMatcherType.EXACT;
         public LinkedHashSet<String> values = new LinkedHashSet<>();
