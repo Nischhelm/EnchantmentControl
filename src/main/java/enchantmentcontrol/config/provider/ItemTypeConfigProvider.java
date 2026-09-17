@@ -188,7 +188,7 @@ public class ItemTypeConfigProvider {
 
             // Handle inversion
             if(matcher.getMatcher() instanceof InvertedMatcher) {
-                invertedMatches = invertedMatches || matches;
+                invertedMatches = invertedMatches || !matches;
             } else {
                 isValid = isValid || matches;
             }
