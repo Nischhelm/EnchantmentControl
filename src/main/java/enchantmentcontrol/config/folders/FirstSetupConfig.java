@@ -2,6 +2,7 @@ package enchantmentcontrol.config.folders;
 
 import enchantmentcontrol.Tags;
 import fermiumbooter.annotations.MixinConfig;
+import meldexun.betterconfig.api.Order;
 import net.minecraftforge.common.config.Config;
 
 import java.util.LinkedHashMap;
@@ -13,6 +14,7 @@ public class FirstSetupConfig {
     @Config.Name("(MixinToggle) Enable Registry Remapping")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.registryremap.json", defaultValue = false)
+    @Order(0)
     public boolean enableRegistryRemap = false;
 
     @Config.Comment({
@@ -23,6 +25,7 @@ public class FirstSetupConfig {
     })
     @Config.Name("Enchantment Id Remaps")
     @Config.RequiresMcRestart
+    @Order(1)
     public Map<String, String> idRemaps = new LinkedHashMap<>();
 
     @Config.Comment({
@@ -34,6 +37,7 @@ public class FirstSetupConfig {
     })
     @Config.Name("Enchantment Numeric Id Remaps")
     @Config.RequiresMcRestart
+    @Order(2)
     public Map<String, Integer> customNumericIds = new LinkedHashMap<>();
 
     @Config.Comment({
@@ -47,6 +51,7 @@ public class FirstSetupConfig {
     })
     @Config.Name("Print Inferred Enchantment Infos")
     @Config.RequiresMcRestart
+    @Order(3)
     public boolean printInferred = true;
 
     @Config.Comment({
@@ -63,6 +68,7 @@ public class FirstSetupConfig {
             "Every option that is not existing in a json will keep the enchantment unmodified there, so reduction is advised."
     })
     @Config.Name("Print Inferred Expanded")
+    @Order(4)
     public boolean printInferredExpanded = false;
 
     @Config.Comment({
@@ -76,6 +82,7 @@ public class FirstSetupConfig {
     })
     @Config.Name("Print Default Incompatibilities")
     @Config.RequiresMcRestart
+    @Order(5)
     public boolean printIncompats = true;
 
     @Config.Comment({
@@ -93,5 +100,6 @@ public class FirstSetupConfig {
     })
     @Config.Name("Print Default Item Types")
     @Config.RequiresMcRestart
+    @Order(6)
     public boolean printTypes = true;
 }

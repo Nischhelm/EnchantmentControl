@@ -1,24 +1,34 @@
 package enchantmentcontrol.config.folders;
 
+import meldexun.betterconfig.api.Order;
 import net.minecraftforge.common.config.Config;
 
 public class BloodAnvilConfig {
     @Config.Comment("Enables the Blood Anvil, a Block similar to the anvil which allows to move enchants from one item to another.")
     @Config.Name("Enabled")
     @Config.RequiresMcRestart
+    @Order(0)
     public boolean enabled = true;
 
     @Config.Comment("How many XP Levels using the Blood Anvil will cost, flat")
     @Config.Name("XP Level Cost")
     @Config.RangeInt(min = 0)
+    @Order(1)
     public int cost = 100;
 
     @Config.Comment("If enabled, will calculate the total cost of the enchantment move depending on the config defined anvil formulas for calculating xp costs")
     @Config.Name("XP Level Cost Is Dynamic")
+    @Order(2)
     public boolean costIsDynamic = false;
+
+    @Config.Comment("If enabled, will combine the items repair costs too, the same way anvils do according to \"Anvil Use Cost Combination Type\", but without increasing the cost")
+    @Config.Name("Also move Repair Cost")
+    @Order(3)
+    public boolean moveAnvilCost = true;
 
     @Config.Comment("Allows to move enchants to a book or enchanted book")
     @Config.Name("Allow Books")
+    @Order(4)
     public boolean allowBooks = false;
 
     @Config.Comment({
@@ -26,41 +36,33 @@ public class BloodAnvilConfig {
             "If a moved enchant is already on the item, the one with the bigger level is kept, ignoring combination rules like 4+4=5"
     })
     @Config.Name("Allow Already Enchanted")
+    @Order(5)
     public boolean allowEnchanted = true;
 
-    @Config.Comment("If enabled, will combine the items repair costs too, the same way anvils do according to \"Anvil Use Cost Combination Type\", but without increasing the cost")
-    @Config.Name("Also move Repair Cost")
-    public boolean moveAnvilCost = true;
-
-    @Config.Comment("Items from this list cannot receive enchantments from the blood anvil")
-    @Config.Name("Target Item Blacklist")
-    public String[] blacklist = new String[0];
-
-    @Config.Comment("Treat the blacklist as whitelist")
-    @Config.Name("Target Item Blacklist is Whitelist")
-    public boolean asWhitelist = false;
-
     @Config.Comment({
-            "If disabled, will clamp enchantment levels that are moved to their allowed range of levels",
+            "If disabled, will clamp enchantment levels ~that are moved~ to their allowed range of levels",
             "Note: if the target item already has an enchantment outside of its allowed range, this level will not be affected by the clamping."
     })
     @Config.Name("Allow illegal levels")
+    @Order(6)
     public boolean allowIllegalLevels = false;
 
     @Config.Comment({
-            "If disabled, will check and filter for mutually exclusive enchantments on the original item.",
+            "If disabled, will check and filter for mutually exclusive enchantments ~on the original item~.",
             "Otherwise such illegal enchantment combinations would just be moved over to the target item.",
             "Note: Enabling this will allow to *move existing* illegal enchantment combinations using the blood anvil."
     })
     @Config.Name("Allow mutually exclusive original")
+    @Order(7)
     public boolean allowMutuallyExclusiveOriginal = false;
 
     @Config.Comment({
-            "If disabled, will check and filter for mutually exclusive enchantments on the target item compared to the enchantments that are moved.",
+            "If disabled, will check and filter for mutually exclusive enchantments ~on the target item~ compared to the enchantments that are moved.",
             "This option only has an effect if \"Allow Already Enchanted\" is enabled.",
             "Note: Enabling this will allow to *create* illegal enchantment combinations using the blood anvil."
     })
     @Config.Name("Allow mutually exclusive target")
+    @Order(8)
     public boolean allowMutuallyExclusiveTarget = false;
 
     @Config.Comment({
@@ -68,5 +70,16 @@ public class BloodAnvilConfig {
             "Note: Enabling this will allow all kinds of unintended item x enchantment combinations of which most will not do anything. Handle with care"
     })
     @Config.Name("Allow unapplicable")
+    @Order(9)
     public boolean allowUnapplicable = false;
+
+    @Config.Comment("Items from this list cannot receive enchantments from the blood anvil")
+    @Config.Name("Target Item Blacklist")
+    @Order(10)
+    public String[] blacklist = new String[0];
+
+    @Config.Comment("Treat the blacklist as whitelist")
+    @Config.Name("Target Item Blacklist is Whitelist")
+    @Order(11)
+    public boolean asWhitelist = false;
 }
