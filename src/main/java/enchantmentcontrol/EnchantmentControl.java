@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
         name = Tags.NAME,
         dependencies =
                 "required-after:fermiumbooter@[1.5.0,);" +
-                "required-after:betterconfig;" +
+                "required-after:betterconfig@[1.2.0,);" +
                 "before:contenttweaker;" +
                 "after:somanyenchantments;"
 )
