@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.versioning.ArtifactVersion;
 		bigCategoryComments = false,
 		lowerCaseCategories = false,
 		removeDeprecatedEntries = true,
-		version = Tags.VERSION
+		version = Tags.CFG_VERSION
 )
 @LoadEarly
 public class ConfigHandler {
