@@ -2,6 +2,7 @@ package enchantmentcontrol.config.folders;
 
 import enchantmentcontrol.Tags;
 import fermiumbooter.annotations.MixinConfig;
+import meldexun.betterconfig.api.Order;
 import net.minecraftforge.common.config.Config;
 
 @MixinConfig(name = Tags.MODID)
@@ -12,6 +13,7 @@ public class AnvilConfig {
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilnoexpensive.json", defaultValue = false)
     @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompatible with No Expensive")
     @SuppressWarnings("unused")
+    @Order(0)
     public boolean enableNoExpensive = false;
 
     @Config.Comment("If enabled, using the anvil on an item without modifying its enchantments (repair with item or material, renames) will not increase its anvil use cost")
@@ -20,15 +22,8 @@ public class AnvilConfig {
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilnoincreaseonrepairs.json", defaultValue = false)
     @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompatible with No Expensive")
     @SuppressWarnings("unused")
+    @Order(1)
     public boolean noCostIncreaseOnRepairs = false;
-
-    @Config.Comment("Main toggle for the Anvil Use Cost: Scaling Type, Combination Type and Scaling Factor in this config to be applicable")
-    @Config.Name("(MixinToggle) Change Cost Scaling")
-    @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilscaling.json", defaultValue = false)
-    @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompatible with No Expensive")
-    @SuppressWarnings("unused")
-    public boolean enableAnvilScalingChange = false;
 
     @Config.Comment({
             "If set to true, removes anvil repair cost increase when combining two single enchanted books with the same lvl (Prot 3 + Prot 3 = Prot 4)",
@@ -38,6 +33,7 @@ public class AnvilConfig {
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.freebookcombination.json", defaultValue = false)
     @SuppressWarnings("unused")
+    @Order(2)
     public boolean removeBookCombinationAnvilCost = false;
 
     @Config.Comment("If enabled, adding enchants with lower level or with already max lvl (anything leaving the resulting lvl the same as the one on the left item) will cost 0 XP in the anvil.")
@@ -45,20 +41,33 @@ public class AnvilConfig {
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.zerocostifunchanged.json", defaultValue = false)
     @SuppressWarnings("unused")
+    @Order(3)
     public boolean noCostIfUnchanged = false;
 
     @Config.Comment("When in the anvil gui, adds a tooltip to items with anvil use cost to indicate how often they have been used at the anvil already. Only in advanced mode = F3+H")
     @Config.Name("Show Anvil Use Tooltip")
     @Config.RequiresMcRestart
+    @Order(4)
     public boolean addAnvilUseTooltip = true;
 
     @Config.Comment("When enabled, the anvil use tooltip will be shown everywhere, not just in the anvil GUI")
     @Config.Name("Anvil Use Tooltip Show Everywhere")
+    @Order(5)
     public boolean tooltipShowEverywhere = false;
 
     @Config.Comment("When enabled, the anvil use tooltip will be shown when pressing Shift instead of requiring advanced mode (F3+H)")
     @Config.Name("Anvil Use Tooltip On Shift Key")
+    @Order(6)
     public boolean tooltipOnShiftKey = false;
+
+    @Config.Comment("Main toggle for the Anvil Use Cost: Scaling Type, Combination Type and Scaling Factor in this config to be applicable")
+    @Config.Name("(MixinToggle) Change Cost Scaling")
+    @Config.RequiresMcRestart
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilscaling.json", defaultValue = false)
+    @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompatible with No Expensive")
+    @SuppressWarnings("unused")
+    @Order(7)
+    public boolean enableAnvilScalingChange = false;
 
     @Config.Comment({
             "How Anvil Use Cost (\"RepairCost\") scales with increased uses of the anvil",
@@ -73,6 +82,7 @@ public class AnvilConfig {
             "Suggested quadratic: 0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100"
     })
     @Config.Name("Anvil Use Cost Scaling Type")
+    @Order(8)
     public ScalingType repairCostScalingType = ScalingType.EXPONENTIAL;
     public enum ScalingType { EXPONENTIAL, QUADRATIC, LINEAR, CONST}
 
@@ -82,6 +92,7 @@ public class AnvilConfig {
     })
     @Config.Name("Anvil Use Cost Scaling Factor")
     @Config.RangeDouble(min = Float.MIN_VALUE)
+    @Order(9)
     public float repairCostScalingFactor = 2;
 
     @Config.Comment({
@@ -93,10 +104,12 @@ public class AnvilConfig {
             "Note: This will also apply to the anvil use COUNT used to calc the anvil use COST"
     })
     @Config.Name("Anvil Use Cost Combination Type")
+    @Order(10)
     public ComboType repairCostCombinationType = ComboType.MAX;
     public enum ComboType { MIN, MAX, SUM, AVERAGE }
 
     @Config.Comment("Options for the Blood Anvil")
     @Config.Name("Blood Anvil")
+    @Order(11)
     public BloodAnvilConfig bloodAnvil = new BloodAnvilConfig();
 }

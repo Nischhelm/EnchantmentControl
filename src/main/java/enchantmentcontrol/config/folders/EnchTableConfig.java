@@ -2,6 +2,7 @@ package enchantmentcontrol.config.folders;
 
 import enchantmentcontrol.Tags;
 import fermiumbooter.annotations.MixinConfig;
+import meldexun.betterconfig.api.Order;
 import net.minecraftforge.common.config.Config;
 
 @MixinConfig(name = Tags.MODID)
@@ -14,6 +15,7 @@ public class EnchTableConfig {
     })
     @Config.Name("(MixinToggle) Enchantment Table Max Lvl")
     @Config.RangeInt(min = -1)
+    @Order(0)
     public int maxLvl = 30;
 
     @Config.Comment({
@@ -24,6 +26,7 @@ public class EnchTableConfig {
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablenoaircond.json", defaultValue = false)
     @MixinConfig.CompatHandling(modid = "apotheosis", desired = false, warnIngame = false, reason = "Incompatible with Apotheosis")
+    @Order(1)
     public boolean noAirCond = false;
 
     @Config.Comment({
@@ -34,12 +37,14 @@ public class EnchTableConfig {
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablealwaysreroll.json", defaultValue = false)
     @MixinConfig.CompatHandling(modid = "apotheosis", desired = false, warnIngame = false, reason = "Incompatible with Apotheosis")
+    @Order(2)
     public boolean alwaysReroll = false;
 
     @Config.Comment("Shows the enchantment clue directly in the GUI of the enchantment table instead of needing to hover.")
     @Config.Name("(MixinToggle) Preview Enchantment Clue")
     @Config.RequiresMcRestart
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablepreviewclue.json", defaultValue = false)
+    @Order(3)
     public boolean previewClue = false;
 
     @Config.Comment({
@@ -52,6 +57,7 @@ public class EnchTableConfig {
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablereenchant.json", defaultValue = false)
     @MixinConfig.CompatHandling(modid = "apotheosis", desired = false, warnIngame = false, reason = "Incompatible with Apotheosis")
     @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompatible with No Expensive")
+    @Order(4)
     public boolean allowReEnchant = true;
 
     @Config.Comment({
@@ -62,6 +68,7 @@ public class EnchTableConfig {
     @Config.Name("Re-Enchant Count Skip Increment Chance")
     @Config.SlidingOption
     @Config.RangeDouble(min = 0, max = 1)
+    @Order(5)
     public float reEnchantSkipIncrementChance = 0.2F;
 
     @Config.Comment({
@@ -73,6 +80,7 @@ public class EnchTableConfig {
     })
     @Config.Name("Re-Enchant Max Count")
     @Config.RangeInt(min = 0)
+    @Order(6)
     public int reEnchantMaxTimes = 1;
 
     @Config.Comment({
@@ -80,6 +88,7 @@ public class EnchTableConfig {
             "Requires \"Allow Re-Enchant\""
     })
     @Config.Name("Re-Enchant Allow Incompatible")
+    @Order(7)
     public boolean reEnchantAllowIncompatible = false;
 
     @Config.Comment({
@@ -88,6 +97,7 @@ public class EnchTableConfig {
             "Requires \"Allow Re-Enchant\""
     })
     @Config.Name("Re-Enchant Combine Existing")
+    @Order(8)
     public boolean reEnchantCombineExisting = false;
 
     @Config.Comment({
@@ -95,18 +105,22 @@ public class EnchTableConfig {
             "Requires \"Allow Re-Enchant\""
     })
     @Config.Name("Re-Enchant Already Anviled")
+    @Order(9)
     public boolean reEnchantAlreadyAnviled = false;
 
     @Config.Comment("When in the etable gui, adds a tooltip to items with enchant count to indicate how often they have been enchanted already. Only in advanced mode = F3+H")
     @Config.Name("Re-Enchant Show Count Tooltip")
     @Config.RequiresMcRestart
+    @Order(10)
     public boolean addEnchCountTooltip = true;
 
     @Config.Comment("When enabled, the enchant count tooltip will be shown everywhere, not just in the enchantment table GUI")
     @Config.Name("Re-Enchant Tooltip Show Everywhere")
+    @Order(11)
     public boolean tooltipShowEverywhere = false;
 
     @Config.Comment("When enabled, the enchant count tooltip will be shown when pressing Shift instead of requiring advanced mode (F3+H)")
     @Config.Name("Re-Enchant Tooltip On Shift Key")
+    @Order(12)
     public boolean tooltipOnShiftKey = false;
 }
