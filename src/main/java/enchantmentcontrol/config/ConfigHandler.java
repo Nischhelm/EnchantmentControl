@@ -16,7 +16,7 @@ import net.minecraftforge.common.config.Config;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
 
 @BetterConfig(
 		modid = Tags.MODID,

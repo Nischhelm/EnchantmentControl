@@ -3,7 +3,7 @@ package enchantmentcontrol.config;
 import enchantmentcontrol.EnchantmentControl;
 import meldexun.betterconfig.api.ConfigMigrationHelper;
 import meldexun.betterconfig.api.tree.*;
-import net.minecraftforge.fml.common.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
 
 import java.util.Map;
 
@@ -11,10 +11,10 @@ import java.util.Map;
 public class ConfigMigrator {
 	public static <T extends IConfigContext<T>> void handleMigration(IConfigCategory<T> general, T context, ArtifactVersion fileVersion) {
 		if(general.getElements().isEmpty() && general.getSubCategories().isEmpty()) return;
-		if (fileVersion == null) migrateTo1_2_0(general, context); // migrate from pre 1.2.0 where there was no version yet
+		if (fileVersion == null) migrateTo1_0_0(general, context); // migrate from pre cfgvers 1.0.0 where there was no version entry yet
 	}
 
-	private static <T extends IConfigContext<T>> void migrateTo1_2_0(IConfigCategory<T> general, T context) {
+	private static <T extends IConfigContext<T>> void migrateTo1_0_0(IConfigCategory<T> general, T context) {
 		try {
 			migrateFirstSetup(general);
 			migrateIncompatibleGroups(general, context);
