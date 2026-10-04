@@ -1,5 +1,6 @@
 package enchantmentcontrol.compat.somanyenchantments;
 
+import com.Shultrea.Rin.Enum.EnumList;
 import enchantmentcontrol.util.matchers.MatcherCreator;
 import enchantmentcontrol.util.matchers.itemtypes.DefaultItemTypes;
 import enchantmentcontrol.util.matchers.itemtypes.ItemTypeMatcher;
@@ -43,5 +44,13 @@ public class OldSMECompat {
 
     private static List<ItemTypeMatcher> single(ItemTypeMatcher matcher) {
         return Collections.singletonList(matcher);
+    }
+
+    public static void registerNewSMEEnumTypeMatchers(){
+        DefaultItemTypes.createDefaultEnumMatcher(DefaultItemTypes.Type.AXE, EnumList.AXE, Items.IRON_AXE);
+        DefaultItemTypes.createDefaultEnumMatcher(DefaultItemTypes.Type.PICKAXE, EnumList.PICKAXE, Items.IRON_PICKAXE);
+        DefaultItemTypes.createDefaultEnumMatcher(DefaultItemTypes.Type.HOE, EnumList.HOE, Items.IRON_HOE);
+        DefaultItemTypes.createDefaultEnumMatcher(DefaultItemTypes.Type.SHOVEL, EnumList.SPADE, Items.IRON_SHOVEL);
+        DefaultItemTypes.createDefaultEnumMatcher(DefaultItemTypes.Type.SHIELD, EnumList.SHIELD, Items.SHIELD);
     }
 }

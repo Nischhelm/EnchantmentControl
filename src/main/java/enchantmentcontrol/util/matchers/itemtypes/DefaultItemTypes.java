@@ -1,5 +1,8 @@
 package enchantmentcontrol.util.matchers.itemtypes;
 
+import enchantmentcontrol.compat.CompatUtil;
+import enchantmentcontrol.compat.somanyenchantments.NewSMECompat;
+import enchantmentcontrol.compat.somanyenchantments.OldSMECompat;
 import enchantmentcontrol.util.matchers.IMatcher;
 import enchantmentcontrol.util.matchers.MatcherCreator;
 import enchantmentcontrol.util.matchers.context.ItemTypeContext;
@@ -45,11 +48,17 @@ public class DefaultItemTypes {
 
         createDefaultEnumMatcher(Type.BREAKABLE, EnumEnchantmentType.BREAKABLE);
 
-        createDefaultClassMatcher(Type.AXE, ItemAxe.class, Items.IRON_AXE);
-        createDefaultClassMatcher(Type.PICKAXE, ItemPickaxe.class, Items.IRON_PICKAXE);
-        createDefaultClassMatcher(Type.HOE, ItemHoe.class, Items.IRON_HOE);
-        createDefaultClassMatcher(Type.SHOVEL, ItemSpade.class, Items.IRON_SHOVEL);
-        createDefaultClassMatcher(Type.SHIELD, ItemShield.class, Items.SHIELD);
+        if(CompatUtil.versionInRange(CompatUtil.somanyenchantments, "[1.0.0,)")) {
+            NewSMECompat.registerNewSMEEnumTypeMatchers();
+        } else if (CompatUtil.versionInRange(CompatUtil.somanyenchantments, "[,1.0.0)")) {
+            OldSMECompat.registerNewSMEEnumTypeMatchers();
+        } else {
+            createDefaultClassMatcher(Type.AXE, ItemAxe.class, Items.IRON_AXE);
+            createDefaultClassMatcher(Type.PICKAXE, ItemPickaxe.class, Items.IRON_PICKAXE);
+            createDefaultClassMatcher(Type.HOE, ItemHoe.class, Items.IRON_HOE);
+            createDefaultClassMatcher(Type.SHOVEL, ItemSpade.class, Items.IRON_SHOVEL);
+            createDefaultClassMatcher(Type.SHIELD, ItemShield.class, Items.SHIELD);
+        }
         createDefaultClassMatcher(Type.SHEARS, ItemShears.class, Items.SHEARS);
     }
 
@@ -70,7 +79,7 @@ public class DefaultItemTypes {
         createDefaultEnumMatcher(type, enm, null);
     }
 
-    private static void createDefaultEnumMatcher(Type type, EnumEnchantmentType enm, Item item) {
+    public static void createDefaultEnumMatcher(Type type, EnumEnchantmentType enm, Item item) {
         registeredDefaultMatchers.put(type, new EnumEnchantmentTypeMatcher(type.name(), enm, item));
     }
 }

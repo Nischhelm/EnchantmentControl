@@ -3,14 +3,17 @@ package enchantmentcontrol.compat.somanyenchantments;
 import com.shultrea.rin.config.ModConfig;
 import com.shultrea.rin.enchantments.base.EnchantmentBase;
 import com.shultrea.rin.registry.EnchantmentRegistry;
+import com.shultrea.rin.util.Types;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
 import enchantmentcontrol.util.matchers.EnumMatcherType;
 import enchantmentcontrol.util.matchers.MatcherCreator;
+import enchantmentcontrol.util.matchers.itemtypes.DefaultItemTypes;
 import enchantmentcontrol.util.matchers.itemtypes.ItemTypeMatcher;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.init.Items;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
@@ -225,5 +228,13 @@ public class NewSMECompat {
 
         //Write custom types config
         if(cfgChanged) EnchantmentControl.configNeedsSaving = true;
+    }
+
+    public static void registerNewSMEEnumTypeMatchers(){
+        DefaultItemTypes.createDefaultEnumMatcher(DefaultItemTypes.Type.AXE, Types.AXE, Items.IRON_AXE);
+        DefaultItemTypes.createDefaultEnumMatcher(DefaultItemTypes.Type.PICKAXE, Types.PICKAXE, Items.IRON_PICKAXE);
+        DefaultItemTypes.createDefaultEnumMatcher(DefaultItemTypes.Type.HOE, Types.HOE, Items.IRON_HOE);
+        DefaultItemTypes.createDefaultEnumMatcher(DefaultItemTypes.Type.SHOVEL, Types.SPADE, Items.IRON_SHOVEL);
+        DefaultItemTypes.createDefaultEnumMatcher(DefaultItemTypes.Type.SHIELD, Types.SHIELD, Items.SHIELD);
     }
 }
