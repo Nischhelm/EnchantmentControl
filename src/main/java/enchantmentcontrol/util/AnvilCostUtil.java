@@ -4,19 +4,23 @@ import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.math.MathHelper;
 
 public class AnvilCostUtil {
     private static final String key = "AnvilCount";
 
+    public static boolean hasAnvilCount(ItemStack stack) {
+        return stack.hasTagCompound() && stack.getTagCompound().hasKey(key, 3);
+    }
+
     public static int getAnvilCount(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().hasKey(key, 3) ? stack.getTagCompound().getInteger(key) : 0;
+        return hasAnvilCount(stack) ? stack.getTagCompound().getInteger(key) : 0;
     }
 
     public static void setAnvilCount(ItemStack stack, int count) {
         if(count == 0 && getAnvilCount(stack) == 0) return;
-        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        stack.getTagCompound().setInteger(key, count);
+        stack.setTagInfo(key, new NBTTagInt(count));
     }
 
     public static int guessAnvilCount(int anvilCost) {

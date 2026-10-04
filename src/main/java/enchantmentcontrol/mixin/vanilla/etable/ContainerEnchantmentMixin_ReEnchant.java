@@ -26,7 +26,7 @@ public abstract class ContainerEnchantmentMixin_ReEnchant {
         if(original) return true;
         if(!stack.getItem().isEnchantable(stack)) return false; //counters stack.isItemEnchantable
         if(stack.isItemEnchanted()) { //allows isEnchanted too
-            return (ConfigHandler.etable.reEnchantMaxTimes <= 0 || ReEnchantUtil.getEnchantCount(stack) < ConfigHandler.etable.reEnchantMaxTimes) && (ConfigHandler.etable.reEnchantAlreadyAnviled || (stack.getRepairCost() <= 0 && AnvilCostUtil.getAnvilCount(stack) <= 0));
+            return (ConfigHandler.etable.reEnchantMaxTimes <= 0 || ReEnchantUtil.getEnchantCount(stack) < ConfigHandler.etable.reEnchantMaxTimes) && (ConfigHandler.etable.reEnchantAlreadyAnviled || (stack.getRepairCost() <= 0 && !AnvilCostUtil.hasAnvilCount(stack)));
         } else
             return false;
     }
