@@ -75,6 +75,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:enchctrl-315721:2791638")
     compileOnly fg.deobf("curse.maven:apotheosis-313970:2906487")
     compileOnly fg.deobf("curse.maven:placebo-283644:4629597")
+    implementation fg.deobf("curse.maven:enchanter-tools-1590477:8803331")
 
     compileOnly fg.deobf("CraftTweaker2:CraftTweaker2-${crafttweaker_version}")
     compileOnly fg.deobf("CraftTweaker2:ZenScript:${zs_version}")
