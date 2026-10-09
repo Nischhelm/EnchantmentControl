@@ -5,32 +5,19 @@ import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
 import fermiumbooter.FermiumRegistryAPI;
 import fermiumbooter.util.FermiumJarScanner;
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.apache.commons.lang3.StringUtils;
-import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")
+@IFMLLoadingPlugin.SortingIndex(1001)
 public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
-	public static final Set<String> actuallyEarlyEnchants = new HashSet<>();
-	public static final Set<String> enchantmentClasses = new HashSet<>();
-
 	public EnchantmentControlPlugin() {
-		MixinBootstrap.init();
-
-		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.json", () -> {
-			graphClasses(); //this is a good position in the loading process, so we do it here, right during MC init while early jsons are enqueued
-			return true;
-		});
+		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.json");
 		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.creativecanapplyoverride.json", () -> ConfigHandler.itemTypes.creativeOptions != ItemTypeConfig.EnumCreativeAllowed.ANVIL);
 		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.etablemaxlvl.json", () -> !FermiumJarScanner.isModPresent("apotheosis") && ConfigHandler.etable.maxLvl >= 0);
 
@@ -40,11 +27,9 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[]{
-				ModCompatClassTransformer.class.getName(),
-				EarlyEnchantmentClassTransformer.class.getName(),
-				LateEnchantmentClassTransformer.class.getName()
-		};
+		if(ConfigHandler.debug.enableEnchantmentInjection)
+			return new String[]{ EnchantmentClassTransformer.class.getName() };
+		return new String[0];
 	}
 	
 	@Override public String getModContainerClass() {return null;}
@@ -56,33 +41,4 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 		}
 	}
 	@Override public String getAccessTransformerClass() {return null;}
-
-	public static void graphClasses(){
-		try (ScanResult scanResult = new ClassGraph()
-				//.verbose()               // Log to stderr
-				.enableClassInfo()
-				.enableAnnotationInfo()
-				.rejectPackages("java.*")
-				.rejectPackages("enchantmentcontrol.*")
-				.rejectPackages("org.spongepowered.*")
-				.rejectPackages("net.minecraftforge.*")
-				.rejectPackages("com.google.common.*")
-				.rejectPackages("com.mojang.*")
-				.rejectPackages("org.objectweb.asm.*")
-				.rejectPackages("io.github.classgraph.classpath.*")
-				.rejectPackages("nonapi.io.github.classgraph.classpath.*")
-				.rejectPackages("com.llamalad7.mixinextras.*")
-				.scan()
-		) {
-			for (ClassInfo routeClassInfo : scanResult.getSubclasses("net.minecraft.enchantment.Enchantment")) {
-				enchantmentClasses.add(routeClassInfo.getName());
-			}
-			for (ClassInfo routeClassInfo : scanResult.getSubclasses("alk")) { //Obfuscated class name of net.minecraft.enchantment.Enchantment
-				enchantmentClasses.add(routeClassInfo.getName());
-			}
-			for (ClassInfo routeClassInfo : scanResult.getClassesWithAnnotation("org.spongepowered.asm.mixin.Mixin")) {
-				enchantmentClasses.remove(routeClassInfo.getName());
-			}
-		}
-	}
 }

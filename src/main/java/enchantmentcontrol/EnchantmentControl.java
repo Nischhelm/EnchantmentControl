@@ -4,7 +4,6 @@ import enchantmentcontrol.bloodanvil.FeatureBloodAnvil;
 import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.compat.crafttweaker.CT_EnchantmentInfo;
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.config.classdump.EnchantmentClassWriter;
 import enchantmentcontrol.config.descriptions.DescriptionReader;
 import enchantmentcontrol.config.descriptions.EmptyEnchantmentWriter;
 import enchantmentcontrol.config.descriptions.NamesReader;
@@ -58,7 +57,6 @@ public class EnchantmentControl {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        EnchantmentClassWriter.postInit(); //write /tmp/enchclasses.dump for next startup (sad that this is after late mixin load. classgraph could fix that if i could get it to work. then i wouldn't even need a custom file)
         if(event.getSide() == Side.CLIENT) {
             DescriptionReader.init();
             EmptyEnchantmentWriter.write(DescriptionReader.PATH);
