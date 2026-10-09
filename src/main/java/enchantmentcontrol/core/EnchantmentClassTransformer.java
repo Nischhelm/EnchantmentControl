@@ -13,6 +13,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
+import java.util.MissingResourceException;
+
 public class EnchantmentClassTransformer extends AbstractClassTransformer implements IClassTransformer {
 
     @SuppressWarnings("deprecation")
@@ -23,14 +25,17 @@ public class EnchantmentClassTransformer extends AbstractClassTransformer implem
         if (basicClass == null) return null;
 
         // check if class is or extends Enchantment
-        if (REMAPPING_CLASS_UTIL.findInClassHierarchy(name.replace('.', '/'), "net/minecraft/enchantment/Enchantment"::equals) == null)
-            return null;
+        try{
+            if (REMAPPING_CLASS_UTIL.findInClassHierarchy(name.replace('.', '/'), "net/minecraft/enchantment/Enchantment"::equals) == null)
+                return null;
+        } catch (MissingResourceException e) {
+            return null; // Exception happens for Optional.Interface for example
+        }
 
         if (ConfigHandler.debug.disabledClasses.contains(name)) return null;
 
         ClassNode classNode = new ClassNode();
-        ClassReader classReader = new ClassReader(basicClass);
-        classReader.accept(classNode, 0);
+        new ClassReader(basicClass).accept(classNode, 0);
 
         // Transform all Enchantment methods with hooks
         for (MethodNode method : classNode.methods) {
@@ -63,11 +68,7 @@ public class EnchantmentClassTransformer extends AbstractClassTransformer implem
         }
 
         // Write the transformed class
-        @SuppressWarnings("deprecation")
-        ClassWriter classWriter = new NonLoadingClassWriter(
-                ClassWriter.COMPUTE_FRAMES,
-                REMAPPING_CLASS_UTIL
-        );
+        ClassWriter classWriter = new NonLoadingClassWriter(ClassWriter.COMPUTE_FRAMES, REMAPPING_CLASS_UTIL);
         classNode.accept(classWriter);
         return classWriter.toByteArray();
     }
