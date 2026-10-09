@@ -3,6 +3,7 @@ package enchantmentcontrol.core;
 import enchantmentcontrol.config.ConfigHandler;
 import meldexun.asmutil2.AbstractClassTransformer;
 import meldexun.asmutil2.NonLoadingClassWriter;
+import meldexun.asmutil2.reader.ClassUtil;
 import meldexun.betterconfig.asm.BetterConfigClassTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -12,33 +13,23 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 public class EnchantmentClassTransformer extends AbstractClassTransformer implements IClassTransformer {
 
-    private static final Set<String> enchantmentClasses = new HashSet<>(Arrays.asList(
-            "net/minecraft/enchantment/Enchantment",
-            "alk" // obfuscated Enchantment
-    ));
+    @SuppressWarnings("deprecation")
+    private static final ClassUtil REMAPPING_CLASS_UTIL = ReflectionHelper.getPrivateValue(BetterConfigClassTransformer.class, null, "REMAPPING_CLASS_UTIL");
 
     @Override
     protected byte[] transformOrNull(String obfName, String name, byte[] basicClass) {
         if (basicClass == null) return null;
 
         // check if class is or extends Enchantment
-        ClassReader classReader = new ClassReader(basicClass);
-        String className = classReader.getClassName();
-        String superClassName = classReader.getSuperName();
-        if (!enchantmentClasses.contains(className) && !enchantmentClasses.contains(superClassName))
+        if (REMAPPING_CLASS_UTIL.findInClassHierarchy(name.replace('.', '/'), "net/minecraft/enchantment/Enchantment"::equals) == null)
             return null;
 
-        enchantmentClasses.add(className);
-
-        if (ConfigHandler.debug.disabledClasses.contains(name)) return null; //name bc config still expects '.' as separator instead of '/'
+        if (ConfigHandler.debug.disabledClasses.contains(name)) return null;
 
         ClassNode classNode = new ClassNode();
+        ClassReader classReader = new ClassReader(basicClass);
         classReader.accept(classNode, 0);
 
         // Transform all Enchantment methods with hooks
@@ -75,7 +66,7 @@ public class EnchantmentClassTransformer extends AbstractClassTransformer implem
         @SuppressWarnings("deprecation")
         ClassWriter classWriter = new NonLoadingClassWriter(
                 ClassWriter.COMPUTE_FRAMES,
-                ReflectionHelper.getPrivateValue(BetterConfigClassTransformer.class, null, "REMAPPING_CLASS_UTIL")
+                REMAPPING_CLASS_UTIL
         );
         classNode.accept(classWriter);
         return classWriter.toByteArray();
