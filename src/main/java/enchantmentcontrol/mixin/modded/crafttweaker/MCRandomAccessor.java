@@ -8,6 +8,6 @@ import java.util.Random;
 
 @Mixin(MCRandom.class)
 public interface MCRandomAccessor {
-    @Accessor("random")
+    @Accessor(value = "random", remap = false)
     Random getRandom();
 }

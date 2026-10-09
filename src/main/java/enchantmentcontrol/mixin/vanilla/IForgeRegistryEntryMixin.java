@@ -5,11 +5,12 @@ import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(targets = "net.minecraftforge.registries.IForgeRegistryEntry$Impl")
+@Mixin(IForgeRegistryEntry.Impl.class)
 public abstract class IForgeRegistryEntryMixin {
     @Shadow(remap = false) public abstract Class<?> getRegistryType();
 
