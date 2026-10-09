@@ -1,7 +1,7 @@
 package enchantmentcontrol.mixin.vanilla.blacklists;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +16,7 @@ public abstract class VanillaEnchantmentRegistryMixin {
     private static boolean onRegister(RegistryNamespaced<ResourceLocation, Enchantment> instance, int id, Object loc, Object ench) {
         //Prevent registration of config defined enchants
         if (ConfigHandler.blacklists.blacklistedRegistryEnchants.contains(loc.toString())) {
-            EnchantmentControl.LOGGER.info("Preventing registration of enchantment {}", loc.toString());
+            Tags.LOGGER.info("Preventing registration of enchantment {}", loc.toString());
             return false;
         }
         return true;

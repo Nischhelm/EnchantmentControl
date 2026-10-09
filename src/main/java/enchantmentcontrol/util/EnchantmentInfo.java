@@ -1,7 +1,7 @@
 package enchantmentcontrol.util;
 
 import com.google.gson.annotations.SerializedName;
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.util.vanillabehavior.ArthropodBehavior;
 import enchantmentcontrol.util.vanillabehavior.ProtectionBehavior;
 import enchantmentcontrol.util.vanillabehavior.SharpnessBehavior;
@@ -219,7 +219,7 @@ public class EnchantmentInfo {
         try {
             this.type = EnumEnchantmentType.valueOf(type);
         } catch (Exception e) {
-            EnchantmentControl.LOGGER.error("Invalid enchantment type {} when reading json for : {}", type, this.id);
+            Tags.LOGGER.error("Invalid enchantment type {} when reading json for : {}", type, this.id);
         }
     }
 

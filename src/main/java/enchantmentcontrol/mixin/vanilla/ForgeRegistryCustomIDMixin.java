@@ -1,6 +1,6 @@
 package enchantmentcontrol.mixin.vanilla;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.ResourceLocation;
@@ -58,11 +58,11 @@ public class ForgeRegistryCustomIDMixin<V extends IForgeRegistryEntry<V>> {
 
         // Check if ID is actually occupied, not just reserved
         if (availabilityMap.get(customId) && !ec$reservedIds.contains(customId)) {
-            EnchantmentControl.LOGGER.warn("Id {} for enchantment {} is already occupied. Now auto-assigning to {}.", customId, enchantmentName, idToUse);
+            Tags.LOGGER.warn("Id {} for enchantment {} is already occupied. Now auto-assigning to {}.", customId, enchantmentName, idToUse);
             return idToUse;
         }
 
-        EnchantmentControl.LOGGER.info("Assigning id {} to enchantment {}", customId, enchantmentName);
+        Tags.LOGGER.info("Assigning id {} to enchantment {}", customId, enchantmentName);
         availabilityMap.clear(customId); //unset so it can set again
         return customId;
     }
@@ -77,7 +77,7 @@ public class ForgeRegistryCustomIDMixin<V extends IForgeRegistryEntry<V>> {
                 availabilityMap.set(customId);
                 ec$reservedIds.add(customId);
             } else
-                EnchantmentControl.LOGGER.warn("Cannot reserve id {} - already occupied", customId);
+                Tags.LOGGER.warn("Cannot reserve id {} - already occupied", customId);
         }
     }
 }

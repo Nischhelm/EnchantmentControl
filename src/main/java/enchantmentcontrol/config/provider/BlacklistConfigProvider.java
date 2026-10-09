@@ -1,6 +1,6 @@
 package enchantmentcontrol.config.provider;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.ResourceLocation;
@@ -53,7 +53,7 @@ public class BlacklistConfigProvider {
             if(name.isEmpty()) continue;
             Enchantment enchant = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(name));
             if(enchant == null) {
-                EnchantmentControl.LOGGER.warn("Invalid enchantment {} in blacklist", name);
+                Tags.LOGGER.warn("Invalid enchantment {} in blacklist", name);
                 continue;
             }
             list.add(enchant);

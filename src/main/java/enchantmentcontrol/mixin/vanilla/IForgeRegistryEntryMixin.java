@@ -1,7 +1,7 @@
 package enchantmentcontrol.mixin.vanilla;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.ResourceLocation;
@@ -23,7 +23,7 @@ public abstract class IForgeRegistryEntryMixin {
 
         String remap = ConfigHandler.dev.idRemaps.get(original.toString());
         if(remap != null){
-            EnchantmentControl.LOGGER.info("Remapping Enchantment {} to {}", original, remap);
+            Tags.LOGGER.info("Remapping Enchantment {} to {}", original, remap);
             return new ResourceLocation(remap);
         }
         return original;

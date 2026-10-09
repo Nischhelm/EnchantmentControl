@@ -2,7 +2,7 @@ package enchantmentcontrol.config.enchantmentinfojsons;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.util.EnchantmentInfo;
 
@@ -28,7 +28,7 @@ public class EnchantmentInfoWriter {
         try {
             File baseOut = new File(path);
             if (!baseOut.exists() && !baseOut.mkdirs()) {
-                EnchantmentControl.LOGGER.warn("Could not create directory: {}", baseOut.getPath());
+                Tags.LOGGER.warn("Could not create directory: {}", baseOut.getPath());
             }
 
             // Clear any existing files so the directory reflects only the current run
@@ -38,7 +38,7 @@ public class EnchantmentInfoWriter {
                 writeSingleEnchantmentInfo(info, baseOut);
             }
         } catch (Exception e) {
-            EnchantmentControl.LOGGER.warn("Writing loaded enchantment infos failed!");
+            Tags.LOGGER.warn("Writing loaded enchantment infos failed!");
         }
     }
 
@@ -50,7 +50,7 @@ public class EnchantmentInfoWriter {
 
         File modDir = new File(baseOut, modid);
         if (!modDir.exists() && !modDir.mkdirs()) {
-            EnchantmentControl.LOGGER.warn("Could not create directory: {}", modDir.getPath());
+            Tags.LOGGER.warn("Could not create directory: {}", modDir.getPath());
         }
 
         File outFile = new File(modDir, enchid + ".json");
@@ -62,7 +62,7 @@ public class EnchantmentInfoWriter {
         try (Writer w = new OutputStreamWriter(Files.newOutputStream(outFile.toPath()), StandardCharsets.UTF_8)) {
             gson.toJson(info, EnchantmentInfo.class, w);
         } catch (IOException e) {
-            EnchantmentControl.LOGGER.warn("Writing enchantment info for {} failed!", id);
+            Tags.LOGGER.warn("Writing enchantment info for {} failed!", id);
         }
     }
 
@@ -75,7 +75,7 @@ public class EnchantmentInfoWriter {
                 clearDirectoryContents(f);
             }
             if (!f.delete()) {
-                EnchantmentControl.LOGGER.warn("Could not delete {} while clearing {}", f.getPath(), dir.getPath());
+                Tags.LOGGER.warn("Could not delete {} while clearing {}", f.getPath(), dir.getPath());
             }
         }
     }

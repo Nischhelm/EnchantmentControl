@@ -11,15 +11,10 @@ import java.util.ArrayList;
 public class DebugConfig {
     @Config.Comment("Disable this to remove EnchantmentControls main feature which hooks into all registered enchantments code to modify how they behave. \n" +
             "Some features will still work. This is mainly meant for testing if this mods black magic mixins is responsible for a crash (hope not)")
-    @Config.Name("(MixinToggle) Enable Enchantment Injection")
+    @Config.Name("(ASMToggle) Enable Enchantment Injection")
     @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(
-            earlyMixin = "mixins.enchantmentcontrol.vanilla.main.json",
-            lateMixin = "mixins.enchantmentcontrol.modded.json",
-            defaultValue = true
-    )
     @Order(0)
-    public static boolean enableEnchantmentInjection = true;
+    public boolean enableEnchantmentInjection = true;
 
     @Config.Comment("Enchantment classes that should not be modified at all by this mod. \n" +
             "Use this if there are crashes when this mod tries to automatically modify some mods enchantments. \n" +

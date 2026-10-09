@@ -6,7 +6,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.world.storage.loot.functions.EnchantRandomly;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +24,7 @@ public abstract class EnchantRandomlyMixin {
     )
     private static boolean ec_skipUnknown(boolean original, @Local(ordinal = 0) String s) {
         if(original)
-            EnchantmentControl.LOGGER.debug("EnchantmentControl prevented unknown enchantment {} in a loot function from failing the entire loottable", s);
+            Tags.LOGGER.debug("EnchantmentControl prevented unknown enchantment {} in a loot function from failing the entire loottable", s);
         return false; //never throw an error
     }
 

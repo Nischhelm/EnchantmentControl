@@ -1,6 +1,7 @@
 package enchantmentcontrol.config.enchantmentinfojsons;
 
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.mixin.vanilla.accessor.EnchantmentAccessor;
 import enchantmentcontrol.util.EnchantmentInfo;
@@ -29,11 +30,11 @@ public class EnchantmentInfoInferrerWriter {
         //Create empty folders for each mod in /enchantments/
         File baseOut = new File(EnchantmentInfoConfigReader.MAIN_DIR);
         if (!baseOut.exists() && !baseOut.mkdirs())
-            EnchantmentControl.LOGGER.warn("Could not create directory: {}", baseOut.getPath());
+            Tags.LOGGER.warn("Could not create directory: {}", baseOut.getPath());
         for(String modid : infos.stream().map(info -> info.modId).collect(Collectors.toSet())){ //make one empty folder per mod
             File modDir = new File(baseOut, modid);
             if (!modDir.exists() && !modDir.mkdirs())
-                EnchantmentControl.LOGGER.warn("Could not create directory: {}", modDir.getPath());
+                Tags.LOGGER.warn("Could not create directory: {}", modDir.getPath());
         }
 
         ConfigHandler.dev.printInferred = false;
@@ -80,7 +81,7 @@ public class EnchantmentInfoInferrerWriter {
             // Search the start of the name for a textformatting flag
             for (TextFormatting fmt : TextFormatting.values()) if (name.startsWith(fmt.toString())) return fmt;
         } catch (Throwable ignored) {
-            EnchantmentControl.LOGGER.warn("Failed to probe display color for {}", ench.getRegistryName());
+            Tags.LOGGER.warn("Failed to probe display color for {}", ench.getRegistryName());
         }
         return null;
     }
@@ -97,7 +98,7 @@ public class EnchantmentInfoInferrerWriter {
             int minEnch = minEnchProbed[1];
             int lvlSpan = minEnchProbed[2] - minEnchProbed[1];
             if(minEnchProbed[1] - minEnchProbed[0] != lvlSpan) {
-                EnchantmentControl.LOGGER.warn("Enchantability for {} has inconsistent lvlSpan behavior that can't be copied to EnchantmentInfo, won't overwrite", ench.getRegistryName());
+                Tags.LOGGER.warn("Enchantability for {} has inconsistent lvlSpan behavior that can't be copied to EnchantmentInfo, won't overwrite", ench.getRegistryName());
                 return null;
             }
 
@@ -140,7 +141,7 @@ public class EnchantmentInfoInferrerWriter {
             }
 
             if(mode == null){
-                EnchantmentControl.LOGGER.warn("Enchantability for {} has inconsistent maxEnch behavior that can't be copied to EnchantmentInfo, won't overwrite", ench.getRegistryName());
+                Tags.LOGGER.warn("Enchantability for {} has inconsistent maxEnch behavior that can't be copied to EnchantmentInfo, won't overwrite", ench.getRegistryName());
                 return null;
             }
 

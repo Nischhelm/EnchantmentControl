@@ -1,6 +1,6 @@
 package enchantmentcontrol.util.matchers.matcher;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.util.matchers.IMatcher;
 
 import java.util.HashSet;
@@ -27,7 +27,7 @@ public class ClassMatcher<CTX> implements IMatcher<CTX> {
         try {
             this.classes.add(Class.forName(className));
         } catch (ClassNotFoundException e) {
-            EnchantmentControl.LOGGER.warn("Could not find class {} for matcher", className);
+            Tags.LOGGER.warn("Could not find class {} for matcher", className);
         }
     }
 

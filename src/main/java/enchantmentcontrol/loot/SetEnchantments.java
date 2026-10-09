@@ -1,7 +1,7 @@
 package enchantmentcontrol.loot;
 
 import com.google.gson.*;
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.init.Items;
@@ -66,7 +66,7 @@ public class SetEnchantments extends LootFunction {
 
                     ResourceLocation loc = Enchantment.REGISTRY.getNameForObject(enchantment);
                     if (loc == null) {
-                        EnchantmentControl.LOGGER.warn("Could not find enchantment of class {} when parsing SetEnchantments loot function, skipping", enchantment.getClass().getName());
+                        Tags.LOGGER.warn("Could not find enchantment of class {} when parsing SetEnchantments loot function, skipping", enchantment.getClass().getName());
                         continue;
                     }
 
@@ -99,7 +99,7 @@ public class SetEnchantments extends LootFunction {
                     String s = JsonUtils.getString(obj2, "enchantment");
                     Enchantment enchantment = Enchantment.REGISTRY.getObject(new ResourceLocation(s));
                     if(enchantment == null) {
-                        EnchantmentControl.LOGGER.warn("Could not find Enchantment {} when parsing SetEnchantments loot function, skipping", s);
+                        Tags.LOGGER.warn("Could not find Enchantment {} when parsing SetEnchantments loot function, skipping", s);
                         continue;
                     }
 

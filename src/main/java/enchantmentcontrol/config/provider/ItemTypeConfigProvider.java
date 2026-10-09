@@ -1,6 +1,7 @@
 package enchantmentcontrol.config.provider;
 
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.compat.somanyenchantments.NewSMECompat;
 import enchantmentcontrol.compat.somanyenchantments.OldSMECompat;
@@ -103,7 +104,7 @@ public class ItemTypeConfigProvider {
 
             ItemTypeMatcher matcher = registeredMatchers.get(typeName);
             if(matcher == null){
-                EnchantmentControl.LOGGER.warn("Could not find given item type while reading enchants per item type {}", typeName);
+                Tags.LOGGER.warn("Could not find given item type while reading enchants per item type {}", typeName);
                 continue;
             }
             if(inverted) {
@@ -116,7 +117,7 @@ public class ItemTypeConfigProvider {
                 if(enchName.isEmpty()) continue;
                 Enchantment ench = Enchantment.getEnchantmentByLocation(enchName);
                 if(ench == null){
-                    EnchantmentControl.LOGGER.warn("Could not find enchantment {} while reading enchants per item type {}", enchName, typeName);
+                    Tags.LOGGER.warn("Could not find enchantment {} while reading enchants per item type {}", enchName, typeName);
                     continue;
                 }
                 mapOut.computeIfAbsent(ench, k -> new HashSet<>()).add(matcher);

@@ -1,6 +1,6 @@
 package enchantmentcontrol.mixin.vanilla.blacklists;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.ConfigHandler;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.ResourceLocation;
@@ -24,7 +24,7 @@ public abstract class ForgeEnchantmentRegistryMixin<V extends IForgeRegistryEntr
 
         //Prevent registration of config defined enchants
         if (ConfigHandler.blacklists.blacklistedRegistryEnchants.contains(loc.toString())) {
-            EnchantmentControl.LOGGER.info("Preventing registration of enchantment {}", loc.toString());
+            Tags.LOGGER.info("Preventing registration of enchantment {}", loc.toString());
             ci.cancel();
         }
     }

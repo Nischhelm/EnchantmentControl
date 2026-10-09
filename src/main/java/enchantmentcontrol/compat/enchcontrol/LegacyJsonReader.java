@@ -1,6 +1,6 @@
 package enchantmentcontrol.compat.enchcontrol;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoConfigReader;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
@@ -32,22 +32,23 @@ public class LegacyJsonReader {
 
         File legacyFile = new File(LEGACY_PATH);
         if (legacyFile.exists() && legacyFile.isFile()) {
-            EnchantmentControl.LOGGER.info("Reading legacy enchantments.json...");
+            Tags.LOGGER.info("Reading legacy enchantments.json...");
             try (InputStream in = Files.newInputStream(legacyFile.toPath())) {
-                EnchantmentControl.LOGGER.info("Legacy enchantments.json found, parsing...");
+                Tags.LOGGER.info("Legacy enchantments.json found, parsing...");
                 infos.addAll(EnchantmentInfoConfigReader.readListWithGson(in));
-                EnchantmentControl.LOGGER.info("Legacy enchantments.json parsed successfully. Read {} enchantments.", infos.size());
+                Tags.LOGGER.info("Legacy enchantments.json parsed successfully. Read {} enchantments.", infos.size());
 
                 // After parsing successfully: rename to enchantments.legacy.unused
                 File renamed = new File("config/enchantmentcontrol/enchantments.legacy.unused");
                 try {
-                    if (renamed.exists() && !renamed.delete()) EnchantmentControl.LOGGER.warn("Could not delete existing {} to rename legacy file.", renamed.getPath());
+                    if (renamed.exists() && !renamed.delete()) Tags.LOGGER.warn("Could not delete existing {} to rename legacy file.", renamed.getPath());
                     boolean ok = legacyFile.renameTo(renamed);
-                    if (!ok) EnchantmentControl.LOGGER.warn("Renaming legacy enchantments.json to {} failed.", renamed.getPath());
-                } catch (SecurityException se) {EnchantmentControl.LOGGER.warn("Renaming legacy enchantments.json failed due to security manager.");}
+                    if (!ok) Tags.LOGGER.warn("Renaming legacy enchantments.json to {} failed.", renamed.getPath());
+                } catch (SecurityException se) {
+                    Tags.LOGGER.warn("Renaming legacy enchantments.json failed due to security manager.");}
 
             } catch (Exception e){
-                EnchantmentControl.LOGGER.warn("Reading legacy enchantments.json failed! Keeping file in place for next run.");
+                Tags.LOGGER.warn("Reading legacy enchantments.json failed! Keeping file in place for next run.");
                 e.printStackTrace(System.out);
             }
         }

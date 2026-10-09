@@ -23,8 +23,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod(
         modid = Tags.MODID,
@@ -37,7 +35,6 @@ import org.apache.logging.log4j.Logger;
                 "after:somanyenchantments;"
 )
 public class EnchantmentControl {
-    public static final Logger LOGGER = LogManager.getLogger(Tags.NAME);
     public static boolean configNeedsSaving = false;
     public static boolean loadingComplete = false;
 

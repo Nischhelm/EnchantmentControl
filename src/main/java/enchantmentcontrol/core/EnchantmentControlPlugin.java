@@ -12,8 +12,6 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
@@ -25,7 +23,6 @@ import java.util.Set;
 public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 	public static final Set<String> actuallyEarlyEnchants = new HashSet<>();
 	public static final Set<String> enchantmentClasses = new HashSet<>();
-	public static final Logger LOGGER = LogManager.getLogger("enchantmentcontrol");
 
 	public EnchantmentControlPlugin() {
 		MixinBootstrap.init();

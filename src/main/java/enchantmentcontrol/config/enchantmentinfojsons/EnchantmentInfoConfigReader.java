@@ -3,7 +3,7 @@ package enchantmentcontrol.config.enchantmentinfojsons;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.compat.enchcontrol.LegacyJsonReader;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.IEnchantmentPropertySetter;
@@ -28,7 +28,7 @@ public class EnchantmentInfoConfigReader {
             List<EnchantmentInfo> readInfos = readPerFileConfigs();
             EnchantmentInfo.registerAll(readInfos);
         } catch (Exception e){
-            EnchantmentControl.LOGGER.warn("Reading enchantment configs failed!");
+            Tags.LOGGER.warn("Reading enchantment configs failed!");
             e.printStackTrace(System.out);
         }
     }
@@ -85,10 +85,10 @@ public class EnchantmentInfoConfigReader {
                 try (InputStream in = Files.newInputStream(f.toPath())) {
                     EnchantmentInfo info = readSingleWithGson(in);
                     if (info == null)
-                        EnchantmentControl.LOGGER.warn("Skipping invalid enchantment json: {}", f.getPath());
+                        Tags.LOGGER.warn("Skipping invalid enchantment json: {}", f.getPath());
                     else infos.add(info);
                 } catch (Exception ex) {
-                    EnchantmentControl.LOGGER.warn("Failed reading enchantment json: {}", f.getPath());
+                    Tags.LOGGER.warn("Failed reading enchantment json: {}", f.getPath());
                     ex.printStackTrace(System.out);
                 }
             }

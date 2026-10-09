@@ -1,6 +1,6 @@
 package enchantmentcontrol.config;
 
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import meldexun.betterconfig.api.ConfigMigrationHelper;
 import meldexun.betterconfig.api.tree.*;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
@@ -31,7 +31,7 @@ public class ConfigMigrator {
 			ConfigMigrationHelper.renameCategory(general, "debug", "Debug");
 			ConfigMigrationHelper.renameCategory(general, "enchantment table mechanics", "Enchantment Table Mechanics");
 		} catch (Exception e) {
-			EnchantmentControl.LOGGER.error("Config migration failed", e);
+			Tags.LOGGER.error("Config migration failed", e);
 			throw new RuntimeException("Config migration failed", e);
 		}
 	}
@@ -327,7 +327,7 @@ public class ConfigMigrator {
 			case "mob": return "EXACT"; // IMPORTANT: "mob" maps to EXACT enum (exact entity registry names)
 			case "class": return "CLASS";
 			default:
-				EnchantmentControl.LOGGER.warn("Unknown creature attribute type: {}, defaulting to EXACT", oldType);
+				Tags.LOGGER.warn("Unknown creature attribute type: {}, defaulting to EXACT", oldType);
 				return "EXACT";
 		}
 	}

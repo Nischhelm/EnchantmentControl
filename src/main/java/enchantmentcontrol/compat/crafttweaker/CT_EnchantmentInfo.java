@@ -3,7 +3,7 @@ package enchantmentcontrol.compat.crafttweaker;
 import com.teamacronymcoders.contenttweaker.modules.vanilla.enchantments.EnchantmentBuilder;
 import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
-import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
@@ -46,7 +46,7 @@ public class CT_EnchantmentInfo {
 
         //if renamed
         if(!info.modId.equals(builder.domain)) {
-            EnchantmentControl.LOGGER.warn("Modifying enchantment domain via CT. This is not recommended and can lead to crashes! Use the id remap config of EnchantmentControl instead.");
+            Tags.LOGGER.warn("Modifying enchantment domain via CT. This is not recommended and can lead to crashes! Use the id remap config of EnchantmentControl instead.");
             info.modId = builder.domain;
             info.enchId = builder.name;
             info.id = builder.domain + ":" + builder.name;
