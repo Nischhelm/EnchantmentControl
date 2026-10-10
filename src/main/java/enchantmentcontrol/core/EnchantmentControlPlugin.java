@@ -1,5 +1,6 @@
 package enchantmentcontrol.core;
 
+import com.google.common.collect.ImmutableMap;
 import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")
@@ -27,9 +29,14 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 
 	@Override
 	public String[] getASMTransformerClass() {
-		if(ConfigHandler.debug.enableEnchantmentInjection)
-			return new String[]{ EnchantmentClassTransformer.class.getName() };
-		return new String[0];
+		return ImmutableMap.of(
+				EnchantmentClassTransformer.class.getName(), ConfigHandler.debug.enableEnchantmentInjection,
+				ModdedClassTransformer.class.getName(), true
+		)
+				.entrySet().stream()
+				.filter(Map.Entry::getValue)
+				.map(Map.Entry::getKey)
+				.toArray(String[]::new);
 	}
 	
 	@Override public String getModContainerClass() {return null;}

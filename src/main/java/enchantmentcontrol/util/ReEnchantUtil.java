@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class ReEnchantUtil {
     public static final String KEY_ENCHANT_COUNT = "EC_EnchantCount";
@@ -18,6 +19,11 @@ public class ReEnchantUtil {
         return stack.hasTagCompound() && stack.getTagCompound().hasKey(KEY_ENCHANT_COUNT, 3)
                 ? stack.getTagCompound().getInteger(KEY_ENCHANT_COUNT)
                 : 0;
+    }
+
+    public static void incrementEnchantCount(Random rand, ItemStack stack) {
+        if(rand.nextFloat() > ConfigHandler.etable.reEnchantSkipIncrementChance)
+            setEnchantCount(stack, ReEnchantUtil.getEnchantCount(stack) + 1);
     }
 
     public static void setEnchantCount(ItemStack stack, int count) {

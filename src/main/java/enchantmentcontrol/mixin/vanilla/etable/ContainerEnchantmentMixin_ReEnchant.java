@@ -52,7 +52,6 @@ public abstract class ContainerEnchantmentMixin_ReEnchant {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;onEnchant(Lnet/minecraft/item/ItemStack;I)V")
     )
     private void ec_incrementEnchantCount(EntityPlayer player, int id, CallbackInfoReturnable<Boolean> cir, @Local(name = "itemstack") ItemStack stack){
-        if(player.getRNG().nextFloat() > ConfigHandler.etable.reEnchantSkipIncrementChance)
-            ReEnchantUtil.setEnchantCount(stack, ReEnchantUtil.getEnchantCount(stack) + 1);
+        ReEnchantUtil.incrementEnchantCount(player.getRNG(), stack);
     }
 }
