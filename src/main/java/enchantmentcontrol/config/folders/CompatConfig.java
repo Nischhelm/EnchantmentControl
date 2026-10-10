@@ -83,4 +83,20 @@ public class CompatConfig {
         @SuppressWarnings("unused")
         public boolean upgradedPotentialsResetsAnvilCount = true;
     }
+
+    @Config.Name("Enchantment Descriptions")
+    public EnchDescCompat enchDesc = new EnchDescCompat();
+
+    @MixinConfig(name = Tags.MODID)
+    public static class EnchDescCompat {
+        @Config.Comment({
+                "Allow to use '\\n' in enchantment descriptions to force a newline.",
+                "Can both be used in the descriptions.txt as well as in actual lang files for enchantment descriptions."
+        })
+        @Config.Name("(MixinToggle) Allow Line Breaks")
+        @Config.RequiresMcRestart
+        @MixinConfig.MixinToggle(lateMixin = "mixins.enchantmentcontrol.enchdesc.json", defaultValue = true)
+        @MixinConfig.CompatHandling(modid = "enchdesc", desired = true, warnIngame = false, reason = "Optional Compat for Enchantment Descriptions")
+        public boolean addLineBreaks = true;
+    }
 }
