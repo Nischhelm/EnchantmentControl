@@ -16,7 +16,7 @@
     "vanilla.accessor.I18nAccessor_translation",
     "vanilla.accessor.LanguageMapAccessor",
     "vanilla.blacklists.ContainerEnchantmentThreadLocalMixin",
-    "vanilla.blacklists.EnchantmentHelperMixin",
+    "vanilla.EnchantmentHelperMixin_RollEvent",
     "vanilla.blacklists.EnchantRandomlyMixin",
     "vanilla.blacklists.EntityVillagerListEnchantedBookForEmeraldsMixin",
     "vanilla.blacklists.ForgeEnchantmentRegistryMixin",
@@ -27,5 +27,8 @@
     "vanilla.EntityRendererMixin",
     "vanilla.accessor.I18nAccessor",
     "vanilla.accessor.LocaleAccessor"
-  ]
+  ],
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  }
 }

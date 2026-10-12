@@ -3,6 +3,7 @@ package enchantmentcontrol;
 import enchantmentcontrol.bloodanvil.FeatureBloodAnvil;
 import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.compat.crafttweaker.CT_EnchantmentInfo;
+import enchantmentcontrol.compat.crafttweaker.CT_RollEnchantments_EventManagerExpansion;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.descriptions.DescriptionReader;
 import enchantmentcontrol.config.descriptions.EmptyEnchantmentWriter;
@@ -18,6 +19,7 @@ import enchantmentcontrol.loot.SetEnchantments;
 import meldexun.betterconfig.api.BetterConfigManager;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -48,6 +50,9 @@ public class EnchantmentControl {
             MinecraftForge.EVENT_BUS.register(AnvilUseTooltipHandler.class);
         if(ConfigHandler.etable.allowReEnchant && ConfigHandler.etable.addEnchCountTooltip && event.getSide() == Side.CLIENT)
             MinecraftForge.EVENT_BUS.register(ReEnchantTooltipHandler.class);
+
+        if(CompatUtil.crafttweaker.isLoaded())
+            MinecraftForge.EVENT_BUS.register(CT_RollEnchantments_EventManagerExpansion.class);
 
         if(ConfigHandler.debug.enableSetEnchantmentsLootFunction)
             LootFunctionManager.registerFunction(new SetEnchantments.Serializer());
