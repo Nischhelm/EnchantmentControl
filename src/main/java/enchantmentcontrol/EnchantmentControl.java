@@ -28,7 +28,7 @@ import net.minecraftforge.fml.relauncher.Side;
         version = Tags.VERSION,
         name = Tags.NAME,
         dependencies =
-                "required-after:fermiumbooter@[1.5.0,);" +
+                "required-after:fermiumbooter@[1.5.2,);" +
                 "required-after:betterconfig@[1.3.0,);" +
                 "before:contenttweaker;" +
                 "after:somanyenchantments;"
