@@ -1,5 +1,6 @@
 package enchantmentcontrol.core;
 
+import enchantmentcontrol.config.ConfigHandler;
 import fermiumbooter.util.FermiumJarScanner;
 import meldexun.asmutil2.ASMUtil;
 import meldexun.asmutil2.HashMapClassNodeClassTransformer;
@@ -17,7 +18,7 @@ public class ModdedClassTransformer extends HashMapClassNodeClassTransformer imp
 
     @Override
     protected void registerTransformers(IClassTransformerRegistry registry) {
-        if(FermiumJarScanner.isModPresent("enchanter_tools"))
+        if(FermiumJarScanner.isModPresent("enchanter_tools") && ConfigHandler.compat.enchanterTools.fixLapisRuneReenchanting)
             registry.add("com.sirsquidly.enchanter_tools.mixin.MixinContainerEnchantment", "enchantertools$overrideEnchantItem", ClassWriter.COMPUTE_MAXS, method -> {
                 // Insert after onEnchant: ReEnchantUtil.incrementEnchantCount(player.getRNG(), result);
                 LocalVariableNode player = ASMUtil.findLocalVariable(method, "player", "Lnet/minecraft/entity/player/EntityPlayer;");

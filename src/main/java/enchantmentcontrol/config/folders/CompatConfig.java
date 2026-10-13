@@ -99,4 +99,21 @@ public class CompatConfig {
         @MixinConfig.CompatHandling(modid = "enchdesc", desired = true, warnIngame = false, reason = "Optional Compat for Enchantment Descriptions")
         public boolean addLineBreaks = true;
     }
+
+    @Config.Name("Enchanter Tools")
+    public EnchanterToolsCompat enchanterTools = new EnchanterToolsCompat();
+
+    @MixinConfig(name = Tags.MODID)
+    public static class EnchanterToolsCompat {
+        @Config.Comment({
+                "Makes Lapis Runes work correctly with Re-Enchanting.",
+                "One thing doesn't work: Combining existing levels with new rolled enchants (\"Re-Enchant Combine Existing\").",
+                "I'm too lazy to fix that. Existing enchants will not be combined with new ones when using Lapis Runes."
+        })
+        @Config.Name("(MixinToggle) Re-Enchant Lapis Runes")
+        @Config.RequiresMcRestart
+        @MixinConfig.MixinToggle(lateMixin = "mixins.enchantmentcontrol.enchantertools.lapisrune.json", defaultValue = true)
+        @MixinConfig.CompatHandling(modid = "enchanter_tools", desired = true, warnIngame = false, reason = "Optional Compat for Enchantment Descriptions")
+        public boolean fixLapisRuneReenchanting = true;
+    }
 }
