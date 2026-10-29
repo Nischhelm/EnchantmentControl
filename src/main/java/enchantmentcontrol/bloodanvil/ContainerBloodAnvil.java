@@ -159,7 +159,7 @@ public class ContainerBloodAnvil extends Container {
             }
 
             // no hax
-            if(ConfigHandler.anvil.bloodAnvil.allowIllegalLevels)
+            if(!ConfigHandler.anvil.bloodAnvil.allowIllegalLevels)
                 level = MathHelper.clamp(level, enchantment.getMinLevel(), enchantment.getMaxLevel());
 
             // take the bigger one if already on it
