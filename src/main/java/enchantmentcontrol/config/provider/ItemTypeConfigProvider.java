@@ -21,6 +21,7 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.util.*;
 
@@ -352,35 +353,27 @@ public class ItemTypeConfigProvider {
         });
     }
 
-    public static boolean probe = false;
-    public static boolean probeAnvil = false; //needs to be a second boolean cause canApplyAtEnch runs inside canApply
     private static void printDefaultBlacklist() {
         List<String> itemBlacklist = new ArrayList<>();
         List<String> blacklist = new ArrayList<>();
         List<String> blacklistAnvil = new ArrayList<>();
 
+        // runtime name of canApply, srg in prod
+        String canApplyName = ObfuscationReflectionHelper.findMethod(Enchantment.class, "func_92089_a", boolean.class, ItemStack.class).getName();
+
         for(Enchantment enchantment : Enchantment.REGISTRY){
             ResourceLocation loc = enchantment.getRegistryName();
             if(loc == null) continue;
 
-            probe = false;
-            enchantment.canApplyAtEnchantingTable(ItemStack.EMPTY);
-            if(probe) blacklist.add(loc.toString());
-
-            probeAnvil = false;
-            enchantment.canApply(ItemStack.EMPTY);
-            if(probeAnvil) blacklistAnvil.add(loc.toString());
+            if(isOverridden(enchantment.getClass(), Enchantment.class, "canApplyAtEnchantingTable", ItemStack.class)) blacklist.add(loc.toString());
+            if(isOverridden(enchantment.getClass(), Enchantment.class, canApplyName, ItemStack.class)) blacklistAnvil.add(loc.toString());
         }
 
         for(Item item : Item.REGISTRY){
             ResourceLocation loc = item.getRegistryName();
             if(loc == null) continue;
 
-            boolean hasOverride = false;
-            try {
-                hasOverride = !Item.class.getName().equals(item.getClass().getMethod("canApplyAtEnchantingTable", ItemStack.class, Enchantment.class).getDeclaringClass().getName());
-            } catch (Exception ignored){}
-            if(hasOverride) itemBlacklist.add(loc.toString());
+            if(isOverridden(item.getClass(), Item.class, "canApplyAtEnchantingTable", ItemStack.class, Enchantment.class)) itemBlacklist.add(loc.toString());
         }
 
         ConfigHandler.itemTypes.general.blacklist = blacklist;
@@ -391,6 +384,14 @@ public class ItemTypeConfigProvider {
 
         ConfigHandler.itemTypes.blacklist = itemBlacklist;
         ConfigHandler.itemTypes.allowCustomItems = false;
+    }
+
+    private static boolean isOverridden(Class<?> clazz, Class<?> baseClass, String methodName, Class<?>... params) {
+        try {
+            return clazz.getMethod(methodName, params).getDeclaringClass() != baseClass;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
 

@@ -78,18 +78,15 @@ public class EnchantmentHooks {
 
     //used by vanilla canApply, named like this to be more clear
     public static void canApplyAtAnvil(Enchantment ench, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        if (ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete) {
-            ItemTypeConfigProvider.probeAnvil = true;
-            return;
-        }
+        if (ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete) return;
         if (ItemTypeConfigProvider.shouldYieldToModdedBehavior(ench, true)) return;
         if (!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.anvil.enable) return;
 
-        // return canItemApply || canApplyAtEnchantingTable, skipping overriding anvil behavior
+        // return canItemApply || canApplyAtEnchantingTable, skipping overriding anvil behavior, so NOT running canApplyAtAnvilBase
         cir.setReturnValue(ItemTypeConfigProvider.canItemApply(ench, stack, true) || ench.canApplyAtEnchantingTable(stack));
     }
 
-    //base Enchantment class: never yields to modded behavior and doesn't count for probing
+    //base Enchantment class: never yields to modded behavior
     public static void canApplyAtAnvilBase(Enchantment ench, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete) return;
         if (!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.anvil.enable) return;
@@ -101,15 +98,11 @@ public class EnchantmentHooks {
 
     //used by forge canApplyAtEnchantingTable, named like this to be more clear
     public static void canApplyInGeneral(Enchantment ench, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        if (ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete) {
-            ItemTypeConfigProvider.probe = true;
-            return;
-        }
         if (ItemTypeConfigProvider.shouldYieldToModdedBehavior(ench, false)) return;
         canApplyInGeneralBase(ench, stack, cir);
     }
 
-    //base Enchantment class: never yields to modded behavior and doesn't count for probing
+    //base Enchantment class: never yields to modded behavior
     public static void canApplyInGeneralBase(Enchantment ench, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete) return;
         if (!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.general.enable) return;
