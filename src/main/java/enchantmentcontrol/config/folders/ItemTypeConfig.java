@@ -35,6 +35,8 @@ public class ItemTypeConfig {
             "Enabling this toggle will make the given item type match those too.",
             "Disabling will instead only look at the actual checks of each EnumEnchantmentType (like SWORD = has to be instanceof ItemSword) to match.",
             "It is closer to an unmodified experience if you keep this enabled. Disable it if you want full control over what enchants go on which items using custom types.",
+            "Note: this only affects the types backed by an EnumEnchantmentType (SWORD, TOOL, BREAKABLE, ARMOR, BOW, AXE, PICKAXE, ...).",
+            " Custom Item Types and ANY never ask the item.",
             "DEV NOTE: this toggle decides whether CustomItem.canApplyAtEnchantingTable is checked"
     })
     @Config.Name("Allow Modded Item Behaviors")
@@ -42,7 +44,7 @@ public class ItemTypeConfig {
     public boolean allowCustomItems = true;
 
     @Config.Comment({
-            "Enchantments listed here will run against what is set in \"Allow Modded Item Behaviors\":",
+            "Items listed here will run against what is set in \"Allow Modded Item Behaviors\":",
             " - If modded behaviors are generally allowed, items listed here will not have their modded behavior allowed",
             " - If modded behaviors are generally disallowed, items listed here will have their modded behavior be allowed anyway",
     })
@@ -50,7 +52,19 @@ public class ItemTypeConfig {
     @Order(3)
     public List<String> blacklist = new ArrayList<>();
 
-    @Config.Comment("Whenever enchantments are checked against items to possibly apply the enchantment, the rules in here are checked, to a modifiably varying degree.")
+    @Config.Comment({
+            "Whenever enchantments are checked against items to possibly apply the enchantment, the rules in here are checked, to a modifiably varying degree.",
+            "Order of checks:",
+            " Enchanting table (and everything else that isn't the anvil):",
+            "  1. inverted (!) types in \"General.Item Types\" -> disallowed",
+            "  2. enchantment overrides the check itself and is allowed modded behavior -> its own rules decide",
+            "  3. otherwise \"General.Item Types\" decide",
+            " Anvil (and /enchant command):",
+            "  1. inverted (!) types in \"Anvil.Item Types\" -> disallowed",
+            "  2. inverted (!) types in \"General.Item Types\" -> disallowed, unless a type in \"Anvil.Item Types\" matches",
+            "  3. enchantment overrides the check itself and is allowed modded behavior -> its own rules decide",
+            "  4. otherwise \"Anvil.Item Types\" or the enchanting table check decide"
+    })
     @Config.Name("General")
     @Order(4)
     public GeneralTypeConfig general = new GeneralTypeConfig();
@@ -73,11 +87,14 @@ public class ItemTypeConfig {
 
         @Config.Comment({
                 "Some modded enchantments come with additional item applicability rules (example: SME Rune Revival on all BREAKABLE except ARMOR). ",
-                "For such enchantments, enabling this toggle will prioritise these additional rules before (and possibly instead of) checking against the types defined in \"Item Types\".",
+                "For such enchantments, enabling this toggle will let these rules decide instead of the types defined in \"Item Types\".",
+                " This only matters for enchantments that actually override canApplyAtEnchantingTable, all others always use \"Item Types\".",
+                " The enchantment's own rules can allow and disallow items, regardless of what \"Item Types\" say.",
+                " If those rules fall back to the vanilla check (super), \"Item Types\" are used in place of the vanilla check.",
                 "Disabling will instead only use the config \"Item Types\" to match.",
                 "It is closer to an unmodified experience if you keep this enabled. Disable it if you want full control over what enchants go on which items using custom types.",
                 "Note: inverted types (!TYPE) still apply, they will disallow matching items even if the custom behavior would allow them",
-                "DEV NOTE: this toggle decides whether only CustomEnchantment.canApplyAtEnchantingTable is checked vs only against Item Types config"
+                "DEV NOTE: this toggle decides whether CustomEnchantment.canApplyAtEnchantingTable is checked (which might still use the Item Types using super.canApplyAt..) vs only checking General Item Types config"
         })
         @Config.Name("Allow Modded Enchantment Behaviors")
         @Order(1)
@@ -87,13 +104,15 @@ public class ItemTypeConfig {
                 "Enchantments listed here will run against what is set in \"Allow Modded Enchantment Behaviors\":",
                 " - If modded behaviors are generally allowed, enchants listed here will not have their modded behavior allowed",
                 " - If modded behaviors are generally disallowed, enchants listed here will have their modded behavior be allowed anyway",
+                "Enchantments that don't override canApplyAtEnchantingTable don't need to be listed, they always use \"Item Types\".",
+                "\"Print Item Type Blacklists\" lists all enchantments that do override it."
         })
         @Config.Name("Allow Modded Enchantment Blacklist")
         @Order(2)
         public List<String> blacklist = new ArrayList<>();
 
         @Config.Comment({
-                "(Custom) Item Type name and a list of enchantments that can go on items with this type",
+                "(Custom) Item Type name and a list of enchantments that can generally go on items with this type",
                 " Pattern: type name -> list of enchantments",
                 " You can also invert item type matches by adding a \"!\" in front of the type name (first character)",
                 " This will disallow any item that matches the given matcher from using the given enchantments, both here and in the anvil, regardless of any custom behavior",
@@ -123,12 +142,12 @@ public class ItemTypeConfig {
 
         @Config.Comment({
                 "Same as \"General.Allow Modded Enchantment Behaviors\" but specifically for anvil and /enchant command.",
-                "Overriding the canApply method is pretty common for mods, so allowing this is a good idea..",
+                "Overriding the canApply method is pretty common for mods, so allowing this is a good idea.",
                 " Even vanilla does it, to",
                 " - allow Sharpness, Smite & BoA on Axes",
                 " - and to allow Thorns on all armor pieces, not just Chestplate",
                 "Disable this only if you want total control, then only the \"Anvil.Item Types\" are used, on top of whatever behavior happens in General",
-                "DEV NOTE: this toggle decides whether only CustomEnchantment.canApply is checked vs Item Types config || super.canApply"
+                "DEV NOTE: this toggle decides whether CustomEnchantment.canApply is checked (which might still use the Item Types via super.canApply) vs only checking Anvil Item Types config || canApplyAtEnchantingTable"
         })
         @Config.Name("Allow Modded Enchantment Behaviors")
         @Order(1)
@@ -137,7 +156,9 @@ public class ItemTypeConfig {
         @Config.Comment({
                 "Enchantments listed here will run against what is set in \"Allow Modded Enchantment Behaviors\":",
                 " - If modded behaviors are generally allowed, enchants listed here will not have their modded behavior allowed",
-                " - If modded behaviors are generally disallowed, enchants listed here will have their modded behavior be allowed anyway"
+                " - If modded behaviors are generally disallowed, enchants listed here will have their modded behavior be allowed anyway",
+                "Enchantments that don't override canApply don't need to be listed, they always use \"Anvil.Item Types\" and the general check.",
+                "\"Print Item Type Blacklists\" lists all enchantments that do override it."
         })
         @Config.Name("Allow Modded Enchantment Blacklist")
         @Order(2)
