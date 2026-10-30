@@ -76,7 +76,7 @@ public class ItemTypeConfig {
                 "For such enchantments, enabling this toggle will prioritise these additional rules before (and possibly instead of) checking against the types defined in \"Item Types\".",
                 "Disabling will instead only use the config \"Item Types\" to match.",
                 "It is closer to an unmodified experience if you keep this enabled. Disable it if you want full control over what enchants go on which items using custom types.",
-                "Note: prioritising custom behavior also means that inverted types (!TYPE) won't be able to re-disallow items that were only allowed by such custom behavior",
+                "Note: inverted types (!TYPE) still apply, they will disallow matching items even if the custom behavior would allow them",
                 "DEV NOTE: this toggle decides whether only CustomEnchantment.canApplyAtEnchantingTable is checked vs only against Item Types config"
         })
         @Config.Name("Allow Modded Enchantment Behaviors")
@@ -96,7 +96,8 @@ public class ItemTypeConfig {
                 "(Custom) Item Type name and a list of enchantments that can go on items with this type",
                 " Pattern: type name -> list of enchantments",
                 " You can also invert item type matches by adding a \"!\" in front of the type name (first character)",
-                " This will disallow any item that matches the given matcher from using the given enchantments (except if allowed custom behavior gets priority and overrides)"
+                " This will disallow any item that matches the given matcher from using the given enchantments, both here and in the anvil, regardless of any custom behavior",
+                " (in the anvil, matching \"Anvil.Item Types\" can re-allow it)"
         })
         @Config.Name("Item Types")
         @Order(3)
@@ -144,7 +145,9 @@ public class ItemTypeConfig {
 
         @Config.Comment({
                 "(Custom) Item Type name and a list of enchantments that can go on items with this type when using the anvil (and the /enchant command), additionally to the \"General.Item Types\"",
-                " Any type name from \"General.Item Types\" and \"Custom Item Types\" can be used here too, including inverted(!) ones."
+                " Any type name from \"General.Item Types\" and \"Custom Item Types\" can be used here too, including inverted(!) ones.",
+                " Inverted types disallow matching items in the anvil regardless of any custom behavior",
+                " Matching types here can re-allow items in the anvil that are disallowed by inverted types in \"General.Item Types\""
         })
         @Config.Name("Item Types")
         @Order(3)

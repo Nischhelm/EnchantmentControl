@@ -79,8 +79,13 @@ public class EnchantmentHooks {
     //used by vanilla canApply, named like this to be more clear
     public static void canApplyAtAnvil(Enchantment ench, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete) return;
+        if (!ConfigHandler.itemTypes.enable) return;
+        if (ItemTypeConfigProvider.isDenied(ench, stack, true)) {
+            cir.setReturnValue(false);
+            return;
+        }
         if (ItemTypeConfigProvider.shouldYieldToModdedBehavior(ench, true)) return;
-        if (!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.anvil.enable) return;
+        if (!ConfigHandler.itemTypes.anvil.enable) return;
 
         // return canItemApply || canApplyAtEnchantingTable, skipping overriding anvil behavior, so NOT running canApplyAtAnvilBase
         cir.setReturnValue(ItemTypeConfigProvider.canItemApply(ench, stack, true) || ench.canApplyAtEnchantingTable(stack));
@@ -89,7 +94,12 @@ public class EnchantmentHooks {
     //base Enchantment class: never yields to modded behavior
     public static void canApplyAtAnvilBase(Enchantment ench, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete) return;
-        if (!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.anvil.enable) return;
+        if (!ConfigHandler.itemTypes.enable) return;
+        if (ItemTypeConfigProvider.isDenied(ench, stack, true)) {
+            cir.setReturnValue(false);
+            return;
+        }
+        if (!ConfigHandler.itemTypes.anvil.enable) return;
 
         // return canItemApply || original
         if (ItemTypeConfigProvider.canItemApply(ench, stack, true))
@@ -98,8 +108,17 @@ public class EnchantmentHooks {
 
     //used by forge canApplyAtEnchantingTable, named like this to be more clear
     public static void canApplyInGeneral(Enchantment ench, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+        if (ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete) return;
+        if (!ConfigHandler.itemTypes.enable) return;
+        if (ItemTypeConfigProvider.isDenied(ench, stack, false)) {
+            cir.setReturnValue(false);
+            return;
+        }
         if (ItemTypeConfigProvider.shouldYieldToModdedBehavior(ench, false)) return;
-        canApplyInGeneralBase(ench, stack, cir);
+        if (!ConfigHandler.itemTypes.general.enable) return;
+
+        // Don't run original
+        cir.setReturnValue(ItemTypeConfigProvider.canItemApply(ench, stack, false));
     }
 
     //base Enchantment class: never yields to modded behavior
@@ -108,7 +127,7 @@ public class EnchantmentHooks {
         if (!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.general.enable) return;
 
         // Don't run original
-        cir.setReturnValue(ItemTypeConfigProvider.canItemApply(ench, stack, false));
+        cir.setReturnValue(!ItemTypeConfigProvider.isDenied(ench, stack, false) && ItemTypeConfigProvider.canItemApply(ench, stack, false));
     }
 
     // -------- VANILLA BEHAVIORS --------

@@ -164,20 +164,33 @@ public class ItemTypeConfigProvider {
         return ConfigHandler.itemTypes.allowCustomItems != blacklistedItems.contains(item);
     }
 
+    //Only checks the allowing types, inverted ones are handled separately by isDenied
     public static boolean canItemApply(Enchantment enchantment, ItemStack stack, boolean forAnvil){
+        return anyMatches(enchantment, stack, forAnvil ? itemTypesAnvil : itemTypes, false);
+    }
+
+    //Inverted types are hard denies, they apply even if modded behavior is allowed for this enchantment
+    //General inverted types also apply to the anvil, as anvil types are additional to general types
+    //On the anvil, the more specific anvil section wins: anvil types can re-allow what general inverted types deny
+    public static boolean isDenied(Enchantment enchantment, ItemStack stack, boolean forAnvil){
+        boolean anvilEnabled = forAnvil && ConfigHandler.itemTypes.anvil.enable;
+        if(anvilEnabled && anyMatches(enchantment, stack, itemTypesAnvil, true)) return true;
+        if(!ConfigHandler.itemTypes.general.enable || !anyMatches(enchantment, stack, itemTypes, true)) return false;
+        return !anvilEnabled || !canItemApply(enchantment, stack, true);
+    }
+
+    private static boolean anyMatches(Enchantment enchantment, ItemStack stack, Map<Enchantment, Set<ItemTypeMatcher>> types, boolean inverted){
+        //Each enchantment has a set of matchers which items can try to match against
+        Set<ItemTypeMatcher> matchers = types.get(enchantment);
+        if(matchers == null) return false;
+
         Item item = stack.getItem();
 
         // Compute itemName lazily
         String itemName = null;
 
-        //Each enchantment has a set of matchers which items can try to match against
-        Set<ItemTypeMatcher> matchers = (forAnvil ? itemTypesAnvil : itemTypes).get(enchantment);
-        if(matchers == null) return false;
-
-        boolean isValid = false;
-        boolean invertedMatches = false;
-
         for(ItemTypeMatcher matcher : matchers) {
+            if((matcher.getMatcher() instanceof InvertedMatcher) != inverted) continue;
 
             // Lazy compute itemName only if needed
             if(itemName == null && needsItemName(matcher.getMatcher())) {
@@ -185,19 +198,10 @@ public class ItemTypeConfigProvider {
                 itemName = (loc != null) ? loc.toString() : "";
             }
 
-            ItemTypeContext context = new ItemTypeContext(enchantment, stack, item, itemName);
-            boolean matches = matcher.matches(context);
-
-            // Handle inversion
-            if(matcher.getMatcher() instanceof InvertedMatcher) {
-                invertedMatches = invertedMatches || !matches;
-            } else {
-                isValid = isValid || matches;
-            }
+            //inverted matchers don't match items that their inner matcher matches, so those are the denied ones
+            if(matcher.matches(new ItemTypeContext(enchantment, stack, item, itemName)) != inverted) return true;
         }
-
-        //Any inverted match makes this directly return false
-        return isValid && !invertedMatches;
+        return false;
     }
 
     private static boolean needsItemName(IMatcher<ItemTypeContext> matcher) {
