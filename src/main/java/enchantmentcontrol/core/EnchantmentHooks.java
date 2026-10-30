@@ -82,8 +82,17 @@ public class EnchantmentHooks {
             ItemTypeConfigProvider.probeAnvil = true;
             return;
         }
-        if (!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.anvil.enable) return;
         if (ItemTypeConfigProvider.shouldYieldToModdedBehavior(ench, true)) return;
+        if (!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.anvil.enable) return;
+
+        // return canItemApply || canApplyAtEnchantingTable, skipping overriding anvil behavior
+        cir.setReturnValue(ItemTypeConfigProvider.canItemApply(ench, stack, true) || ench.canApplyAtEnchantingTable(stack));
+    }
+
+    //base Enchantment class: never yields to modded behavior and doesn't count for probing
+    public static void canApplyAtAnvilBase(Enchantment ench, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+        if (ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete) return;
+        if (!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.anvil.enable) return;
 
         // return canItemApply || original
         if (ItemTypeConfigProvider.canItemApply(ench, stack, true))
@@ -96,8 +105,14 @@ public class EnchantmentHooks {
             ItemTypeConfigProvider.probe = true;
             return;
         }
-        if (!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.general.enable) return;
         if (ItemTypeConfigProvider.shouldYieldToModdedBehavior(ench, false)) return;
+        canApplyInGeneralBase(ench, stack, cir);
+    }
+
+    //base Enchantment class: never yields to modded behavior and doesn't count for probing
+    public static void canApplyInGeneralBase(Enchantment ench, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+        if (ConfigHandler.dev.printTypes || !EnchantmentControl.loadingComplete) return;
+        if (!ConfigHandler.itemTypes.enable || !ConfigHandler.itemTypes.general.enable) return;
 
         // Don't run original
         cir.setReturnValue(ItemTypeConfigProvider.canItemApply(ench, stack, false));

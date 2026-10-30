@@ -34,6 +34,9 @@ public class EnchantmentClassTransformer extends AbstractClassTransformer implem
 
         if (ConfigHandler.debug.disabledClasses.contains(name)) return null;
 
+        // Base class can't have modded behavior, so it uses hooks that never yield to it
+        String hookSuffix = name.equals("net.minecraft.enchantment.Enchantment") ? "Base" : "";
+
         ClassNode classNode = new ClassNode();
         new ClassReader(basicClass).accept(classNode, 0);
 
@@ -56,8 +59,8 @@ public class EnchantmentClassTransformer extends AbstractClassTransformer implem
 
                 // Applicability
                 case "canApplyTogether": case "func_77326_a": if (method.desc.equals("(Lnet/minecraft/enchantment/Enchantment;)Z")) injectAtHeadAndMaybeCancel(method, "isCompatibleWith", Type.BOOLEAN_TYPE, Opcodes.IRETURN); break;
-                case "canApply": case "func_92089_a": if (method.desc.equals("(Lnet/minecraft/item/ItemStack;)Z")) injectAtHeadAndMaybeCancel(method, "canApplyAtAnvil", Type.BOOLEAN_TYPE, Opcodes.IRETURN); break;
-                case "canApplyAtEnchantingTable": if (method.desc.equals("(Lnet/minecraft/item/ItemStack;)Z")) injectAtHeadAndMaybeCancel(method, "canApplyInGeneral", Type.BOOLEAN_TYPE, Opcodes.IRETURN); break;
+                case "canApply": case "func_92089_a": if (method.desc.equals("(Lnet/minecraft/item/ItemStack;)Z")) injectAtHeadAndMaybeCancel(method, "canApplyAtAnvil" + hookSuffix, Type.BOOLEAN_TYPE, Opcodes.IRETURN); break;
+                case "canApplyAtEnchantingTable": if (method.desc.equals("(Lnet/minecraft/item/ItemStack;)Z")) injectAtHeadAndMaybeCancel(method, "canApplyInGeneral" + hookSuffix, Type.BOOLEAN_TYPE, Opcodes.IRETURN); break;
 
                 // Vanilla behaviors
                 case "calcModifierDamage": case "func_77318_a": if (method.desc.equals("(ILnet/minecraft/util/DamageSource;)I")) injectAtHeadAndMaybeCancel(method, "protectionBehavior", Type.INT_TYPE, Opcodes.IRETURN); break;
