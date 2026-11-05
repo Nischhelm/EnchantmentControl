@@ -15,12 +15,12 @@ import java.nio.file.Files;
 import java.util.Collection;
 
 public class EnchantmentInfoWriter {
-    public static String modifiablePath = "loaded";
+    public static final String LOADED_DIR = "loaded";
     public static final String MAIN_DIR = "config/enchantmentcontrol/";
 
     public static void printLoaded(){
         if (!ConfigHandler.debug.printLoaded) return;
-        writeAllCurrentEnchantmentInfos(EnchantmentInfo.getAll(), MAIN_DIR + modifiablePath);
+        writeAllCurrentEnchantmentInfos(EnchantmentInfo.getAll(), MAIN_DIR + LOADED_DIR);
     }
 
     public static void writeAllCurrentEnchantmentInfos(Collection<EnchantmentInfo> infos, String path) {

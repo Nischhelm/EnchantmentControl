@@ -1,6 +1,5 @@
 package enchantmentcontrol.util.vanillabehavior;
 
-import com.google.gson.annotations.SerializedName;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
@@ -12,17 +11,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ArthropodBehavior implements TriConsumer<EntityLivingBase, Entity, Integer> {
-    @SerializedName("Potion")
     public String potionId = "minecraft:slowness";
-    @SerializedName("Constant Amplifier")
     public float startAmp = 3;
-    @SerializedName("Amplifier per Level")
     public float ampPerLevel = 0F;
-    @SerializedName("Constant Duration")
     public float startDuration = 20;
-    @SerializedName("Duration per Level")
     public float durationPerLevel = 5;
-    @SerializedName("Creature Attributes")
     public final Set<String> attributes = new HashSet<>();
 
     transient private Potion potion = MobEffects.SLOWNESS;

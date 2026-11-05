@@ -2,9 +2,7 @@ package enchantmentcontrol.config.enchantmentinfojsons;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import enchantmentcontrol.Tags;
-import enchantmentcontrol.compat.enchcontrol.LegacyJsonReader;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.IEnchantmentPropertySetter;
 import net.minecraft.enchantment.Enchantment;
@@ -20,9 +18,6 @@ public class EnchantmentInfoConfigReader {
     public static final String MAIN_DIR = "config/enchantmentcontrol/enchantments";
 
     public static void preInit(){
-        // Legacy enchantments.json support (read once, then rename to enchantments.legacy.unused)
-        if(LegacyJsonReader.onPreInit()) return;
-
         // Per-enchantment files: config/enchantmentcontrol/enchantments/modid/enchid.json
         try {
             List<EnchantmentInfo> readInfos = readPerFileConfigs();
@@ -36,24 +31,13 @@ public class EnchantmentInfoConfigReader {
     //Done in post init to modify the final fields ench.rarity and ench.applicableEquipmentTypes
     public static void applyManualOverrides(){
         for(EnchantmentInfo info : EnchantmentInfo.getAll()){
-            if(info.rarity == null && info.slots == null) continue;
-            Enchantment ench = EnchantmentInfo.getEnchantmentObject(info);
-            if(!(ench instanceof IEnchantmentPropertySetter)) return;
+            if(info.rarity == null && info.slots == null && info.type == null) continue;
+            Enchantment ench = Enchantment.getEnchantmentByLocation(info.id); //infos read from json are only linked to their enchant object on first lookup
+            if(!(ench instanceof IEnchantmentPropertySetter)) continue;
             IEnchantmentPropertySetter setter = (IEnchantmentPropertySetter) ench;
             if(info.rarity != null) setter.ec$setRarity(info.rarity);
             if(info.slots != null) setter.ec$setSlots(info.slots.toArray(new EntityEquipmentSlot[0]));
             if(info.type != null) ench.type = info.type;
-        }
-    }
-
-    public static List<EnchantmentInfo> readListWithGson(InputStream in) throws IOException {
-        try (Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(EnchantmentInfo.class, new EnchantmentInfoDeserialiser())
-                    .create();
-            java.lang.reflect.Type listType = new TypeToken<List<EnchantmentInfo>>(){}.getType();
-            List<EnchantmentInfo> infos = gson.fromJson(reader, listType);
-            return infos == null ? new ArrayList<>() : infos;
         }
     }
 
@@ -75,12 +59,12 @@ public class EnchantmentInfoConfigReader {
         return infos;
     }
 
-    private static List<EnchantmentInfo> readPerFileDirRecursive(File dir, List<EnchantmentInfo> infos)  {
+    private static void readPerFileDirRecursive(File dir, List<EnchantmentInfo> infos)  {
         File[] children = dir.listFiles();
-        if (children == null) return infos;
+        if (children == null) return;
         for (File f : children) {
             if (f.isDirectory()) {
-                infos.addAll(readPerFileDirRecursive(f, infos));
+                readPerFileDirRecursive(f, infos);
             } else if (f.isFile() && f.getName().endsWith(".json")) {
                 try (InputStream in = Files.newInputStream(f.toPath())) {
                     EnchantmentInfo info = readSingleWithGson(in);
@@ -93,6 +77,5 @@ public class EnchantmentInfoConfigReader {
                 }
             }
         }
-        return infos;
     }
 }

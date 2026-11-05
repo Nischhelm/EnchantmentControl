@@ -102,4 +102,19 @@ public class FirstSetupConfig {
     @Config.RequiresMcRestart
     @Order(6)
     public boolean printTypes = true;
+
+    @Config.Comment({
+            "If enabled, imports the per-enchantment settings of Enchantments Control (enchcontrol) from /config/enchcontrol/enchantments.json during startup.",
+            "Only settings that actually differ from the unmodified enchantment are imported, into /config/enchantmentcontrol/enchantments/modid/enchid.json.",
+            "Enchantments that already have a json there are skipped.",
+            "Imported: rarity, treasure, curse, allowed_on_books, min_lvl, max_lvl, double_price, type, equipment_slots, and min/max_ench_eval if custom_evaluations is true.",
+            "Not imported (logged instead): enabled, hide_on_item/book, incompatibilities, item lists, descriptions.",
+            "Afterwards the original is backed up as enchantments.json.imported and replaced with an empty list [], so it's only imported once",
+            "and Enchantments Control (if still installed) doesn't apply it on top of this mod's jsons. Its config.json stays untouched.",
+            "To re-import, restore the backup and delete the affected jsons in /enchantments/."
+    })
+    @Config.Name("Import Enchantments Control Config")
+    @Config.RequiresMcRestart
+    @Order(7)
+    public boolean importEnchantmentsControl = true;
 }

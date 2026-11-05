@@ -1,6 +1,5 @@
 package enchantmentcontrol.util.vanillabehavior;
 
-import com.google.gson.annotations.SerializedName;
 import net.minecraft.util.DamageSource;
 
 import java.util.Arrays;
@@ -9,11 +8,8 @@ import java.util.Set;
 import java.util.function.BiFunction;
 
 public class ProtectionBehavior implements BiFunction<Integer, DamageSource, Integer> {
-    @SerializedName("Constant")
     public final int startProt;
-    @SerializedName("Per Lvl")
     public final int protPerLvl;
-    @SerializedName("Matching Damage Sources")
     public final Set<String> sources = new HashSet<>();
 
     public ProtectionBehavior(int start, int perLvl, String... sources) {

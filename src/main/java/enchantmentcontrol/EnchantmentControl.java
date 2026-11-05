@@ -4,6 +4,7 @@ import enchantmentcontrol.bloodanvil.FeatureBloodAnvil;
 import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.compat.crafttweaker.CT_EnchantmentInfo;
 import enchantmentcontrol.compat.crafttweaker.CT_RollEnchantments_EventManagerExpansion;
+import enchantmentcontrol.compat.enchcontrol.EnchantmentsControlImporter;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.descriptions.DescriptionReader;
 import enchantmentcontrol.config.descriptions.EmptyEnchantmentWriter;
@@ -20,6 +21,7 @@ import meldexun.betterconfig.api.BetterConfigManager;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -57,6 +59,11 @@ public class EnchantmentControl {
             LootFunctionManager.registerFunction(new SetEnchantments.Serializer());
 
         EnchantmentInfoConfigReader.preInit(); //read EnchantmentInfo's from /enchantments
+    }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event) {
+        EnchantmentsControlImporter.init(); //needs registered enchants, writes to /enchantments/ + registers what it imports
     }
 
     @Mod.EventHandler

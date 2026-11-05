@@ -1,6 +1,5 @@
 package enchantmentcontrol.util.vanillabehavior;
 
-import com.google.gson.annotations.SerializedName;
 import enchantmentcontrol.util.EnchantmentInfo;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -17,18 +16,12 @@ public class ThornsBehavior implements TriConsumer<EntityLivingBase, Entity, Int
     transient private final EnchantmentInfo info;
     transient private Enchantment ench;
 
-    @SerializedName("Constant Chance")
     public float startChance = 0;
-    @SerializedName("Chance per Level")
     public float chancePerLevel = 0.15F;
 
-    @SerializedName("Constant Dmg Min")
     public float startDmgMin = 1;
-    @SerializedName("Constant Dmg Max")
     public float startDmgMax = 4;
-    @SerializedName("Dmg Per Lvl")
     public float dmgPerLevel = 0;
-    @SerializedName("Durability Cost")
     public int durabilityDmg = 3;
 
     public ThornsBehavior (EnchantmentInfo info) {

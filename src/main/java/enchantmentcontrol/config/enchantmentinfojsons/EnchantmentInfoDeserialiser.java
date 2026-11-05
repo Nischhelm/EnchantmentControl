@@ -1,6 +1,7 @@
 package enchantmentcontrol.config.enchantmentinfojsons;
 
 import com.google.gson.*;
+import enchantmentcontrol.Tags;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.MaxEnchantabilityMode;
 import enchantmentcontrol.util.vanillabehavior.ArthropodBehavior;
@@ -15,9 +16,13 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EnchantmentInfoDeserialiser implements JsonDeserializer<EnchantmentInfo>, JsonSerializer<EnchantmentInfo> {
     @Override
@@ -93,7 +98,8 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
         String legacyMin = getAsString(jsonObj, "min_ench_eval");
         String legacyMax = getAsString(jsonObj, "max_ench_eval");
         if (Boolean.TRUE.equals(legacyCustom) && legacyMin != null && legacyMax != null) {
-            parseLegacyEnchantmentsControlConfig(info, legacyMin, legacyMax);
+            EnchantmentInfo.EnchantabilityCalc calc = parseLegacyEvaluations(id, legacyMin, legacyMax);
+            if (calc != null) info.setEnchantabilities(calc);
         }
 
         // vanilla system overrides
@@ -133,9 +139,9 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
             if (vanillaSystems.has("bane-of-arthropods-like behavior")) {
                 JsonObject obj = vanillaSystems.getAsJsonObject("bane-of-arthropods-like behavior");
                 Integer startAmp = getAsInt(obj, "startAmp");
-                Integer ampPerLvl = getAsInt(obj, "ampPerLvl");
+                Float ampPerLvl = getAsFloat(obj, "ampPerLvl");
                 Integer startDur = getAsInt(obj, "startDur");
-                Integer durPerLvl = getAsInt(obj, "durPerLvl");
+                Float durPerLvl = getAsFloat(obj, "durPerLvl");
                 String potion = getAsString(obj, "potion");
                 List<String> attributes = new ArrayList<>();
                 obj.getAsJsonArray("attributes").forEach(attr -> attributes.add(attr.getAsString()));
@@ -152,11 +158,11 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
             // thorns behavior
             if (vanillaSystems.has("thorns-like behavior")) {
                 JsonObject obj = vanillaSystems.getAsJsonObject("thorns-like behavior");
-                Integer startChance = getAsInt(obj, "startChance");
-                Integer chancePerLvl = getAsInt(obj, "chancePerLvl");
-                Integer startDmgMin = getAsInt(obj, "startDmgMin");
-                Integer startDmgMax = getAsInt(obj, "startDmgMax");
-                Integer dmgPerLvl = getAsInt(obj, "dmgPerLvl");
+                Float startChance = getAsFloat(obj, "startChance");
+                Float chancePerLvl = getAsFloat(obj, "chancePerLvl");
+                Float startDmgMin = getAsFloat(obj, "startDmgMin");
+                Float startDmgMax = getAsFloat(obj, "startDmgMax");
+                Float dmgPerLvl = getAsFloat(obj, "dmgPerLvl");
                 Integer duraDmg = getAsInt(obj, "duraDmg");
 
                 if(startChance != null && chancePerLvl != null && startDmgMin != null && startDmgMax != null && dmgPerLvl != null && duraDmg != null) {
@@ -219,7 +225,8 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
         if (info.overwritesDoublePrice) o.addProperty("doublePrice", info.doublePrice);
 
         // vanilla system override
-        o.add("vanilla system overrides", writeVanillaOverrideEntries(info));
+        JsonObject vanillaSystems = writeVanillaOverrideEntries(info);
+        if (!vanillaSystems.entrySet().isEmpty()) o.add("vanilla system overrides", vanillaSystems);
 
         return o;
     }
@@ -245,7 +252,7 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
             info.sharpnessBehavior.attributes.forEach(attrs::add);
             obj.add("attributes", attrs);
 
-            systems.addProperty("sharpness-like behavior", obj.toString());
+            systems.add("sharpness-like behavior", obj);
         }
 
         // protection behavior
@@ -257,7 +264,7 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
             info.protectionBehavior.sources.forEach(sources::add);
             obj.add("sources", sources);
 
-            systems.addProperty("protection-like behavior", obj.toString());
+            systems.add("protection-like behavior", obj);
         }
 
         // arthropod behavior
@@ -272,7 +279,7 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
             info.arthropodBehavior.attributes.forEach(attrs::add);
             obj.add("attributes", attrs);
 
-            systems.addProperty("bane-of-arthropods-like behavior", obj.toString());
+            systems.add("bane-of-arthropods-like behavior", obj);
         }
 
         // thorns behavior
@@ -285,7 +292,7 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
             obj.addProperty("dmgPerLvl", info.thornsBehavior.dmgPerLevel);
             obj.addProperty("duraDmg", info.thornsBehavior.durabilityDmg);
 
-            systems.addProperty("thorns-like behavior", obj.toString());
+            systems.add("thorns-like behavior", obj);
         }
         return systems;
     }
@@ -306,17 +313,6 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
         return o.has(key) && !o.get(key).isJsonNull() ? o.get(key).getAsFloat() : null;
     }
 
-    private static List<String> readStringList(JsonObject o, String key) {
-        if (!o.has(key) || o.get(key).isJsonNull()) return null;
-        JsonElement e = o.get(key);
-        if (!e.isJsonArray()) return null;
-        List<String> out = new ArrayList<>();
-        for (JsonElement je : e.getAsJsonArray()) {
-            if (je.isJsonPrimitive()) out.add(je.getAsString());
-        }
-        return out;
-    }
-
     private static <E extends Enum<E>> List<E> readEnumList(JsonObject o, String key, Class<E> enumCls) {
         if (!o.has(key) || o.get(key).isJsonNull()) return null;
         JsonElement e = o.get(key);
@@ -330,28 +326,51 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
         return out;
     }
 
-    private static void parseLegacyEnchantmentsControlConfig(EnchantmentInfo info, String minEnchEval, String maxEnchEval) {
-        /*     "min_ench_eval": "10+20*(LVL-1)",
-         *     "max_ench_eval": "(1+10*LVL)+50",*/
+    // Enchantments Control wrote arbitrary formulas, we only recognise the patterns it generated by default (whitespace ignored):
+    //   min_ench_eval: "A", "A+B*(LVL-1)", "A+(LVL-1)*B", "A+B*LVL", "B*LVL", "LVL*B"
+    //   max_ench_eval: "(1+10*LVL)+R" / "1+10*LVL+R" (SUPER), "MIN+R" / "MIN" (NORMAL), "R" (CONST)
+    private static final Pattern LEGACY_MIN_SPAN_LVL_MINUS_ONE = Pattern.compile("(-?\\d+)(?:\\+(-?\\d+)\\*\\(LVL-1\\)|\\+\\(LVL-1\\)\\*(-?\\d+))?");
+    private static final Pattern LEGACY_MIN_SPAN_LVL = Pattern.compile("(?:(-?\\d+)\\+)?(?:(-?\\d+)\\*LVL|LVL\\*(-?\\d+))");
+    private static final Pattern LEGACY_MAX_SUPER = Pattern.compile("\\(?1\\+10\\*LVL\\)?(?:\\+(-?\\d+))?");
+    private static final Pattern LEGACY_MAX_NORMAL = Pattern.compile("MIN(?:\\+(-?\\d+))?");
+    private static final Pattern LEGACY_MAX_CONST = Pattern.compile("-?\\d+");
 
-        String[] split = minEnchEval.split("\\+|(\\*\\(LVL-1\\))"); //this only works for pattern minEnch+lvlSpan*(LVL-1), but im not gonna recreate the custom eval system he used
-        int minEnch = Integer.parseInt(split[0]);
-        int lvlSpan = Integer.parseInt(split[1]);
+    /** Translates Enchantments Control min/max enchantability formulas, returns null (and warns) if they can't be translated */
+    @Nullable
+    public static EnchantmentInfo.EnchantabilityCalc parseLegacyEvaluations(String id, String minEnchEval, String maxEnchEval) {
+        String min = minEnchEval.replaceAll("\\s", "").toUpperCase(Locale.ROOT);
+        String max = maxEnchEval.replaceAll("\\s", "").toUpperCase(Locale.ROOT);
 
-        int range = 0;
-        MaxEnchantabilityMode mode = null;
-
-        if(maxEnchEval.startsWith("(1+10*LVL)+")) {
-            mode = MaxEnchantabilityMode.SUPER;
-            range = Integer.parseInt(maxEnchEval.substring(11)); //remove "(1+10*LVL)+")
-        } else if(maxEnchEval.startsWith("MIN+")){
-            mode = MaxEnchantabilityMode.NORMAL;
-            range = Integer.parseInt(maxEnchEval.substring(4)); //remove "MIN+"
-        } else if(maxEnchEval.matches("\\d+")){
-            mode = MaxEnchantabilityMode.CONST;
-            range = Integer.parseInt(maxEnchEval); //just numbers
+        int minEnch, lvlSpan;
+        Matcher m;
+        if ((m = LEGACY_MIN_SPAN_LVL_MINUS_ONE.matcher(min)).matches()) {
+            minEnch = Integer.parseInt(m.group(1));
+            String span = m.group(2) != null ? m.group(2) : m.group(3);
+            lvlSpan = span == null ? 0 : Integer.parseInt(span);
+        } else if ((m = LEGACY_MIN_SPAN_LVL.matcher(min)).matches()) {
+            lvlSpan = Integer.parseInt(m.group(2) != null ? m.group(2) : m.group(3));
+            minEnch = (m.group(1) == null ? 0 : Integer.parseInt(m.group(1))) + lvlSpan; // A+B*LVL == (A+B)+B*(LVL-1)
+        } else {
+            Tags.LOGGER.warn("Legacy import of {}: unsupported min_ench_eval \"{}\", keeping default enchantabilities", id, minEnchEval);
+            return null;
         }
 
-        info.setEnchantabilities(minEnch, lvlSpan, range, mode);
+        int range;
+        MaxEnchantabilityMode mode;
+        if ((m = LEGACY_MAX_SUPER.matcher(max)).matches()) {
+            mode = MaxEnchantabilityMode.SUPER;
+            range = m.group(1) == null ? 0 : Integer.parseInt(m.group(1));
+        } else if ((m = LEGACY_MAX_NORMAL.matcher(max)).matches()) {
+            mode = MaxEnchantabilityMode.NORMAL;
+            range = m.group(1) == null ? 0 : Integer.parseInt(m.group(1));
+        } else if (LEGACY_MAX_CONST.matcher(max).matches()) {
+            mode = MaxEnchantabilityMode.CONST;
+            range = Integer.parseInt(max);
+        } else {
+            Tags.LOGGER.warn("Legacy import of {}: unsupported max_ench_eval \"{}\", keeping default enchantabilities", id, maxEnchEval);
+            return null;
+        }
+
+        return new EnchantmentInfo.EnchantabilityCalc(minEnch, lvlSpan, range, mode);
     }
 }

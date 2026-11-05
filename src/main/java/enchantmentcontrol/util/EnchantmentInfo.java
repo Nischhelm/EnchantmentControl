@@ -1,6 +1,5 @@
 package enchantmentcontrol.util;
 
-import com.google.gson.annotations.SerializedName;
 import enchantmentcontrol.Tags;
 import enchantmentcontrol.util.vanillabehavior.ArthropodBehavior;
 import enchantmentcontrol.util.vanillabehavior.ProtectionBehavior;
@@ -82,48 +81,35 @@ public class EnchantmentInfo {
 
     // -------- PROPERTIES --------
 
-    @SerializedName("id")
     public String id;
     public String modId;
     public String enchId;
 
     public boolean overwritesIsTreasure = false;
-    @SerializedName("isTreasure")
     public boolean isTreasure;
 
     public boolean overwritesIsCurse = false;
-    @SerializedName("isCurse")
     public boolean isCurse;
 
     public boolean overwritesIsAllowedOnBooks = false;
-    @SerializedName("isAllowedOnBooks")
     public boolean isAllowedOnBooks;
 
-    @SerializedName("rarity")
     public Enchantment.Rarity rarity = null;
 
-    @SerializedName("displayColor")
     public TextFormatting displayColor = null;
 
     public boolean overwritesMinLvl = false;
-    @SerializedName("minLvl")
     public int minLvl;
 
     public boolean overwritesMaxLvl = false;
-    @SerializedName("maxLvl")
     public int maxLvl;
 
-    @SerializedName("enchantability")
     public EnchantabilityCalc ench;
 
     public static class EnchantabilityCalc {
-        @SerializedName("minEnch")
         public int minEnchLvl;
-        @SerializedName("lvlSpan")
         public int enchLvlSpan;
-        @SerializedName("range")
         public int enchLvlRange;
-        @SerializedName("minEnch")
         public MaxEnchantabilityMode enchMode;
 
         public EnchantabilityCalc(int minEnch, int lvlSpan, int range, MaxEnchantabilityMode mode){
@@ -141,13 +127,10 @@ public class EnchantmentInfo {
         }
     }
 
-    @SerializedName("type")
     public EnumEnchantmentType type;
-    @SerializedName("slots")
     public List<EntityEquipmentSlot> slots;
 
     public boolean overwritesDoublePrice = false;
-    @SerializedName("doublePrice")
     public boolean doublePrice;
 
     //More control via ContentTweaker  using calcDamageByCreature, calcModifierDamage, onEntityDamaged, onUserHurt
