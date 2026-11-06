@@ -105,7 +105,7 @@ public class ItemTypeConfig {
                 " - If modded behaviors are generally allowed, enchants listed here will not have their modded behavior allowed",
                 " - If modded behaviors are generally disallowed, enchants listed here will have their modded behavior be allowed anyway",
                 "Enchantments that don't override canApplyAtEnchantingTable don't need to be listed, they always use \"Item Types\".",
-                "\"Print Item Type Blacklists\" lists all enchantments that do override it."
+                "\"Advanced.Print Item Type Blacklists\" lists all enchantments that do override it."
         })
         @Config.Name("Allow Modded Enchantment Blacklist")
         @Order(2)
@@ -158,7 +158,7 @@ public class ItemTypeConfig {
                 " - If modded behaviors are generally allowed, enchants listed here will not have their modded behavior allowed",
                 " - If modded behaviors are generally disallowed, enchants listed here will have their modded behavior be allowed anyway",
                 "Enchantments that don't override canApply don't need to be listed, they always use \"Anvil.Item Types\" and the general check.",
-                "\"Print Item Type Blacklists\" lists all enchantments that do override it."
+                "\"Advanced.Print Item Type Blacklists\" lists all enchantments that do override it."
         })
         @Config.Name("Allow Modded Enchantment Blacklist")
         @Order(2)

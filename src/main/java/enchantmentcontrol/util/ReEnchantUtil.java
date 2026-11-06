@@ -22,7 +22,7 @@ public class ReEnchantUtil {
     }
 
     public static void incrementEnchantCount(Random rand, ItemStack stack) {
-        if(rand.nextFloat() > ConfigHandler.etable.reEnchantSkipIncrementChance)
+        if(rand.nextFloat() > ConfigHandler.etable.reEnchant.skipIncrementChance)
             setEnchantCount(stack, ReEnchantUtil.getEnchantCount(stack) + 1);
     }
 
@@ -40,7 +40,7 @@ public class ReEnchantUtil {
         for(EnchantmentData data : rolledEnchants) {
             if(map.containsKey(data.enchantment)) {
                 //already in
-                if(ConfigHandler.etable.reEnchantCombineExisting){
+                if(ConfigHandler.etable.reEnchant.combineExisting){
                     int existingLvl = map.get(data.enchantment);
                     int newLvl = data.enchantmentLevel;
                     int resultLvl = Math.max(existingLvl, newLvl) + (existingLvl == newLvl ? 1 : 0); //Like anvil
@@ -48,7 +48,7 @@ public class ReEnchantUtil {
                     mapChanged = true;
                 }
 
-            } else if (ConfigHandler.etable.reEnchantAllowIncompatible || map.keySet().stream().allMatch(origE -> origE.isCompatibleWith(data.enchantment)))
+            } else if (ConfigHandler.etable.reEnchant.allowIncompatible || map.keySet().stream().allMatch(origE -> origE.isCompatibleWith(data.enchantment)))
                 list.add(data);
         }
         if(!simulate && mapChanged) EnchantmentHelper.setEnchantments(map, stack);

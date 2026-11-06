@@ -25,20 +25,20 @@ public class AnvilCostUtil {
 
     public static int guessAnvilCount(int anvilCost) {
         if(anvilCost == 0) return 0;
-        switch(ConfigHandler.anvil.repairCostScalingType) {
+        switch(ConfigHandler.anvil.costs.useCost.scalingType) {
             case CONST:
                 return 0;
             case LINEAR:
-                return (int) (((float) anvilCost) / ConfigHandler.anvil.repairCostScalingFactor);
+                return (int) (((float) anvilCost) / ConfigHandler.anvil.costs.useCost.scalingFactor);
             case QUADRATIC:
-                return (int)Math.sqrt(anvilCost/ConfigHandler.anvil.repairCostScalingFactor);
+                return (int)Math.sqrt(anvilCost/ConfigHandler.anvil.costs.useCost.scalingFactor);
             case EXPONENTIAL: default:
-                return (int)(Math.log(anvilCost + 1.) / Math.log(ConfigHandler.anvil.repairCostScalingFactor));
+                return (int)(Math.log(anvilCost + 1.) / Math.log(ConfigHandler.anvil.costs.useCost.scalingFactor));
         }
     }
 
     public static int combineCounts(int useCountLeft, int useCountRight) {
-        switch(ConfigHandler.anvil.repairCostCombinationType) {
+        switch(ConfigHandler.anvil.costs.useCost.combinationType) {
             case MIN: //prob doesn't make sense to use but whatever
                 return Math.min(useCountLeft, useCountRight);
             case SUM:
@@ -51,7 +51,7 @@ public class AnvilCostUtil {
     }
 
     public static int combineCosts(int repairCostLeft, int repairCostRight) {
-        switch(ConfigHandler.anvil.repairCostCombinationType) {
+        switch(ConfigHandler.anvil.costs.useCost.combinationType) {
             case MIN: //prob doesn't make sense to use but whatever
                 return Math.min(repairCostLeft, repairCostRight);
             case SUM:
@@ -77,7 +77,7 @@ public class AnvilCostUtil {
     }
 
     public static int getNextRepairCost(int repairCost, int useCount, float multi){
-        switch(ConfigHandler.anvil.repairCostScalingType) {
+        switch(ConfigHandler.anvil.costs.useCost.scalingType) {
             case CONST: // a
                 return (int) multi;
             case LINEAR: // a * useCount

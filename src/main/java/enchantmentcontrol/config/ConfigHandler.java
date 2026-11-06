@@ -57,10 +57,10 @@ public class ConfigHandler {
 	@Order(5)
 	public static EnchTableConfig etable = new EnchTableConfig();
 
-	@Config.Comment("Mixin Toggles")
-	@Config.Name("Mixin Toggles")
+	@Config.Comment("Various options that don't fit anywhere else")
+	@Config.Name("Various")
 	@Order(6)
-	public static MixinToggleConfig mixintoggles = new MixinToggleConfig();
+	public static VariousConfig various = new VariousConfig();
 
 	@Config.Comment("Mod Compatibility")
 	@Config.Name("Compat")

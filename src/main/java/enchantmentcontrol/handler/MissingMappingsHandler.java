@@ -13,9 +13,9 @@ public class MissingMappingsHandler {
         //Maps missing original ids to current replacement ids, not other way around
         event.getAllMappings()
                 .stream()
-                .filter(m -> ConfigHandler.dev.idRemaps.containsKey(m.key.toString()))
+                .filter(m -> ConfigHandler.dev.registryRemap.idRemaps.containsKey(m.key.toString()))
                 .forEach(m -> {
-                    String newLoc = ConfigHandler.dev.idRemaps.get(m.key.toString());
+                    String newLoc = ConfigHandler.dev.registryRemap.idRemaps.get(m.key.toString());
                     Enchantment mappedEnch = Enchantment.getEnchantmentByLocation(newLoc);
                     if (mappedEnch != null) //could be unregistered via config
                         m.remap(mappedEnch);

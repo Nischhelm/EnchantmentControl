@@ -47,13 +47,13 @@ public class ForgeRegistryCustomIDMixin<V extends IForgeRegistryEntry<V>> {
             ec$enchantmentIdsReserved = true;
         }
 
-        if (ConfigHandler.dev.customNumericIds.isEmpty()) return idToUse;
+        if (ConfigHandler.dev.registryRemap.customNumericIds.isEmpty()) return idToUse;
 
         ResourceLocation loc = value.getRegistryName();
         if (loc == null) return idToUse;
         String enchantmentName = loc.toString();
 
-        Integer customId = ConfigHandler.dev.customNumericIds.get(enchantmentName);
+        Integer customId = ConfigHandler.dev.registryRemap.customNumericIds.get(enchantmentName);
         if (customId == null) return idToUse;
 
         // Check if ID is actually occupied, not just reserved
@@ -69,7 +69,7 @@ public class ForgeRegistryCustomIDMixin<V extends IForgeRegistryEntry<V>> {
 
     @Unique
     private void ec$reserveCustomIds() {
-        for (Integer customId : ConfigHandler.dev.customNumericIds.values()) {
+        for (Integer customId : ConfigHandler.dev.registryRemap.customNumericIds.values()) {
             if (customId < 0) continue;
 
             if (!availabilityMap.get(customId)) {

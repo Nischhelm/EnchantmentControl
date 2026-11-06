@@ -10,35 +10,10 @@ import java.util.Map;
 
 @MixinConfig(name = Tags.MODID)
 public class FirstSetupConfig {
-    @Config.Comment("Enable if you want to remap enchantment ids (numerical or name). Warning: See Warnings in \"Enchantment Id Remaps\" and \"Enchantment Numeric Id Remaps\"")
-    @Config.Name("(MixinToggle) Enable Registry Remapping")
-    @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.registryremap.json", defaultValue = false)
+    @Config.Comment("Options to remap enchantment ids (name or numerical). Warning: See Warnings in \"Enchantment Id Remaps\" and \"Enchantment Numeric Id Remaps\"")
+    @Config.Name("Registry Remapping")
     @Order(0)
-    public boolean enableRegistryRemap = false;
-
-    @Config.Comment({
-            "If you really dont like one mods enchantment id (modid:enchid), you can add it here with a second entry of what you want to call it instead (modid:enchid). ",
-            "WARNING: this will cause permanent id remapping issues for old worlds! Only do this for new worlds or before you release a modpack, if you really need to!",
-            "Pattern: S:\"modid:oldenchid\"=modid:newenchid",
-            "Requires Mixin Toggle \"Enable Registry Remapping\""
-    })
-    @Config.Name("Enchantment Id Remaps")
-    @Config.RequiresMcRestart
-    @Order(1)
-    public Map<String, String> idRemaps = new LinkedHashMap<>();
-
-    @Config.Comment({
-            "Assign custom numeric ids to enchantments.",
-            "This can be useful for custom villager trades or enchanted loot in structures, where the enchantments are stored as numerical ids.",
-            "WARNING: Changing enchantment ids will cause id remapping issues for exactly such content. Use this cautiously.",
-            "Pattern: I:\"modid:enchid\"=id",
-            "Requires Mixin Toggle \"Enable Registry Remapping\""
-    })
-    @Config.Name("Enchantment Numeric Id Remaps")
-    @Config.RequiresMcRestart
-    @Order(2)
-    public Map<String, Integer> customNumericIds = new LinkedHashMap<>();
+    public RegistryRemapConfig registryRemap = new RegistryRemapConfig();
 
     @Config.Comment({
             "!Disables itself after a one time use!",
@@ -51,7 +26,7 @@ public class FirstSetupConfig {
     })
     @Config.Name("Print Inferred Enchantment Infos")
     @Config.RequiresMcRestart
-    @Order(3)
+    @Order(1)
     public boolean printInferred = true;
 
     @Config.Comment({
@@ -68,7 +43,7 @@ public class FirstSetupConfig {
             "Every option that is not existing in a json will keep the enchantment unmodified there, so reduction is advised."
     })
     @Config.Name("Print Inferred Expanded")
-    @Order(4)
+    @Order(2)
     public boolean printInferredExpanded = false;
 
     @Config.Comment({
@@ -82,7 +57,7 @@ public class FirstSetupConfig {
     })
     @Config.Name("Print Default Incompatibilities")
     @Config.RequiresMcRestart
-    @Order(5)
+    @Order(3)
     public boolean printIncompats = true;
 
     @Config.Comment({
@@ -100,7 +75,7 @@ public class FirstSetupConfig {
     })
     @Config.Name("Print Default Item Types")
     @Config.RequiresMcRestart
-    @Order(6)
+    @Order(4)
     public boolean printTypes = true;
 
     @Config.Comment({
@@ -115,6 +90,39 @@ public class FirstSetupConfig {
     })
     @Config.Name("Import Enchantments Control Config")
     @Config.RequiresMcRestart
-    @Order(7)
+    @Order(5)
     public boolean importEnchantmentsControl = true;
+
+    @MixinConfig(name = Tags.MODID)
+    public static class RegistryRemapConfig {
+        @Config.Comment("Enable if you want to remap enchantment ids (numerical or name). Warning: See Warnings in \"Enchantment Id Remaps\" and \"Enchantment Numeric Id Remaps\"")
+        @Config.Name("(MixinToggle) Enable Registry Remapping")
+        @Config.RequiresMcRestart
+        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.registryremap.json", defaultValue = false)
+        @Order(0)
+        public boolean enableRegistryRemap = false;
+
+        @Config.Comment({
+                "If you really dont like one mods enchantment id (modid:enchid), you can add it here with a second entry of what you want to call it instead (modid:enchid). ",
+                "WARNING: this will cause permanent id remapping issues for old worlds! Only do this for new worlds or before you release a modpack, if you really need to!",
+                "Pattern: S:\"modid:oldenchid\"=modid:newenchid",
+                "Requires Mixin Toggle \"Enable Registry Remapping\""
+        })
+        @Config.Name("Enchantment Id Remaps")
+        @Config.RequiresMcRestart
+        @Order(1)
+        public Map<String, String> idRemaps = new LinkedHashMap<>();
+
+        @Config.Comment({
+                "Assign custom numeric ids to enchantments.",
+                "This can be useful for custom villager trades or enchanted loot in structures, where the enchantments are stored as numerical ids.",
+                "WARNING: Changing enchantment ids will cause id remapping issues for exactly such content. Use this cautiously.",
+                "Pattern: I:\"modid:enchid\"=id",
+                "Requires Mixin Toggle \"Enable Registry Remapping\""
+        })
+        @Config.Name("Enchantment Numeric Id Remaps")
+        @Config.RequiresMcRestart
+        @Order(2)
+        public Map<String, Integer> customNumericIds = new LinkedHashMap<>();
+    }
 }

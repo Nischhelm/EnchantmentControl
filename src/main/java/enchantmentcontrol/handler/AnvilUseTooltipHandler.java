@@ -18,15 +18,15 @@ public class AnvilUseTooltipHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onItemTooltip(ItemTooltipEvent event){
         // show on shift or on advanced
-        if(!(ConfigHandler.anvil.tooltipOnShiftKey ? GuiScreen.isShiftKeyDown() : event.getFlags().isAdvanced())) return;
+        if(!(ConfigHandler.anvil.costs.useCost.tooltip.onShiftKey ? GuiScreen.isShiftKeyDown() : event.getFlags().isAdvanced())) return;
 
         if(event.getEntityPlayer() == null) return;
 
-        if(!ConfigHandler.anvil.tooltipShowEverywhere && !(event.getEntityPlayer().openContainer instanceof ContainerRepair)) return;
+        if(!ConfigHandler.anvil.costs.useCost.tooltip.showEverywhere && !(event.getEntityPlayer().openContainer instanceof ContainerRepair)) return;
 
         int repairCost = event.getItemStack().getRepairCost();
         if(repairCost <= 0) return;
-        //AnvilCount is only written by the "Change Cost Scaling" mixin. Without it (or for items from before it got enabled), use the vanilla relation cost = 2^uses - 1
+        //AnvilCount is only written by the "Change Scaling" mixin. Without it (or for items from before it got enabled), use the vanilla relation cost = 2^uses - 1
         int uses = AnvilCostUtil.hasAnvilCount(event.getItemStack()) ? AnvilCostUtil.getAnvilCount(event.getItemStack()) : MathHelper.log2(repairCost + 1); //logarithms baby
 
         event.getToolTip().add(getLowestEnchantLineIndex(event), TextFormatting.DARK_GRAY + I18n.format((uses == 1) ? "tooltip.anviluses.singular" : "tooltip.anviluses", uses, repairCost) + TextFormatting.RESET);

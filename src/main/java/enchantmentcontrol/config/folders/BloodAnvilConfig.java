@@ -21,7 +21,7 @@ public class BloodAnvilConfig {
     @Order(2)
     public boolean costIsDynamic = false;
 
-    @Config.Comment("If enabled, will combine the items repair costs too, the same way anvils do according to \"Anvil Use Cost Combination Type\", but without increasing the cost")
+    @Config.Comment("If enabled, will combine the items repair costs too, the same way anvils do according to \"Anvil Costs.Anvil Use Cost.Combination Type\", but without increasing the cost")
     @Config.Name("Also move Repair Cost")
     @Order(3)
     public boolean moveAnvilCost = true;

@@ -47,15 +47,15 @@ public class EnchantmentControl {
             FeatureBloodAnvil.onPreInit();
         }
 
-        if(ConfigHandler.anvil.addAnvilUseTooltip && event.getSide() == Side.CLIENT)
+        if(ConfigHandler.anvil.costs.useCost.tooltip.enabled && event.getSide() == Side.CLIENT)
             MinecraftForge.EVENT_BUS.register(AnvilUseTooltipHandler.class);
-        if(ConfigHandler.etable.allowReEnchant && ConfigHandler.etable.addEnchCountTooltip && event.getSide() == Side.CLIENT)
+        if(ConfigHandler.etable.reEnchant.allowReEnchant && ConfigHandler.etable.reEnchant.tooltip.enabled && event.getSide() == Side.CLIENT)
             MinecraftForge.EVENT_BUS.register(ReEnchantTooltipHandler.class);
 
         if(CompatUtil.crafttweaker.isLoaded())
             MinecraftForge.EVENT_BUS.register(CT_RollEnchantments_EventManagerExpansion.class);
 
-        if(ConfigHandler.debug.enableSetEnchantmentsLootFunction)
+        if(ConfigHandler.various.enableSetEnchantmentsLootFunction)
             LootFunctionManager.registerFunction(new SetEnchantments.Serializer());
 
         EnchantmentInfoConfigReader.preInit(); //read EnchantmentInfo's from /enchantments

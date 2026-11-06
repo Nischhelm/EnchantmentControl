@@ -31,34 +31,4 @@ public class DebugConfig {
     @Config.RequiresMcRestart
     @Order(2)
     public boolean printLoaded = false;
-
-    @Config.Comment({
-            "If enabled, using \"Print Default Item Types\" will also print all enchants and items that have custom behavior for general or anvil item application.",
-            " Prints go to each blacklist. Will also automatically turn them into whitelists by untoggling \"Allow Modded Behavior\"",
-            "This option exists to make it easier for the few wanting full control over item types to see which enchantments have overriding behavior to account for"
-    })
-    @Config.Name("Print Item Type Blacklists")
-    @Config.RequiresMcRestart
-    @Order(3)
-    public boolean printItemTypeBlacklists = false;
-
-    @Config.Comment({
-            "If enabled, will register a loot function named set_enchantments.",
-            "This loot function takes in a list of enchantment ids and random value ranges (or fixed values)",
-            "And applies exactly these enchantments onto a given item, not even checking for applicability",
-            "Example showing all options: ",
-            "\"function\": \"set_enchantments\",",
-            "\"enchantments\":[{",
-            "  \"enchantment\": \"minecraft:power\",",
-            "  \"lvl\": 5",
-            "},{",
-            "  \"enchantment\": \"minecraft:punch\",",
-            "  \"lvlMin\": 1,",
-            "  \"lvlMax\": 2",
-            "}]"
-    })
-    @Config.Name("Register SetEnchantments Loot Function")
-    @Config.RequiresMcRestart
-    @Order(4)
-    public boolean enableSetEnchantmentsLootFunction = false;
 }

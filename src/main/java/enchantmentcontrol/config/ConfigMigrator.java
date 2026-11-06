@@ -4,14 +4,106 @@ import enchantmentcontrol.Tags;
 import meldexun.betterconfig.api.ConfigMigrationHelper;
 import meldexun.betterconfig.api.tree.*;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 
 import java.util.Map;
 
 // Here is where I pay for my sins
 public class ConfigMigrator {
+	private static final ArtifactVersion V1_1 = new DefaultArtifactVersion("1.1");
+
 	public static <T extends IConfigContext<T>> void handleMigration(IConfigCategory<T> general, T context, ArtifactVersion fileVersion) {
 		if(general.getElements().isEmpty() && general.getSubCategories().isEmpty()) return;
 		if (fileVersion == null) migrateTo1_0_0(general, context); // migrate from pre cfgvers 1.0.0 where there was no version entry yet
+		if (fileVersion == null || fileVersion.compareTo(V1_1) < 0) migrateTo1_1(general, context);
+	}
+
+	// cfg version 1.1: moved Anvil Costs (+ Anvil Use Cost + Tooltip), Re-Enchanting and Registry Remapping into their own subcategories, renamed Mixin Toggles to Various (+ SetEnchantments Loot Function from Debug), moved Print Item Type Blacklists from Debug to Advanced
+	// Note: FermiumBooter reads MixinToggles by name from the raw cfg file before this migration runs,
+	//  so renamed MixinToggles will use their default value for one launch
+	private static <T extends IConfigContext<T>> void migrateTo1_1(IConfigCategory<T> general, T context) {
+		try {
+			IConfigCategory<T> anvil = general.getSubCategories().get("Anvil Mechanics");
+			if (anvil != null) {
+				IConfigCategory<T> costs = getOrCreateSubCategory(anvil, "Anvil Costs", context);
+				for (String name : new String[]{
+						"(MixinToggle) Never Too Expensive",
+						"(MixinToggle) No cost if Enchantment Lvl unchanged"
+				}) moveElementSafe(anvil, name, costs, name);
+
+				IConfigCategory<T> useCost = getOrCreateSubCategory(costs, "Anvil Use Cost", context);
+				moveElementSafe(anvil, "(MixinToggle) Change Cost Scaling", useCost, "(MixinToggle) Change Scaling");
+				moveElementSafe(anvil, "Anvil Use Cost Scaling Type", useCost, "Scaling Type");
+				moveElementSafe(anvil, "Anvil Use Cost Scaling Factor", useCost, "Scaling Factor");
+				moveElementSafe(anvil, "Anvil Use Cost Combination Type", useCost, "Combination Type");
+				moveElementSafe(anvil, "(MixinToggle) Anvil Use Free Book Combination", useCost, "(MixinToggle) Free Book Combination");
+				moveElementSafe(anvil, "(MixinToggle) No Cost Increase On Repairs", useCost, "(MixinToggle) No Increase On Repairs");
+
+				IConfigCategory<T> tooltip = getOrCreateSubCategory(useCost, "Tooltip", context);
+				moveElementSafe(anvil, "Show Anvil Use Tooltip", tooltip, "Enabled");
+				moveElementSafe(anvil, "Anvil Use Tooltip Show Everywhere", tooltip, "Show Everywhere");
+				moveElementSafe(anvil, "Anvil Use Tooltip On Shift Key", tooltip, "On Shift Key");
+			}
+
+			IConfigCategory<T> etable = general.getSubCategories().get("Enchantment Table Mechanics");
+			if (etable != null) {
+				IConfigCategory<T> reEnchant = getOrCreateSubCategory(etable, "Re-Enchanting", context);
+				moveElementSafe(etable, "(MixinToggle) Allow Re-Enchant", reEnchant, "(MixinToggle) Allow Re-Enchant");
+				moveElementSafe(etable, "Re-Enchant Count Skip Increment Chance", reEnchant, "Count Skip Increment Chance");
+				moveElementSafe(etable, "Re-Enchant Max Count", reEnchant, "Max Count");
+				moveElementSafe(etable, "Re-Enchant Allow Incompatible", reEnchant, "Allow Incompatible");
+				moveElementSafe(etable, "Re-Enchant Combine Existing", reEnchant, "Combine Existing");
+				moveElementSafe(etable, "Re-Enchant Already Anviled", reEnchant, "Allow Already Anviled");
+
+				IConfigCategory<T> tooltip = getOrCreateSubCategory(reEnchant, "Enchant Count Tooltip", context);
+				moveElementSafe(etable, "Re-Enchant Show Count Tooltip", tooltip, "Enabled");
+				moveElementSafe(etable, "Re-Enchant Tooltip Show Everywhere", tooltip, "Show Everywhere");
+				moveElementSafe(etable, "Re-Enchant Tooltip On Shift Key", tooltip, "On Shift Key");
+			}
+
+			IConfigCategory<T> firstSetup = general.getSubCategories().get("First Setup");
+			if (firstSetup != null) {
+				IConfigCategory<T> remap = getOrCreateSubCategory(firstSetup, "Registry Remapping", context);
+				moveElementSafe(firstSetup, "(MixinToggle) Enable Registry Remapping", remap, "(MixinToggle) Enable Registry Remapping");
+				// maps are stored as categories
+				moveCategorySafe(firstSetup, "Enchantment Id Remaps", remap);
+				moveCategorySafe(firstSetup, "Enchantment Numeric Id Remaps", remap);
+			}
+
+			if (general.getSubCategories().containsKey("Mixin Toggles") && !general.getSubCategories().containsKey("Various"))
+				ConfigMigrationHelper.renameCategory(general, "Mixin Toggles", "Various");
+			IConfigCategory<T> various = general.getSubCategories().get("Various");
+			IConfigCategory<T> debug = general.getSubCategories().get("Debug");
+			if (various != null && debug != null)
+				moveElementSafe(debug, "Register SetEnchantments Loot Function", various, "Register SetEnchantments Loot Function");
+			IConfigCategory<T> advanced = general.getSubCategories().get("Advanced");
+			if (advanced != null && debug != null)
+				moveElementSafe(debug, "Print Item Type Blacklists", advanced, "Print Item Type Blacklists");
+
+			IConfigCategory<T> compat = general.getSubCategories().get("Compat");
+			IConfigCategory<T> newSME = compat == null ? null : compat.getSubCategories().get("So Many Enchantments 1.0.0+");
+			if (newSME != null)
+				moveElementSafe(newSME, "(MixinToggle) Anvil Use Count UpgPot Compat (SoManyEnchantments)", newSME, "(MixinToggle) Anvil Use Count UpgPot Compat");
+		} catch (Exception e) {
+			Tags.LOGGER.error("Config migration to 1.1 failed", e);
+			throw new RuntimeException("Config migration to 1.1 failed", e);
+		}
+	}
+
+	private static <T extends IConfigContext<T>> IConfigCategory<T> getOrCreateSubCategory(IConfigCategory<T> parent, String name, T context) {
+		return parent.getSubCategories().computeIfAbsent(name, k -> context.createCategory());
+	}
+
+	/** Like ConfigMigrationHelper.moveElement, but skips silently if the source is missing and doesn't overwrite an existing target */
+	private static <T extends IConfigContext<T>> void moveElementSafe(IConfigCategory<T> from, String oldName, IConfigCategory<T> to, String newName) {
+		if (!from.getElements().containsKey(oldName) || to.getElements().containsKey(newName)) return;
+		ConfigMigrationHelper.moveElement(from, oldName, to, newName);
+	}
+
+	/** Like ConfigMigrationHelper.moveCategory, but skips silently if the source is missing and doesn't overwrite an existing target */
+	private static <T extends IConfigContext<T>> void moveCategorySafe(IConfigCategory<T> from, String name, IConfigCategory<T> to) {
+		if (!from.getSubCategories().containsKey(name) || to.getSubCategories().containsKey(name)) return;
+		ConfigMigrationHelper.moveCategory(from, name, to);
 	}
 
 	private static <T extends IConfigContext<T>> void migrateTo1_0_0(IConfigCategory<T> general, T context) {

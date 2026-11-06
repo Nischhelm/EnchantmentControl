@@ -47,80 +47,98 @@ public class EnchTableConfig {
     @Order(3)
     public boolean previewClue = false;
 
-    @Config.Comment({
-            "Allows to enchant already enchanted items on enchanting table.",
-            "This will add to existing enchants.",
-            "Incompatible with apotheosis & noexpensive"
-    })
-    @Config.Name("(MixinToggle) Allow Re-Enchant")
-    @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablereenchant.json", defaultValue = false)
-    @MixinConfig.CompatHandling(modid = "apotheosis", desired = false, warnIngame = false, reason = "Incompatible with Apotheosis")
-    @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompatible with No Expensive")
+    @Config.Comment("Options for enchanting already enchanted items in the enchanting table")
+    @Config.Name("Re-Enchanting")
     @Order(4)
-    public boolean allowReEnchant = true;
+    public ReEnchantConfig reEnchant = new ReEnchantConfig();
 
-    @Config.Comment({
-            "The Chance to skip incrementing the enchant count when enchanting an item.",
-            "To add a chance to be allowed to re-enchant more than expected",
-            "Requires \"Allow Re-Enchant\""
-    })
-    @Config.Name("Re-Enchant Count Skip Increment Chance")
-    @Config.SlidingOption
-    @Config.RangeDouble(min = 0, max = 1)
-    @Order(5)
-    public float reEnchantSkipIncrementChance = 0.2F;
+    @MixinConfig(name = Tags.MODID)
+    public static class ReEnchantConfig {
+        @Config.Comment({
+                "Allows to enchant already enchanted items on enchanting table.",
+                "This will add to existing enchants.",
+                "Incompatible with apotheosis & noexpensive"
+        })
+        @Config.Name("(MixinToggle) Allow Re-Enchant")
+        @Config.RequiresMcRestart
+        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablereenchant.json", defaultValue = false)
+        @MixinConfig.CompatHandling(modid = "apotheosis", desired = false, warnIngame = false, reason = "Incompatible with Apotheosis")
+        @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompatible with No Expensive")
+        @Order(0)
+        public boolean allowReEnchant = true;
 
-    @Config.Comment({
-            "How often items can be (re-) enchanted with the enchanting table.",
-            "NOTE: items enchanted through other means (loot etc) will start at 0 uses just like unenchanted crafted items",
-            "Set to 0 to not allow anything to be enchanted",
-            "Set to 1 to allow re-enchanting pre-enchanted loot once",
-            "Requires \"Allow Re-Enchant\""
-    })
-    @Config.Name("Re-Enchant Max Count")
-    @Config.RangeInt(min = 0)
-    @Order(6)
-    public int reEnchantMaxTimes = 1;
+        @Config.Comment({
+                "The Chance to skip incrementing the enchant count when enchanting an item.",
+                "To add a chance to be allowed to re-enchant more than expected",
+                "Requires \"(MixinToggle) Allow Re-Enchant\""
+        })
+        @Config.Name("Count Skip Increment Chance")
+        @Config.SlidingOption
+        @Config.RangeDouble(min = 0, max = 1)
+        @Order(1)
+        public float skipIncrementChance = 0.2F;
 
-    @Config.Comment({
-            "Whether to consider enchants being incompatible with each other when enchanting an item again in the enchanting table.",
-            "Requires \"Allow Re-Enchant\""
-    })
-    @Config.Name("Re-Enchant Allow Incompatible")
-    @Order(7)
-    public boolean reEnchantAllowIncompatible = false;
+        @Config.Comment({
+                "How often items can be (re-) enchanted with the enchanting table.",
+                "NOTE: items enchanted through other means (loot etc) will start at 0 uses just like unenchanted crafted items",
+                "Set to 0 to not allow anything to be enchanted",
+                "Set to 1 to allow re-enchanting pre-enchanted loot once",
+                "Requires \"(MixinToggle) Allow Re-Enchant\""
+        })
+        @Config.Name("Max Count")
+        @Config.RangeInt(min = 0)
+        @Order(2)
+        public int maxTimes = 1;
 
-    @Config.Comment({
-            "Whether to combine lvls of same enchantments when enchanting an item again in the enchanting table.",
-            "NOTE: if the all rolled enchants already are on the item, the enchantment wont be possible.",
-            "Requires \"Allow Re-Enchant\""
-    })
-    @Config.Name("Re-Enchant Combine Existing")
-    @Order(8)
-    public boolean reEnchantCombineExisting = false;
+        @Config.Comment({
+                "Whether to consider enchants being incompatible with each other when enchanting an item again in the enchanting table.",
+                "Requires \"(MixinToggle) Allow Re-Enchant\""
+        })
+        @Config.Name("Allow Incompatible")
+        @Order(3)
+        public boolean allowIncompatible = false;
 
-    @Config.Comment({
-            "Set to true to allow items to be re-enchanted even if they already have been used on the anvil",
-            "Requires \"Allow Re-Enchant\""
-    })
-    @Config.Name("Re-Enchant Already Anviled")
-    @Order(9)
-    public boolean reEnchantAlreadyAnviled = false;
+        @Config.Comment({
+                "Whether to combine lvls of same enchantments when enchanting an item again in the enchanting table.",
+                "NOTE: if the all rolled enchants already are on the item, the enchantment wont be possible.",
+                "Requires \"(MixinToggle) Allow Re-Enchant\""
+        })
+        @Config.Name("Combine Existing")
+        @Order(4)
+        public boolean combineExisting = false;
 
-    @Config.Comment("When in the etable gui, adds a tooltip to items with enchant count to indicate how often they have been enchanted already. Only in advanced mode = F3+H")
-    @Config.Name("Re-Enchant Show Count Tooltip")
-    @Config.RequiresMcRestart
-    @Order(10)
-    public boolean addEnchCountTooltip = true;
+        @Config.Comment({
+                "Set to true to allow items to be re-enchanted even if they already have been used on the anvil",
+                "Requires \"(MixinToggle) Allow Re-Enchant\""
+        })
+        @Config.Name("Allow Already Anviled")
+        @Order(5)
+        public boolean allowAlreadyAnviled = false;
 
-    @Config.Comment("When enabled, the enchant count tooltip will be shown everywhere, not just in the enchantment table GUI")
-    @Config.Name("Re-Enchant Tooltip Show Everywhere")
-    @Order(11)
-    public boolean tooltipShowEverywhere = false;
+        @Config.Comment({
+                "Options for the tooltip showing how often an item has been enchanted in the enchanting table already",
+                "Requires \"(MixinToggle) Allow Re-Enchant\""
+        })
+        @Config.Name("Enchant Count Tooltip")
+        @Order(6)
+        public EnchCountTooltipConfig tooltip = new EnchCountTooltipConfig();
+    }
 
-    @Config.Comment("When enabled, the enchant count tooltip will be shown when pressing Shift instead of requiring advanced mode (F3+H)")
-    @Config.Name("Re-Enchant Tooltip On Shift Key")
-    @Order(12)
-    public boolean tooltipOnShiftKey = false;
+    public static class EnchCountTooltipConfig {
+        @Config.Comment("When in the etable gui, adds a tooltip to items with enchant count to indicate how often they have been enchanted already. Only in advanced mode = F3+H")
+        @Config.Name("Enabled")
+        @Config.RequiresMcRestart
+        @Order(0)
+        public boolean enabled = true;
+
+        @Config.Comment("When enabled, the enchant count tooltip will be shown everywhere, not just in the enchantment table GUI")
+        @Config.Name("Show Everywhere")
+        @Order(1)
+        public boolean showEverywhere = false;
+
+        @Config.Comment("When enabled, the enchant count tooltip will be shown when pressing Shift instead of requiring advanced mode (F3+H)")
+        @Config.Name("On Shift Key")
+        @Order(2)
+        public boolean onShiftKey = false;
+    }
 }

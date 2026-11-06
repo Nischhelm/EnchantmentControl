@@ -73,10 +73,10 @@ public class CompatConfig {
     public static class NewSMECompat {
         @Config.Comment({
                 "Sets Anvil Use Count to 0 if Upgraded Potentials is used on an enchanted items.",
-                "This is needed if \"Anvil Use Cost Scaling Type\" is not the default EXPONENTIAL.",
+                "This is needed if \"Anvil Costs.Anvil Use Cost.Scaling Type\" is not the default EXPONENTIAL.",
                 "Accounts for the cut-off at high anvil use costs (>~120 lvls) of UpgPot."
         })
-        @Config.Name("(MixinToggle) Anvil Use Count UpgPot Compat (SoManyEnchantments)")
+        @Config.Name("(MixinToggle) Anvil Use Count UpgPot Compat")
         @Config.RequiresMcRestart
         @MixinConfig.MixinToggle(lateMixin = "mixins.enchantmentcontrol.somanyenchantments.json", defaultValue = true)
         @MixinConfig.CompatHandling(modid = "somanyenchantments", desired = true, warnIngame = false, reason = "Optional Compat for Upgraded Potentials if new SME is present", targetVersionRange = "[1.0.0,)")
@@ -107,7 +107,7 @@ public class CompatConfig {
     public static class EnchanterToolsCompat {
         @Config.Comment({
                 "Makes Lapis Runes work correctly with Re-Enchanting.",
-                "One thing doesn't work: Combining existing levels with new rolled enchants (\"Re-Enchant Combine Existing\").",
+                "One thing doesn't work: Combining existing levels with new rolled enchants (\"Re-Enchanting.Combine Existing\").",
                 "I'm too lazy to fix that. Existing enchants will not be combined with new ones when using Lapis Runes."
         })
         @Config.Name("(MixinToggle) Re-Enchant Lapis Runes")

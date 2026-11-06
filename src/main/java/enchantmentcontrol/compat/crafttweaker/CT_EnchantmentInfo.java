@@ -32,7 +32,7 @@ public class CT_EnchantmentInfo {
     public static void onBuilderCreate(EnchantmentBuilder builder, String name){
         String id = builder.domain + ":" + name;
 
-        String remap = ConfigHandler.dev.idRemaps.get(id);
+        String remap = ConfigHandler.dev.registryRemap.idRemaps.get(id);
         if(remap != null) id = remap;
 
         EnchantmentInfo info = EnchantmentInfo.get(id);

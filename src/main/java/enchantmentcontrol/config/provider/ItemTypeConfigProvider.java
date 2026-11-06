@@ -215,7 +215,7 @@ public class ItemTypeConfigProvider {
 
     //This is just inference to try to match the original state during first setup
     public static void printDefaultItemTypes() {
-        if(ConfigHandler.debug.printItemTypeBlacklists)
+        if(ConfigHandler.advanced.printItemTypeBlacklists)
             printDefaultBlacklist();
 
         if(CompatUtil.somanyenchantments.isLoaded() && CompatUtil.versionInRange(CompatUtil.somanyenchantments, "[1.0.0,)"))

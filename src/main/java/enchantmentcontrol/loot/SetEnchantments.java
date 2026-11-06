@@ -42,7 +42,7 @@ public class SetEnchantments extends LootFunction {
             Enchantment enchantment = this.enchantments.get(i);
             int lvl = this.lvlRanges.get(i).generateInt(rand);
 
-            if (stack.getItem() == Items.BOOK)
+            if (stack.getItem() == Items.ENCHANTED_BOOK)
                 ItemEnchantedBook.addEnchantment(stack, new EnchantmentData(enchantment, lvl));
             else
                 stack.addEnchantment(enchantment, lvl);

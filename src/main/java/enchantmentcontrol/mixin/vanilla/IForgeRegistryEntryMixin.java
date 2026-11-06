@@ -22,7 +22,7 @@ public abstract class IForgeRegistryEntryMixin {
     private ResourceLocation ec_modifyRegistryNames(ResourceLocation original){
         if(this.getRegistryType() != Enchantment.class) return original;
 
-        String remap = ConfigHandler.dev.idRemaps.get(original.toString());
+        String remap = ConfigHandler.dev.registryRemap.idRemaps.get(original.toString());
         if(remap != null){
             Tags.LOGGER.info("Remapping Enchantment {} to {}", original, remap);
             return new ResourceLocation(remap);
