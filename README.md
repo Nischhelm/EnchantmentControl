@@ -43,6 +43,7 @@ How the import works:
 | `min_ench_eval` / `max_ench_eval` (only if `custom_evaluations` is true) | `enchantability` |
 | `incompatible` / `incompat_mode` | "Incompatible Groups" config, see below |
 | `enabled: false` | "Registered Enchantment Blacklist", see below |
+| `items_list` / `items_list_mode` / `applicability_mode` | "Custom Item Types" + "Anvil.Item Types", see below |
 | `description` | `/config/enchantmentcontrol/descriptions.txt`, only for enchantments that don't have a description there yet. Lines are joined with `\n`, lang keys get translated to the current language |
 
 Incompatibilities don't go into the per-enchant jsons:
@@ -62,8 +63,18 @@ Enchantability formulas are translated if they match one of these patterns (spac
 
 Other formulas are skipped with a warning in the log.
 
-Not imported (a warning is logged for each enchantment that uses them):
-- `items_list` / `applicability_mode`: use the "Item Types" configs instead
+Item lists only applied to the anvil (and `/enchant`, random loot) in Enchantments Control, so they're translated into "Anvil.Item Types".
+For each enchantment with a list, two custom item types are created: `EnchantmentsControl_<modid>_<enchid>` (the listed items) and `EnchantmentsControl_<modid>_<enchid>_Others` (every other item).
+Inverted (`!`) anvil types disallow first, so:
+
+| Enchantments Control | Anvil Item Types for that enchantment |
+|---|---|
+| blacklist (`items_list_mode: 0`) | `!EnchantmentsControl_<...>` |
+| whitelist (`items_list_mode: 1`) | `!EnchantmentsControl_<...>_Others` |
+| whitelist, only the list decides (`applicability_mode: 1`) | `EnchantmentsControl_<...>` + `!EnchantmentsControl_<...>_Others` |
+| blacklist, only the list decides (`applicability_mode: 1`) | `ANY` + `!EnchantmentsControl_<...>` |
+
+Like incompatibilities, these get merged into the inferred types on first setup ("Print Default Item Types" enabled), otherwise they're added to the existing config.
 
 If Enchantments Control stays installed, this mod blocks its patches to the enchanting table, anvil, librarians, `enchant_randomly` loot and `/enchant`.
 They replace those methods entirely, which would silently disable this mod's logic there.

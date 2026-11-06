@@ -3,6 +3,7 @@ package enchantmentcontrol.config.provider;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.Tags;
 import enchantmentcontrol.compat.CompatUtil;
+import enchantmentcontrol.compat.enchcontrol.EnchantmentsControlImporter;
 import enchantmentcontrol.compat.somanyenchantments.NewSMECompat;
 import enchantmentcontrol.compat.somanyenchantments.OldSMECompat;
 import enchantmentcontrol.config.ConfigHandler;
@@ -277,6 +278,7 @@ public class ItemTypeConfigProvider {
         //Write that down
         ConfigHandler.itemTypes.general.itemTypes = mapToConfigMap(byName);
         ConfigHandler.itemTypes.anvil.itemTypes = mapToConfigMap(byNameAnvil);
+        EnchantmentsControlImporter.mergeAnvilTypes(ConfigHandler.itemTypes.anvil.itemTypes); //imported item lists, if any
 
         //Reset print toggle
         ConfigHandler.dev.printTypes = false;

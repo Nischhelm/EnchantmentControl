@@ -12,11 +12,14 @@ import enchantmentcontrol.config.descriptions.EmptyEnchantmentWriter;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoConfigReader;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoDeserialiser;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
+import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.IOriginalEnchantmentProperties;
+import enchantmentcontrol.util.matchers.EnumMatcherType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.event.RegistryEvent;
@@ -33,6 +36,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * One-time import of Enchantments Control (modid enchcontrol, by AustereTony) enchantments.json into our per-enchant jsons.
@@ -54,6 +59,10 @@ public class EnchantmentsControlImporter {
 
     /** Imported incompatibilities (enchant -> its "incompatible" list), merged into the incompatibility config by {@link IncompatibleConfigProvider} */
     public static final Map<Enchantment, Set<Enchantment>> importedIncompats = new HashMap<>();
+    /** Custom item types created from Enchantments Control's item lists, added to "Custom Item Types" */
+    private static final Map<String, ItemTypeConfig.CustomItemType> importedCustomTypes = new LinkedHashMap<>();
+    /** Anvil item type (possibly inverted) -> enchants, added to "Anvil.Item Types" */
+    private static final Map<String, Set<String>> importedAnvilTypes = new LinkedHashMap<>();
     /** Imported descriptions (enchant id -> description with literal \n line breaks), written into descriptions.txt */
     private static final Map<String, String> importedDescriptions = new LinkedHashMap<>();
     /** Enchants with incompat_mode 1, where only the imported list should decide, not their own isCompatibleWith */
@@ -100,6 +109,7 @@ public class EnchantmentsControlImporter {
         Tags.LOGGER.info("Enchantments Control import: wrote {} changed enchantments to {}", written, outDir.getPath());
         applyIncompats();
         applyDescriptions();
+        applyItemLists();
 
         // Back up the original, then neutralise it so it's not imported again and Enchantments Control doesn't apply it alongside our jsons
         try {
@@ -123,9 +133,9 @@ public class EnchantmentsControlImporter {
             Tags.LOGGER.info("Enchantments Control import: {} is not registered, skipping", id);
             return false;
         }
-        logUnsupported(id, o);
         collectIncompats(id, ench, o);
         collectDescription(id, o);
+        collectItemList(id, o);
         if (Boolean.FALSE.equals(bool(o, "enabled"))) unregister(id);
 
         if (EnchantmentInfo.get(id) != null) {
@@ -258,6 +268,82 @@ public class EnchantmentsControlImporter {
         if (!listed.isEmpty()) importedIncompats.put(ench, listed);
     }
 
+    /**
+     * Enchantments Control's item list only applies in the anvil (and /enchant, random loot). Translated into Anvil Item Types, using that inverted types disallow first:
+     *  items_list_mode 0 (blacklist), applicability_mode 0: !listed
+     *  items_list_mode 1 (whitelist), applicability_mode 0: !(everything except listed)
+     *  items_list_mode 1, applicability_mode 1 (only the list decides): listed + !(everything except listed)
+     *  items_list_mode 0, applicability_mode 1: ANY + !listed
+     */
+    private static void collectItemList(String id, JsonObject o) {
+        boolean whitelist = nonZero(o, "items_list_mode");
+        boolean listOnly = nonZero(o, "applicability_mode");
+        List<String> items = new ArrayList<>();
+        if (nonEmpty(o, "items_list"))
+            for (JsonElement e : o.getAsJsonArray("items_list")) {
+                String item = e.getAsString();
+                if (Item.getByNameOrId(item) == null) Tags.LOGGER.info("Enchantments Control import: {} lists item {}, which is not registered, ignoring", id, item);
+                else items.add(new ResourceLocation(item).toString());
+            }
+        if (!whitelist && !listOnly && items.isEmpty()) return; // default: no restriction
+
+        ResourceLocation loc = new ResourceLocation(id);
+        String baseName = "EnchantmentsControl_" + loc.getNamespace() + "_" + loc.getPath();
+        String listed = null, allExceptListed = "ANY";
+        if (!items.isEmpty()) {
+            listed = baseName;
+            ItemTypeConfig.CustomItemType listedType = new ItemTypeConfig.CustomItemType();
+            listedType.type = EnumMatcherType.EXACT;
+            listedType.values.addAll(items);
+            importedCustomTypes.put(listed, listedType);
+
+            allExceptListed = baseName + "_Others";
+            ItemTypeConfig.CustomItemType othersType = new ItemTypeConfig.CustomItemType();
+            othersType.type = EnumMatcherType.REGEX;
+            othersType.values.add("(?!(?:" + items.stream().map(Pattern::quote).collect(Collectors.joining("|")) + ")$).*");
+            importedCustomTypes.put(allExceptListed, othersType);
+        }
+
+        if (whitelist) {
+            addAnvilType("!" + allExceptListed, id); // with an empty whitelist that's !ANY, so nothing
+            if (listOnly && listed != null) addAnvilType(listed, id);
+        } else {
+            if (listed != null) addAnvilType("!" + listed, id);
+            if (listOnly) addAnvilType("ANY", id);
+        }
+    }
+
+    private static void addAnvilType(String type, String enchId) {
+        importedAnvilTypes.computeIfAbsent(type, k -> new LinkedHashSet<>()).add(enchId);
+    }
+
+    /**
+     * Custom types are registered from the config in postInit, so they can be added right away.
+     * The anvil types get merged into the inferred ones if "Print Default Item Types" runs in the same startup (it overwrites the config), otherwise added now.
+     */
+    private static void applyItemLists() {
+        if (importedCustomTypes.isEmpty() && importedAnvilTypes.isEmpty()) return;
+        importedCustomTypes.forEach((name, type) -> {
+            if (ConfigHandler.itemTypes.customTypes.containsKey(name))
+                Tags.LOGGER.warn("Enchantments Control import: custom item type {} already exists, overwriting", name);
+            ConfigHandler.itemTypes.customTypes.put(name, type);
+        });
+        if (ConfigHandler.dev.printTypes)
+            Tags.LOGGER.info("Enchantments Control import: item lists will be merged into the inferred \"Anvil.Item Types\"");
+        else
+            mergeAnvilTypes(ConfigHandler.itemTypes.anvil.itemTypes);
+        EnchantmentControl.configNeedsSaving = true;
+        Tags.LOGGER.info("Enchantments Control import: added {} custom item types and {} anvil item type entries", importedCustomTypes.size(), importedAnvilTypes.values().stream().mapToInt(Set::size).sum());
+    }
+
+    /** Called by ItemTypeConfigProvider after it inferred the default item types */
+    public static void mergeAnvilTypes(Map<String, ArrayList<String>> anvilTypes) {
+        importedAnvilTypes.forEach((type, enchs) -> {
+            ArrayList<String> list = anvilTypes.computeIfAbsent(type, k -> new ArrayList<>());
+            for (String ench : enchs) if (!list.contains(ench)) list.add(ench);
+        });
+    }
+
     /** Enchantments Control ran every description line through I18n, so lang keys get translated here (to the current language) */
     private static void collectDescription(String id, JsonObject o) {
         if (!nonEmpty(o, "description")) return;
@@ -325,14 +411,6 @@ public class EnchantmentsControlImporter {
         }
         for (Enchantment ench : replacesOwnIncompats)
             Tags.LOGGER.warn("Enchantments Control import: {} has incompat_mode 1 (ignore its own incompatibilities), which can't be applied to already set up \"Incompatible Groups\". Remove it from those groups manually if needed.", ench.getRegistryName());
-    }
-
-    /** Fields this mod has no per-enchant json equivalent for. Only logs them if they deviate from Enchantments Control's defaults. */
-    private static void logUnsupported(String id, JsonObject o) {
-        List<String> dropped = new ArrayList<>();
-        if (nonZero(o, "applicability_mode") || nonZero(o, "items_list_mode") || nonEmpty(o, "items_list")) dropped.add("item applicability (use the \"Item Types\" configs)");
-        if (!dropped.isEmpty())
-            Tags.LOGGER.warn("Enchantments Control import: {} has settings that can't be imported automatically: {}", id, String.join(", ", dropped));
     }
 
     private static boolean nonZero(JsonObject o, String key) {
