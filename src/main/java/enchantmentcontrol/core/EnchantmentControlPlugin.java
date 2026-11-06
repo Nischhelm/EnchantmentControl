@@ -20,18 +20,17 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 
 		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.contenttweaker.json", () -> FermiumJarScanner.isModPresent("contenttweaker"));
 		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.crafttweaker.json", () -> FermiumJarScanner.isModPresent("crafttweaker"));
+		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.enchcontrol.json", () -> FermiumJarScanner.isModPresent("enchcontrol"));
 
-		// Enchantments Control replaces these methods entirely with its own logic (our mixins silently vanish in there),
-		// and its per-enchant settings are imported into ours (EnchantmentsControlImporter). Its cosmetic patches (names, tooltips, localization, TE) stay.
 		if (FermiumJarScanner.isModPresent("enchcontrol")) {
 			String[] blockedClasses = {
-					"net.minecraft.enchantment.EnchantmentHelper", // enchanting table + enchant_with_levels
-					"net.minecraft.entity.passive.EntityVillager$ListEnchantedBookForEmeralds", // librarians
-					"net.minecraft.world.storage.loot.functions.EnchantRandomly", // enchant_randomly
-					"net.minecraft.command.CommandEnchant", // /enchant
-					"net.minecraft.inventory.ContainerRepair" // anvil (its item lists, incompatibilities and level caps)
+					"net.minecraft.enchantment.EnchantmentHelper",
+					"net.minecraft.entity.passive.EntityVillager$ListEnchantedBookForEmeralds",
+					"net.minecraft.world.storage.loot.functions.EnchantRandomly",
+					"net.minecraft.command.CommandEnchant",
+					"net.minecraft.inventory.ContainerRepair"
 			};
-			// FML registers coremod transformers wrapped in a generated $wrapper class
+			// enchsctrl cosmetic patches (names, tooltips, localization, TE) stay.
 			FermiumTransformerAPI.blockTransformerFromClasses("$wrapper.austeretony.enchcontrol.common.core.ECClassTransformer", blockedClasses);
 			FermiumTransformerAPI.blockTransformerFromClasses("austeretony.enchcontrol.common.core.ECClassTransformer", blockedClasses);
 		}
