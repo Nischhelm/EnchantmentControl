@@ -20,6 +20,16 @@ public class VariousConfig {
     public boolean fixEnchantRandomlyCrash = true;
 
     @Config.Comment({
+            "Allows to draw bows enchanted with Infinity without having any arrows in the inventory.",
+            "Vanilla Infinity already shoots without consuming arrows, but still requires one to be in the inventory to start drawing the bow.",
+            "Note: Only affects bows that don't override the vanilla bow drawing logic"
+    })
+    @Config.Name("(MixinToggle) Infinity Needs No Arrow")
+    @Config.RequiresMcRestart
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.infinitynoarrow.json", defaultValue = true)
+    public boolean infinityNeedsNoArrow = true;
+
+    @Config.Comment({
             "If enabled, will register a loot function named set_enchantments.",
             "This loot function takes in a list of enchantment ids and random value ranges (or fixed values)",
             "And applies exactly these enchantments onto a given item (books are turned into enchanted books).",
