@@ -6,6 +6,7 @@ import enchantmentcontrol.config.folders.*;
 import enchantmentcontrol.config.provider.BlacklistConfigProvider;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
+import enchantmentcontrol.util.UniversalRepairUtil;
 import meldexun.betterconfig.api.BetterConfig;
 import meldexun.betterconfig.api.BetterConfigManager;
 import meldexun.betterconfig.api.LoadEarly;
@@ -100,6 +101,7 @@ public class ConfigHandler {
                 IncompatibleConfigProvider.onResetConfig();
 
                 FeatureBloodAnvil.resetConfigValues();
+                UniversalRepairUtil.resetConfigValues();
             }
         }
     }

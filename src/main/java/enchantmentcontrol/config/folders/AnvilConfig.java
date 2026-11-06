@@ -16,6 +16,48 @@ public class AnvilConfig {
     @Order(1)
     public BloodAnvilConfig bloodAnvil = new BloodAnvilConfig();
 
+    @Config.Comment("Options for an item that can repair any repairable item in the anvil")
+    @Config.Name("Universal Repair Item")
+    @Order(2)
+    public UniversalRepairConfig universalRepair = new UniversalRepairConfig();
+
+    @MixinConfig(name = Tags.MODID)
+    public static class UniversalRepairConfig {
+        @Config.Comment("If enabled, the given item can be used in the right anvil slot to repair any repairable item, similar to repair materials")
+        @Config.Name("(MixinToggle) Enabled")
+        @Config.RequiresMcRestart
+        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anviluniversalrepair.json", defaultValue = false)
+        @SuppressWarnings("unused")
+        @Order(0)
+        public boolean enabled = false;
+
+        @Config.Comment({
+                "Registry name of the universal repair item, optionally with metadata",
+                "Pattern: modid:itemname or modid:itemname:meta"
+        })
+        @Config.Name("Item Name")
+        @Order(1)
+        public String itemName = "minecraft:nether_star";
+
+        @Config.Comment({
+                "How much % of the max durability each universal repair item repairs. Default 0.5 = 50%",
+                "Like with repair materials, multiple items in the stack can be used at once, each costing 1 lvl (if repairing isn't set to be free)"
+        })
+        @Config.Name("Repair Amount")
+        @Config.RangeDouble(min = 0.001, max = 1)
+        @Config.SlidingOption
+        @Order(2)
+        public float repairAmount = 0.5F;
+
+        @Config.Comment({
+                "Items that can't be repaired with the universal repair item.",
+                "Entries with a colon are item registry names (modid:itemname), entries without a colon are item type names as defined in the \"Item Types\" section (for example SWORD or ARMOR)"
+        })
+        @Config.Name("Item Blacklist")
+        @Order(3)
+        public String[] itemBlacklist = {};
+    }
+
     @MixinConfig(name = Tags.MODID)
     public static class AnvilCostConfig {
         @Config.Comment("Removes the \"Too Expensive\" system of anvils")
