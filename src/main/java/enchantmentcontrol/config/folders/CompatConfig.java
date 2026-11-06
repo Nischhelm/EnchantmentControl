@@ -134,4 +134,21 @@ public class CompatConfig {
         @Config.RequiresMcRestart
         public boolean replaceNoExpensive = true;
     }
+
+    @Config.Name("Merge Enchantments")
+    public MergeEnchantmentsCompat mergeEnchantments = new MergeEnchantmentsCompat();
+
+    public static class MergeEnchantmentsCompat {
+        @Config.Comment({
+                "Merge Enchantments always overrides which enchantments are compatible with each other, which makes \"Incompatible Groups\" do nothing.",
+                "With its \"combineEnchantments\" option, it also allows every enchantment on every item in the anvil, ignoring the anvil \"Item Types\".",
+                "If enabled, disables Merge Enchantments entirely. Everything it does can be set up with this mod instead:",
+                " - By default, it makes all enchantments compatible with each other except Silk Touch and Fortune (and its own blacklist).",
+                "   To get that, only keep those in \"Incompatible Groups\" (or disable \"Incompatible Groups Enabled\" for no incompatibilities at all).",
+                " - \"combineEnchantments\" = all enchants compatible and applicable on everything in the anvil: disable \"Incompatible Groups Enabled\" and add the enchants to \"ANY\" in \"Item Types.Anvil.Item Types\""
+        })
+        @Config.Name("Disable Merge Enchantments")
+        @Config.RequiresMcRestart
+        public boolean disableMergeEnchantments = true;
+    }
 }

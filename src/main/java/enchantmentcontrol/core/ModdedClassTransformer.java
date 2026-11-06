@@ -26,6 +26,11 @@ public class ModdedClassTransformer extends HashMapClassNodeClassTransformer imp
             registry.add("cn.enaium.noexpensive.injection.mixins.ContainerRepairMixin", 0, (Consumer<ClassNode>) classNode ->
                     classNode.methods.removeIf(method -> !method.name.equals("<init>")));
 
+        if(FermiumJarScanner.isModPresent("merenc") && ConfigHandler.compat.mergeEnchantments.disableMergeEnchantments)
+            // Kill the mixin of Merge Enchantments by removing its methods (isCompatibleWith and canApply injects + helpers)
+            registry.add("com.dplayend.merenc.mixin.MixEnchantment", 0, (Consumer<ClassNode>) classNode ->
+                    classNode.methods.removeIf(method -> !method.name.equals("<init>")));
+
         if(FermiumJarScanner.isModPresent("enchanter_tools") && ConfigHandler.compat.enchanterTools.fixLapisRuneReenchanting)
             registry.add("com.sirsquidly.enchanter_tools.mixin.MixinContainerEnchantment", "enchantertools$overrideEnchantItem", ClassWriter.COMPUTE_MAXS, method -> {
                 // Insert after onEnchant: ReEnchantUtil.incrementEnchantCount(player.getRNG(), result);
