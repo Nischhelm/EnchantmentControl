@@ -44,20 +44,41 @@ public class AnvilConfig {
     @Order(3)
     public boolean noCostIfUnchanged = false;
 
+    @Config.Comment({
+            "If enabled, renaming an item in the anvil will not cost any XP.",
+            "If nothing else costs XP in that anvil action, the anvil use cost (\"RepairCost\") of the items isn't paid either, making plain renames completely free."
+    })
+    @Config.Name("(MixinToggle) Free Renames")
+    @Config.RequiresMcRestart
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilfreerenames.json", defaultValue = false)
+    @Order(4)
+    public boolean freeRenames = false;
+
+    @Config.Comment({
+            "If enabled, repairing an item in the anvil will not cost any XP.",
+            "This removes the 1 lvl per repair material used, as well as the 2 lvls for repairing with a second item of the same type.",
+            "If nothing else costs XP in that anvil action, the anvil use cost (\"RepairCost\") of the items isn't paid either, making plain repairs completely free."
+    })
+    @Config.Name("(MixinToggle) Free Repairs")
+    @Config.RequiresMcRestart
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilfreerepairs.json", defaultValue = false)
+    @Order(5)
+    public boolean freeRepairs = false;
+
     @Config.Comment("When in the anvil gui, adds a tooltip to items with anvil use cost to indicate how often they have been used at the anvil already. Only in advanced mode = F3+H")
     @Config.Name("Show Anvil Use Tooltip")
     @Config.RequiresMcRestart
-    @Order(4)
+    @Order(6)
     public boolean addAnvilUseTooltip = true;
 
     @Config.Comment("When enabled, the anvil use tooltip will be shown everywhere, not just in the anvil GUI")
     @Config.Name("Anvil Use Tooltip Show Everywhere")
-    @Order(5)
+    @Order(7)
     public boolean tooltipShowEverywhere = false;
 
     @Config.Comment("When enabled, the anvil use tooltip will be shown when pressing Shift instead of requiring advanced mode (F3+H)")
     @Config.Name("Anvil Use Tooltip On Shift Key")
-    @Order(6)
+    @Order(8)
     public boolean tooltipOnShiftKey = false;
 
     @Config.Comment("Main toggle for the Anvil Use Cost: Scaling Type, Combination Type and Scaling Factor in this config to be applicable")
@@ -66,7 +87,7 @@ public class AnvilConfig {
     @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilscaling.json", defaultValue = false)
     @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompatible with No Expensive")
     @SuppressWarnings("unused")
-    @Order(7)
+    @Order(9)
     public boolean enableAnvilScalingChange = false;
 
     @Config.Comment({
@@ -82,7 +103,7 @@ public class AnvilConfig {
             "Suggested quadratic: 0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100"
     })
     @Config.Name("Anvil Use Cost Scaling Type")
-    @Order(8)
+    @Order(10)
     public ScalingType repairCostScalingType = ScalingType.EXPONENTIAL;
     public enum ScalingType { EXPONENTIAL, QUADRATIC, LINEAR, CONST}
 
@@ -92,7 +113,7 @@ public class AnvilConfig {
     })
     @Config.Name("Anvil Use Cost Scaling Factor")
     @Config.RangeDouble(min = Float.MIN_VALUE)
-    @Order(9)
+    @Order(11)
     public float repairCostScalingFactor = 2;
 
     @Config.Comment({
@@ -104,12 +125,12 @@ public class AnvilConfig {
             "Note: This will also apply to the anvil use COUNT used to calc the anvil use COST"
     })
     @Config.Name("Anvil Use Cost Combination Type")
-    @Order(10)
+    @Order(12)
     public ComboType repairCostCombinationType = ComboType.MAX;
     public enum ComboType { MIN, MAX, SUM, AVERAGE }
 
     @Config.Comment("Options for the Blood Anvil")
     @Config.Name("Blood Anvil")
-    @Order(11)
+    @Order(13)
     public BloodAnvilConfig bloodAnvil = new BloodAnvilConfig();
 }

@@ -8,6 +8,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.ContainerRepair;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -25,7 +26,8 @@ public class AnvilUseTooltipHandler {
 
         int repairCost = event.getItemStack().getRepairCost();
         if(repairCost <= 0) return;
-        int uses = AnvilCostUtil.getAnvilCount(event.getItemStack()); // MathHelper.log2(repairCost + 1); //logarithms baby
+        //AnvilCount is only written by the "Change Cost Scaling" mixin. Without it (or for items from before it got enabled), use the vanilla relation cost = 2^uses - 1
+        int uses = AnvilCostUtil.hasAnvilCount(event.getItemStack()) ? AnvilCostUtil.getAnvilCount(event.getItemStack()) : MathHelper.log2(repairCost + 1); //logarithms baby
 
         event.getToolTip().add(getLowestEnchantLineIndex(event), TextFormatting.DARK_GRAY + I18n.format((uses == 1) ? "tooltip.anviluses.singular" : "tooltip.anviluses", uses, repairCost) + TextFormatting.RESET);
     }

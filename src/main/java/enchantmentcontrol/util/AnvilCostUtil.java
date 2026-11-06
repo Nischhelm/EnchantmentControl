@@ -88,4 +88,13 @@ public class AnvilCostUtil {
                 return MathHelper.ceil(repairCost * multi) + 1;
         }
     }
+
+    /**
+     * @param levelCost the levels incurred by the current anvil action (vanilla local "i")
+     * @param freeLevels the part of levelCost that should not be paid (free renames/repairs)
+     * @return true if the anvil action only consists of free renames/repairs. Then the prior anvil use cost ("RepairCost") isn't paid either
+     */
+    public static boolean isFreeOutput(int levelCost, int freeLevels) {
+        return freeLevels > 0 && levelCost - freeLevels <= 0;
+    }
 }
