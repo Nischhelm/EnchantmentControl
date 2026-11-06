@@ -58,9 +58,20 @@ public class AnvilConfig {
         @Order(3)
         public boolean freeRepairs = false;
 
+        @Config.Comment({
+                "If enabled, using the anvil will never require or cost any XP. The XP cost isn't displayed anymore either.",
+                "Note: the anvil use cost (\"RepairCost\") of items still increases as usual and items can still become \"Too Expensive\" if enabled. You can disable these separately."
+        })
+        @Config.Name("(MixinToggle) Totally Free Anvil")
+        @Config.RequiresMcRestart
+        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilnoxpcost.json", defaultValue = false)
+        @MixinConfig.CompatHandling(modid = "anvilpatchevil", desired = false, warnIngame = false, reason = "Anvil Patch - Evil already does this")
+        @Order(4)
+        public boolean noXPCosts = false;
+
         @Config.Comment("Options for the Anvil Use Cost (\"RepairCost\"), the additional XP cost items accumulate every time they are used in the anvil")
         @Config.Name("Anvil Use Cost")
-        @Order(4)
+        @Order(5)
         public AnvilUseCostConfig useCost = new AnvilUseCostConfig();
     }
 
