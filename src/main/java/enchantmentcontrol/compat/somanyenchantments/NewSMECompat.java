@@ -184,7 +184,7 @@ public class NewSMECompat {
         }
         for (EnchantmentBase ench : smeEnchants) {
             if(!ench.isEnabled()) continue;
-            if(ench.getRegistryName() == null && ConfigHandler.blacklists.blacklistedRegistryEnchants.contains(ench.getRegistryName().toString())) continue;
+            if(ench.getRegistryName() == null || ConfigHandler.blacklists.blacklistedRegistryEnchants.contains(ench.getRegistryName().toString())) continue;
             //Direct copy, not being extra intelligent
             for(String smeType : getNewSMETypes(ench, false)){
                 byName.computeIfAbsent(smeType, k -> new LinkedHashSet<>()).add(ench);
