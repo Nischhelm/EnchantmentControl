@@ -27,7 +27,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 /**
@@ -36,7 +35,7 @@ import java.util.*;
  * Enchantments Control requires every field for every entry, and on first launch copies its bundled defaults (all vanilla enchants) into the file.
  * So instead of copying entries 1:1 we diff every field against the actual (unmodified) enchantment and only write what was actually changed.
  * <p>
- * Afterwards the original file is backed up as enchantments.json.imported and the enchcontrol file is replaced with "[]".
+ * Afterwards the original file is backed up as enchantments.json.imported (.imported2, .imported3, ... if that already exists) and the enchcontrol file is replaced with "[]".
  * An empty array (instead of deleting the file) is what Enchantments Control itself uses for "no overrides" (/enchcontrol clear):
  * deleting it would make Enchantments Control fail to load its config.json too (zeroing its level caps), and it only regenerates the file if config.json is missing.
  * <p>
@@ -97,7 +96,8 @@ public class EnchantmentsControlImporter {
         // Back up the original, then neutralise it so it's not imported again and Enchantments Control doesn't apply it alongside our jsons
         try {
             File backup = new File(file.getPath() + ".imported");
-            Files.copy(file.toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            for (int i = 2; backup.exists(); i++) backup = new File(file.getPath() + ".imported" + i); // never overwrite an earlier backup
+            Files.copy(file.toPath(), backup.toPath());
             Files.write(file.toPath(), "[]".getBytes(StandardCharsets.UTF_8));
             Tags.LOGGER.info("Enchantments Control import: original backed up to {}", backup.getPath());
         } catch (Exception e) {

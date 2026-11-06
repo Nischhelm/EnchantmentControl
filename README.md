@@ -23,7 +23,7 @@ How the import works:
   So this mod only imports the fields that **differ from the enchantment's actual values**. Enchantments you didn't change don't get a file.
 - The changes are written to `/config/enchantmentcontrol/enchantments/<modid>/<enchid>.json` and apply on that same launch.
 - Enchantments that already have a json there are skipped, so your existing configs are never overwritten.
-- The original file is backed up as `enchantments.json.imported`, and `enchantments.json` is replaced with an empty list `[]`.
+- The original file is backed up as `enchantments.json.imported` (`.imported2`, `.imported3`, ... if that already exists), and `enchantments.json` is replaced with an empty list `[]`.
   So it's only imported once, and Enchantments Control (if still installed) doesn't apply it on top of this mod's jsons.
   The file is emptied rather than deleted because Enchantments Control fails to load its `config.json` without it.
   It only writes a new one if `config.json` is missing too.
