@@ -24,7 +24,7 @@ public class EnchantmentsConfig {
                 "Like in vanilla it's a very rare treasure enchant with max lvl 3.",
                 "Note: by default it still appears in librarian trades and other enchantment pools, use the blacklists if you don't want that."
         })
-        @Config.Name("(MixinToggle) Enabled")
+        @Config.Name("(MixinToggle) Soul Speed Enabled")
         @Config.RequiresMcRestart
         @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.soulspeed.json", defaultValue = false)
         @Order(0)
@@ -53,7 +53,7 @@ public class EnchantmentsConfig {
                 "Like in vanilla it's a very rare treasure enchant with max lvl 3.",
                 "Note: by default it still appears in librarian trades and other enchantment pools, use the blacklists if you don't want that."
         })
-        @Config.Name("Enabled")
+        @Config.Name("Swift Sneak Enabled")
         @Config.RequiresMcRestart
         public boolean enabled = false;
     }

@@ -24,7 +24,7 @@ public class AnvilConfig {
     @MixinConfig(name = Tags.MODID)
     public static class UniversalRepairConfig {
         @Config.Comment("If enabled, the given item can be used in the right anvil slot to repair any repairable item, similar to repair materials")
-        @Config.Name("(MixinToggle) Enabled")
+        @Config.Name("(MixinToggle) Universal Repair Item Enabled")
         @Config.RequiresMcRestart
         @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.anviluniversalrepair.json", defaultValue = false)
         @SuppressWarnings("unused")
