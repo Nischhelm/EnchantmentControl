@@ -30,6 +30,17 @@ public class VariousConfig {
     public boolean infinityNeedsNoArrow = true;
 
     @Config.Comment({
+            "If an item somehow has the same enchantment multiple times (Sharpness 3 and Sharpness 4), it will work as one enchantment with the summed up level (Sharpness 7).",
+            "Vanilla is inconsistent there: lvl checks take the first entry, damage/protection modifiers and on hit effects apply each entry separately",
+            "  and anything reading all enchantments at once (like the anvil) only sees the last entry.",
+            "Note: Because of the latter, using such an item in the anvil (or blood anvil) will merge the entries into one with the summed up level."
+    })
+    @Config.Name("(MixinToggle) Sum Duplicate Enchantments")
+    @Config.RequiresMcRestart
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.sumduplicateenchants.json", defaultValue = false)
+    public boolean sumDuplicateEnchants = false;
+
+    @Config.Comment({
             "If enabled, will register a loot function named set_enchantments.",
             "This loot function takes in a list of enchantment ids and random value ranges (or fixed values)",
             "And applies exactly these enchantments onto a given item (books are turned into enchanted books).",
