@@ -1,4 +1,4 @@
-package enchantmentcontrol.util;
+package enchantmentcontrol.util.mixinwrapper;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EntityEquipmentSlot;

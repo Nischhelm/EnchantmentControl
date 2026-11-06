@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import enchantmentcontrol.Tags;
 import enchantmentcontrol.util.EnchantmentInfo;
-import enchantmentcontrol.util.IEnchantmentPropertySetter;
+import enchantmentcontrol.util.mixinwrapper.IEnchantmentPropertySetter;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EntityEquipmentSlot;
 

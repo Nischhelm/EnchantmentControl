@@ -15,7 +15,7 @@ import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
 import enchantmentcontrol.config.folders.ItemTypeConfig;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.util.EnchantmentInfo;
-import enchantmentcontrol.util.IOriginalEnchantmentProperties;
+import enchantmentcontrol.util.mixinwrapper.IOriginalEnchantmentProperties;
 import enchantmentcontrol.util.matchers.EnumMatcherType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EntityEquipmentSlot;

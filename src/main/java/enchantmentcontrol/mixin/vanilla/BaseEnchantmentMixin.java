@@ -1,7 +1,7 @@
 package enchantmentcontrol.mixin.vanilla;
 
-import enchantmentcontrol.util.IEnchantmentPropertySetter;
-import enchantmentcontrol.util.IOriginalEnchantmentProperties;
+import enchantmentcontrol.util.mixinwrapper.IEnchantmentPropertySetter;
+import enchantmentcontrol.util.mixinwrapper.IOriginalEnchantmentProperties;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
