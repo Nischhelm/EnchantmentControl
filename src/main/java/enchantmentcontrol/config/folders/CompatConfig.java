@@ -123,12 +123,15 @@ public class CompatConfig {
     public static class NoExpensiveCompat {
         @Config.Comment({
                 "No Expensive overwrites the whole anvil logic, which breaks most anvil features of this mod.",
-                "If enabled, disables No Expensive and force enables \"Anvil Mechanics.Anvil Costs.(MixinToggle) Never Too Expensive\" instead.",
+                "If this config is enabled, it disables No Expensive entirely. Its main feature is covered by \"Anvil Mechanics.Anvil Costs.(MixinToggle) Never Too Expensive\" (enabled by default).",
                 "Differences to No Expensive:",
-                " - No Expensive caps the anvil cost at 39 lvls, while this mod removes the cap entirely",
-                " - No Expensive makes Infinity and Mending compatible in the anvil. To get that, remove them from the same \"Incompatible Groups\" instead.",
-                "If disabled, the anvil features of this mod that are incompatible with No Expensive will be disabled instead:",
-                " Never Too Expensive, Change Scaling, No Increase On Repairs and Allow Re-Enchant"
+                " - No Expensive caps the anvil cost at 39 lvls, while this mod just removes the cap",
+                " - No Expensive makes Infinity and Mending compatible in the anvil. To get that, remove that incompatible group from the \"Incompatible Groups\" config instead.",
+                "If disabled, No Expensive stays. It overwrites the anvil logic that these options of this mod inject into, so disable them yourself, otherwise the game will crash:",
+                " \"Anvil Mechanics.Anvil Costs.(MixinToggle) Never Too Expensive\"",
+                " \"Anvil Mechanics.Anvil Costs.Anvil Use Cost.(MixinToggle) Change Scaling\"",
+                " \"Anvil Mechanics.Anvil Costs.Anvil Use Cost.(MixinToggle) No Increase On Repairs\"",
+                " \"Enchantment Table Mechanics.Re-Enchanting.(MixinToggle) Allow Re-Enchant\""
         })
         @Config.Name("Replace No Expensive")
         @Config.RequiresMcRestart

@@ -18,16 +18,13 @@ public class AnvilConfig {
 
     @MixinConfig(name = Tags.MODID)
     public static class AnvilCostConfig {
-        @Config.Comment({
-                "Removes the \"Too Expensive\" system of anvils",
-                "Is force enabled if No Expensive is installed and \"Compat.No Expensive.Replace No Expensive\" is enabled"
-        })
+        @Config.Comment("Removes the \"Too Expensive\" system of anvils")
         @Config.Name("(MixinToggle) Never Too Expensive")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilnoexpensive.json", defaultValue = false)
+        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilnoexpensive.json", defaultValue = true)
         @SuppressWarnings("unused")
         @Order(0)
-        public boolean enableNoExpensive = false;
+        public boolean enableNoExpensive = true;
 
         @Config.Comment("If enabled, adding enchants with lower level or with already max lvl (anything leaving the resulting lvl the same as the one on the left item) will cost 0 XP in the anvil.")
         @Config.Name("(MixinToggle) No cost if Enchantment Lvl unchanged")
