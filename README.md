@@ -65,5 +65,7 @@ Other formulas are skipped with a warning in the log.
 Not imported (a warning is logged for each enchantment that uses them):
 - `items_list` / `applicability_mode`: use the "Item Types" configs instead
 
-Enchantments Control's own `config.json` (roman numerals, level caps, curse hiding, description tooltips, Thermal Expansion support) isn't touched.
-If you keep Enchantments Control installed for those features, note that its level caps (default 10) also limit any max level you set in this mod.
+If Enchantments Control stays installed, this mod blocks its patches to the enchanting table, anvil, librarians, `enchant_randomly` loot and `/enchant`.
+They replace those methods entirely, which would silently disable this mod's logic there.
+Its cosmetic features from its `config.json` keep working: roman numerals, curse hiding, description tooltips, custom localization and Thermal Expansion enchanter support.
+Its level caps only still apply to the creative tab.
