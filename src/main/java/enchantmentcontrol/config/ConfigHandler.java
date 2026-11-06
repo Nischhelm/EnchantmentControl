@@ -57,24 +57,29 @@ public class ConfigHandler {
 	@Order(5)
 	public static EnchTableConfig etable = new EnchTableConfig();
 
+	@Config.Comment("Enchantments added by this mod, all disabled by default")
+	@Config.Name("Additional Enchantments")
+	@Order(6)
+	public static EnchantmentsConfig enchantments = new EnchantmentsConfig();
+
 	@Config.Comment("Various options that don't fit anywhere else")
 	@Config.Name("Various")
-	@Order(6)
+	@Order(7)
 	public static VariousConfig various = new VariousConfig();
 
 	@Config.Comment("Mod Compatibility")
 	@Config.Name("Compat")
-	@Order(7)
+	@Order(8)
 	public static CompatConfig compat = new CompatConfig();
 
 	@Config.Comment("Advanced ")
 	@Config.Name("Advanced")
-	@Order(8)
+	@Order(9)
 	public static AdvancedConfig advanced = new AdvancedConfig();
 
 	@Config.Comment("Debug Options")
 	@Config.Name("Debug")
-	@Order(9)
+	@Order(10)
 	public static DebugConfig debug = new DebugConfig();
 
 	@SuppressWarnings("unused")

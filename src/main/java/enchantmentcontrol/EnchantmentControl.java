@@ -14,8 +14,11 @@ import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoInferrerWri
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
 import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.config.provider.ItemTypeConfigProvider;
+import enchantmentcontrol.enchantment.ModEnchantments;
 import enchantmentcontrol.handler.AnvilUseTooltipHandler;
 import enchantmentcontrol.handler.ReEnchantTooltipHandler;
+import enchantmentcontrol.handler.SoulSpeedHandler;
+import enchantmentcontrol.handler.SwiftSneakHandler;
 import enchantmentcontrol.loot.SetEnchantments;
 import meldexun.betterconfig.api.BetterConfigManager;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
@@ -51,6 +54,12 @@ public class EnchantmentControl {
             MinecraftForge.EVENT_BUS.register(AnvilUseTooltipHandler.class);
         if(ConfigHandler.etable.reEnchant.allowReEnchant && ConfigHandler.etable.reEnchant.tooltip.enabled && event.getSide() == Side.CLIENT)
             MinecraftForge.EVENT_BUS.register(ReEnchantTooltipHandler.class);
+
+        MinecraftForge.EVENT_BUS.register(ModEnchantments.class);
+        if(ConfigHandler.enchantments.swiftSneak.enabled && event.getSide() == Side.CLIENT)
+            MinecraftForge.EVENT_BUS.register(SwiftSneakHandler.class);
+        if(ConfigHandler.enchantments.soulSpeed.enabled)
+            MinecraftForge.EVENT_BUS.register(SoulSpeedHandler.class);
 
         if(CompatUtil.crafttweaker.isLoaded())
             MinecraftForge.EVENT_BUS.register(CT_RollEnchantments_EventManagerExpansion.class);

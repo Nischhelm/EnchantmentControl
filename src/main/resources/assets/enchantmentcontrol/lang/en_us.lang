@@ -20,3 +20,8 @@ tooltip.anviluses.singular= %d Anvil use (%d)
 tooltip.anviluses= %d Anvil uses (%d)
 tooltip.enchcount.full= Enchanted fully
 tooltip.enchcount= Enchanted %d / %d times
+
+enchantment.enchantmentcontrol.swift_sneak=Swift Sneak
+enchantment.enchantmentcontrol.soul_speed=Soul Speed
+enchantment.enchantmentcontrol.swift_sneak.desc=Increases movement speed while sneaking.
+enchantment.enchantmentcontrol.soul_speed.desc=Increases movement speed on soul sand and removes its slowdown, but slowly wears down the boots.
