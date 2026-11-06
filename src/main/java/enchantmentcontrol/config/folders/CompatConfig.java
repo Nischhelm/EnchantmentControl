@@ -116,4 +116,22 @@ public class CompatConfig {
         @MixinConfig.CompatHandling(modid = "enchanter_tools", desired = true, warnIngame = false, reason = "Optional Compat for Enchantment Descriptions")
         public boolean fixLapisRuneReenchanting = true;
     }
+
+    @Config.Name("No Expensive")
+    public NoExpensiveCompat noExpensive = new NoExpensiveCompat();
+
+    public static class NoExpensiveCompat {
+        @Config.Comment({
+                "No Expensive overwrites the whole anvil logic, which breaks most anvil features of this mod.",
+                "If enabled, disables No Expensive and force enables \"Anvil Mechanics.Anvil Costs.(MixinToggle) Never Too Expensive\" instead.",
+                "Differences to No Expensive:",
+                " - No Expensive caps the anvil cost at 39 lvls, while this mod removes the cap entirely",
+                " - No Expensive makes Infinity and Mending compatible in the anvil. To get that, remove them from the same \"Incompatible Groups\" instead.",
+                "If disabled, the anvil features of this mod that are incompatible with No Expensive will be disabled instead:",
+                " Never Too Expensive, Change Scaling, No Increase On Repairs and Allow Re-Enchant"
+        })
+        @Config.Name("Replace No Expensive")
+        @Config.RequiresMcRestart
+        public boolean replaceNoExpensive = true;
+    }
 }

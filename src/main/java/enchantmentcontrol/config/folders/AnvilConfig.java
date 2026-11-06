@@ -18,11 +18,13 @@ public class AnvilConfig {
 
     @MixinConfig(name = Tags.MODID)
     public static class AnvilCostConfig {
-        @Config.Comment("Removes the \"Too Expensive\" system of anvils")
+        @Config.Comment({
+                "Removes the \"Too Expensive\" system of anvils",
+                "Is force enabled if No Expensive is installed and \"Compat.No Expensive.Replace No Expensive\" is enabled"
+        })
         @Config.Name("(MixinToggle) Never Too Expensive")
         @Config.RequiresMcRestart
         @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilnoexpensive.json", defaultValue = false)
-        @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompatible with No Expensive")
         @SuppressWarnings("unused")
         @Order(0)
         public boolean enableNoExpensive = false;
@@ -68,7 +70,6 @@ public class AnvilConfig {
         @Config.Name("(MixinToggle) Change Scaling")
         @Config.RequiresMcRestart
         @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilscaling.json", defaultValue = false)
-        @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompatible with No Expensive")
         @SuppressWarnings("unused")
         @Order(0)
         public boolean enableScalingChange = false;
@@ -130,7 +131,6 @@ public class AnvilConfig {
         @Config.Name("(MixinToggle) No Increase On Repairs")
         @Config.RequiresMcRestart
         @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilnoincreaseonrepairs.json", defaultValue = false)
-        @MixinConfig.CompatHandling(modid = "noexpensive", desired = false, warnIngame = false, reason = "Incompatible with No Expensive")
         @SuppressWarnings("unused")
         @Order(5)
         public boolean noIncreaseOnRepairs = false;

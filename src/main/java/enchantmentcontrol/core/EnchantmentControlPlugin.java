@@ -23,6 +23,19 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.creativecanapplyoverride.json", () -> ConfigHandler.itemTypes.creativeOptions != ItemTypeConfig.EnumCreativeAllowed.ANVIL);
 		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.etablemaxlvl.json", () -> !FermiumJarScanner.isModPresent("apotheosis") && ConfigHandler.etable.maxLvl >= 0);
 
+		if (FermiumJarScanner.isModPresent("noexpensive")) {
+			if (ConfigHandler.compat.noExpensive.replaceNoExpensive) {
+				// No Expensive gets disabled in ModdedClassTransformer, our replacement is force enabled
+				FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.anvilnoexpensive.json");
+			} else {
+				// No Expensive overwrites ContainerRepair.updateRepairOutput, which these need to inject into
+				FermiumRegistryAPI.removeMixin("mixins.enchantmentcontrol.vanilla.anvilnoexpensive.json");
+				FermiumRegistryAPI.removeMixin("mixins.enchantmentcontrol.vanilla.anvilscaling.json");
+				FermiumRegistryAPI.removeMixin("mixins.enchantmentcontrol.vanilla.anvilnoincreaseonrepairs.json");
+				FermiumRegistryAPI.removeMixin("mixins.enchantmentcontrol.vanilla.etablereenchant.json");
+			}
+		}
+
 		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.contenttweaker.json", CompatUtil.contenttweaker::isLoaded);
 		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.crafttweaker.json", () -> Loader.isModLoaded("crafttweaker"));
 	}
