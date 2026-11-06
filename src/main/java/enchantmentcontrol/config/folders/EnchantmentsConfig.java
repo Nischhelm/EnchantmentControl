@@ -26,7 +26,7 @@ public class EnchantmentsConfig {
         })
         @Config.Name("(MixinToggle) Enabled")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.soulspeed.json", defaultValue = false)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.soulspeed.json", defaultValue = false)
         @Order(0)
         public boolean enabled = false;
 

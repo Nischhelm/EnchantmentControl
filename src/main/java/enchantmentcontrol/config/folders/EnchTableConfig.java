@@ -32,7 +32,7 @@ public class EnchTableConfig {
     })
     @Config.Name("(MixinToggle) Remove Air Requirement")
     @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablenoaircond.json", defaultValue = false)
+    @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.etablenoaircond.json", defaultValue = false)
     @MixinConfig.CompatHandling(modid = "apotheosis", desired = false, warnIngame = false, reason = "Incompatible with Apotheosis")
     @Order(1)
     public boolean noAirCond = false;
@@ -43,7 +43,7 @@ public class EnchTableConfig {
     })
     @Config.Name("(MixinToggle) Always reroll table")
     @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablealwaysreroll.json", defaultValue = false)
+    @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.etablealwaysreroll.json", defaultValue = false)
     @MixinConfig.CompatHandling(modid = "apotheosis", desired = false, warnIngame = false, reason = "Incompatible with Apotheosis")
     @Order(2)
     public boolean alwaysReroll = false;
@@ -51,7 +51,7 @@ public class EnchTableConfig {
     @Config.Comment("Shows the enchantment clue directly in the GUI of the enchantment table instead of needing to hover.")
     @Config.Name("(MixinToggle) Preview Enchantment Clue")
     @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablepreviewclue.json", defaultValue = false)
+    @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.etablepreviewclue.json", defaultValue = false)
     @Order(3)
     public boolean previewClue = false;
 
@@ -69,7 +69,7 @@ public class EnchTableConfig {
         })
         @Config.Name("(MixinToggle) Allow Re-Enchant")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.etablereenchant.json", defaultValue = false)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.etablereenchant.json", defaultValue = false)
         @MixinConfig.CompatHandling(modid = "apotheosis", desired = false, warnIngame = false, reason = "Incompatible with Apotheosis")
         @Order(0)
         public boolean allowReEnchant = true;

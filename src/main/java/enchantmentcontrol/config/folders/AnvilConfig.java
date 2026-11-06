@@ -26,7 +26,7 @@ public class AnvilConfig {
         @Config.Comment("If enabled, the given item can be used in the right anvil slot to repair any repairable item, similar to repair materials")
         @Config.Name("(MixinToggle) Enabled")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anviluniversalrepair.json", defaultValue = false)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.anviluniversalrepair.json", defaultValue = false)
         @SuppressWarnings("unused")
         @Order(0)
         public boolean enabled = false;
@@ -63,7 +63,7 @@ public class AnvilConfig {
         @Config.Comment("Removes the \"Too Expensive\" system of anvils")
         @Config.Name("(MixinToggle) Never Too Expensive")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilnoexpensive.json", defaultValue = true)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.anvilnoexpensive.json", defaultValue = true)
         @SuppressWarnings("unused")
         @Order(0)
         public boolean enableNoExpensive = true;
@@ -71,7 +71,7 @@ public class AnvilConfig {
         @Config.Comment("If enabled, adding enchants with lower level or with already max lvl (anything leaving the resulting lvl the same as the one on the left item) will cost 0 XP in the anvil.")
         @Config.Name("(MixinToggle) No cost if Enchantment Lvl unchanged")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.zerocostifunchanged.json", defaultValue = false)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.zerocostifunchanged.json", defaultValue = false)
         @SuppressWarnings("unused")
         @Order(1)
         public boolean noCostIfUnchanged = false;
@@ -82,7 +82,7 @@ public class AnvilConfig {
         })
         @Config.Name("(MixinToggle) Free Renames")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilfreerenames.json", defaultValue = false)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.anvilfreerenames.json", defaultValue = false)
         @Order(2)
         public boolean freeRenames = false;
 
@@ -93,7 +93,7 @@ public class AnvilConfig {
         })
         @Config.Name("(MixinToggle) Free Repairs")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilfreerepairs.json", defaultValue = false)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.anvilfreerepairs.json", defaultValue = false)
         @Order(3)
         public boolean freeRepairs = false;
 
@@ -103,7 +103,7 @@ public class AnvilConfig {
         })
         @Config.Name("(MixinToggle) Totally Free Anvil")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilnoxpcost.json", defaultValue = false)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.anvilnoxpcost.json", defaultValue = false)
         @MixinConfig.CompatHandling(modid = "anvilpatchevil", desired = false, warnIngame = false, reason = "Anvil Patch - Evil already does this")
         @Order(4)
         public boolean noXPCosts = false;
@@ -119,7 +119,7 @@ public class AnvilConfig {
         @Config.Comment("Main toggle for \"Scaling Type\", \"Scaling Factor\" and \"Combination Type\" to be applicable")
         @Config.Name("(MixinToggle) Change Scaling")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilscaling.json", defaultValue = false)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.anvilscaling.json", defaultValue = false)
         @SuppressWarnings("unused")
         @Order(0)
         public boolean enableScalingChange = false;
@@ -172,7 +172,7 @@ public class AnvilConfig {
         })
         @Config.Name("(MixinToggle) Free Book Combination")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.freebookcombination.json", defaultValue = false)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.freebookcombination.json", defaultValue = false)
         @SuppressWarnings("unused")
         @Order(4)
         public boolean freeBookCombination = false;
@@ -180,7 +180,7 @@ public class AnvilConfig {
         @Config.Comment("If enabled, using the anvil on an item without modifying its enchantments (repair with item or material, renames) will not increase its anvil use cost")
         @Config.Name("(MixinToggle) No Increase On Repairs")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.anvilnoincreaseonrepairs.json", defaultValue = false)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.anvilnoincreaseonrepairs.json", defaultValue = false)
         @SuppressWarnings("unused")
         @Order(5)
         public boolean noIncreaseOnRepairs = false;

@@ -78,7 +78,7 @@ public class CompatConfig {
         })
         @Config.Name("(MixinToggle) Anvil Use Count UpgPot Compat")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(lateMixin = "mixins.enchantmentcontrol.somanyenchantments.json", defaultValue = true)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.somanyenchantments.json", defaultValue = true)
         @MixinConfig.CompatHandling(modid = "somanyenchantments", desired = true, warnIngame = false, reason = "Optional Compat for Upgraded Potentials if new SME is present", targetVersionRange = "[1.0.0,)")
         @SuppressWarnings("unused")
         public boolean upgradedPotentialsResetsAnvilCount = true;
@@ -95,7 +95,7 @@ public class CompatConfig {
         })
         @Config.Name("(MixinToggle) Allow Line Breaks")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(lateMixin = "mixins.enchantmentcontrol.enchdesc.json", defaultValue = true)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.enchdesc.json", defaultValue = true)
         @MixinConfig.CompatHandling(modid = "enchdesc", desired = true, warnIngame = false, reason = "Optional Compat for Enchantment Descriptions")
         public boolean addLineBreaks = true;
     }
@@ -112,7 +112,7 @@ public class CompatConfig {
         })
         @Config.Name("(MixinToggle) Re-Enchant Lapis Runes")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(lateMixin = "mixins.enchantmentcontrol.enchantertools.lapisrune.json", defaultValue = true)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.enchantertools.lapisrune.json", defaultValue = true)
         @MixinConfig.CompatHandling(modid = "enchanter_tools", desired = true, warnIngame = false, reason = "Optional Compat for Enchantment Descriptions")
         public boolean fixLapisRuneReenchanting = true;
     }

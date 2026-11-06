@@ -10,13 +10,13 @@ public class VariousConfig {
     @Config.Comment("When rendering enchantments on an ItemStack, render the first one in underscored")
     @Config.Name("(MixinToggle) Render First Enchant Underscored")
     @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.firstenchanttooltip.json", defaultValue = true)
+    @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.firstenchanttooltip.json", defaultValue = true)
     public boolean renderFirstEnchantUnderscored = true;
 
     @Config.Comment("Fix enchant_randomly loot function deliberately soft crashing if an enchant is not found.")
     @Config.Name("(MixinToggle) Fix EnchantRandomly Crash")
     @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.fixloottablecrash.json", defaultValue = true)
+    @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.fixloottablecrash.json", defaultValue = true)
     public boolean fixEnchantRandomlyCrash = true;
 
     @Config.Comment({
@@ -25,7 +25,7 @@ public class VariousConfig {
     })
     @Config.Name("(MixinToggle) Fix Enchantment Level Display")
     @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.leveldisplay.json", defaultValue = true)
+    @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.leveldisplay.json", defaultValue = true)
     public boolean fixEnchantmentLevelDisplay = true;
 
     @Config.Comment({
@@ -35,7 +35,7 @@ public class VariousConfig {
     })
     @Config.Name("(MixinToggle) Infinity Needs No Arrow")
     @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.infinitynoarrow.json", defaultValue = true)
+    @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.infinitynoarrow.json", defaultValue = true)
     public boolean infinityNeedsNoArrow = true;
 
     @Config.Comment({
@@ -46,7 +46,7 @@ public class VariousConfig {
     })
     @Config.Name("(MixinToggle) Sum Duplicate Enchantments")
     @Config.RequiresMcRestart
-    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.sumduplicateenchants.json", defaultValue = false)
+    @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.sumduplicateenchants.json", defaultValue = false)
     public boolean sumDuplicateEnchants = false;
 
     @Config.Comment({

@@ -102,7 +102,7 @@ public class FirstSetupConfig {
         @Config.Comment("Enable if you want to remap enchantment ids (numerical or name). Warning: See Warnings in \"Enchantment Id Remaps\" and \"Enchantment Numeric Id Remaps\"")
         @Config.Name("(MixinToggle) Enable Registry Remapping")
         @Config.RequiresMcRestart
-        @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.registryremap.json", defaultValue = false)
+        @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.registryremap.json", defaultValue = false)
         @Order(0)
         public boolean enableRegistryRemap = false;
 
