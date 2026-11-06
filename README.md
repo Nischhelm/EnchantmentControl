@@ -42,6 +42,7 @@ How the import works:
 | `min_ench_eval` / `max_ench_eval` (only if `custom_evaluations` is true) | `enchantability` |
 | `incompatible` / `incompat_mode` | "Incompatible Groups" config, see below |
 | `enabled: false` | "Registered Enchantment Blacklist", see below |
+| `description` | `/config/enchantmentcontrol/descriptions.txt`, only for enchantments that don't have a description there yet. Lines are joined with `\n`, lang keys get translated to the current language |
 
 Incompatibilities don't go into the per-enchant jsons:
 - On first setup ("Print Default Incompatibilities" enabled), they're merged into the inferred groups. `incompat_mode: 1` (only the list counts) removes the enchant's own incompatibilities there.
@@ -63,7 +64,6 @@ Other formulas are skipped with a warning in the log.
 Not imported (a warning is logged for each enchantment that uses them):
 - `hide_on_item`, `hide_on_book`
 - `items_list` / `applicability_mode`: use the "Item Types" configs instead
-- `description`: use `/config/enchantmentcontrol/descriptions.txt` instead
 
 Enchantments Control's own `config.json` (roman numerals, level caps, curse hiding, description tooltips, Thermal Expansion support) isn't touched.
 If you keep Enchantments Control installed for those features, note that its level caps (default 10) also limit any max level you set in this mod.

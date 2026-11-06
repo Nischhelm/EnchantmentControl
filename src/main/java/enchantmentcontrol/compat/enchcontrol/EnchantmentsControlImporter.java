@@ -7,6 +7,8 @@ import com.google.gson.JsonParser;
 import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.ConfigHandler;
+import enchantmentcontrol.config.descriptions.DescriptionReader;
+import enchantmentcontrol.config.descriptions.EmptyEnchantmentWriter;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoConfigReader;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoDeserialiser;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
@@ -16,6 +18,7 @@ import enchantmentcontrol.util.IOriginalEnchantmentProperties;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -27,6 +30,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -49,6 +54,8 @@ public class EnchantmentsControlImporter {
 
     /** Imported incompatibilities (enchant -> its "incompatible" list), merged into the incompatibility config by {@link IncompatibleConfigProvider} */
     public static final Map<Enchantment, Set<Enchantment>> importedIncompats = new HashMap<>();
+    /** Imported descriptions (enchant id -> description with literal \n line breaks), written into descriptions.txt */
+    private static final Map<String, String> importedDescriptions = new LinkedHashMap<>();
     /** Enchants with incompat_mode 1, where only the imported list should decide, not their own isCompatibleWith */
     public static final Set<Enchantment> replacesOwnIncompats = new HashSet<>();
 
@@ -92,6 +99,7 @@ public class EnchantmentsControlImporter {
         }
         Tags.LOGGER.info("Enchantments Control import: wrote {} changed enchantments to {}", written, outDir.getPath());
         applyIncompats();
+        applyDescriptions();
 
         // Back up the original, then neutralise it so it's not imported again and Enchantments Control doesn't apply it alongside our jsons
         try {
@@ -117,6 +125,7 @@ public class EnchantmentsControlImporter {
         }
         logUnsupported(id, o);
         collectIncompats(id, ench, o);
+        collectDescription(id, o);
         if (Boolean.FALSE.equals(bool(o, "enabled"))) unregister(id);
 
         if (EnchantmentInfo.get(id) != null) {
@@ -245,6 +254,45 @@ public class EnchantmentsControlImporter {
         if (!listed.isEmpty()) importedIncompats.put(ench, listed);
     }
 
+    /** Enchantments Control ran every description line through I18n, so lang keys get translated here (to the current language) */
+    private static void collectDescription(String id, JsonObject o) {
+        if (!nonEmpty(o, "description")) return;
+        List<String> lines = new ArrayList<>();
+        for (JsonElement e : o.getAsJsonArray("description")) {
+            String line = e.getAsString();
+            lines.add(I18n.canTranslate(line) ? I18n.translateToLocal(line) : line);
+        }
+        importedDescriptions.put(id, String.join("\\n", lines));
+    }
+
+    /** Fills the imported descriptions into descriptions.txt, only for enchants that don't have a description there yet */
+    private static void applyDescriptions() {
+        if (importedDescriptions.isEmpty()) return;
+        Path path = Paths.get(DescriptionReader.PATH);
+        try {
+            EmptyEnchantmentWriter.write(DescriptionReader.PATH); // only writes if missing, so the file has a line for each enchant
+            List<String> lines = new ArrayList<>(Files.readAllLines(path, StandardCharsets.UTF_8));
+            int added = 0;
+            for (Map.Entry<String, String> entry : importedDescriptions.entrySet()) {
+                String prefix = entry.getKey() + "=";
+                int index = -1;
+                for (int i = 0; i < lines.size(); i++) if (lines.get(i).trim().startsWith(prefix)) { index = i; break; }
+                if (index >= 0 && !lines.get(index).trim().substring(prefix.length()).trim().isEmpty()) {
+                    Tags.LOGGER.warn("Enchantments Control import: {} already has a description in {}, skipping", entry.getKey(), DescriptionReader.PATH);
+                    continue;
+                }
+                String line = prefix + entry.getValue();
+                if (index >= 0) lines.set(index, line);
+                else lines.add(line);
+                added++;
+            }
+            Files.write(path, lines, StandardCharsets.UTF_8);
+            Tags.LOGGER.info("Enchantments Control import: added {} descriptions to {}", added, DescriptionReader.PATH);
+        } catch (Exception e) {
+            Tags.LOGGER.warn("Enchantments Control import: writing descriptions to {} failed", DescriptionReader.PATH, e);
+        }
+    }
+
     /**
      * On first setup ("Print Default Incompatibilities" enabled), the imported incompats get merged into the inferred incompatibility matrix in postInit.
      * Otherwise the groups are already set up, so each imported pair gets added as its own group.
@@ -281,7 +329,6 @@ public class EnchantmentsControlImporter {
         if (Boolean.TRUE.equals(bool(o, "hide_on_item"))) dropped.add("hide_on_item");
         if (Boolean.TRUE.equals(bool(o, "hide_on_book"))) dropped.add("hide_on_book");
         if (nonZero(o, "applicability_mode") || nonZero(o, "items_list_mode") || nonEmpty(o, "items_list")) dropped.add("item applicability (use the \"Item Types\" configs)");
-        if (nonEmpty(o, "description")) dropped.add("description (use /config/enchantmentcontrol/descriptions.txt)");
         if (!dropped.isEmpty())
             Tags.LOGGER.warn("Enchantments Control import: {} has settings that can't be imported automatically: {}", id, String.join(", ", dropped));
     }

@@ -37,7 +37,7 @@ public class DescriptionReader {
             Files.createDirectories(path.getParent());
 
             for(String line : Files.readAllLines(path)){
-                String[] split = line.split("=");
+                String[] split = line.split("=", 2); //descriptions can contain =
                 if(split.length < 2) continue;
                 String enchid = split[0].trim();
                 String desc = split[1].trim();

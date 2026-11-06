@@ -85,7 +85,8 @@ public class FirstSetupConfig {
             "Imported: rarity, treasure, curse, allowed_on_books, min_lvl, max_lvl, double_price, type, equipment_slots, and min/max_ench_eval if custom_evaluations is true.",
             "Incompatibilities get added to \"Incompatible Groups\" (merged into the inferred ones if \"Print Default Incompatibilities\" runs in the same startup).",
             "Disabled enchantments (enabled=false) get added to \"Registered Enchantment Blacklist\", so they're fully unregistered from the next startup on.",
-            "Not imported (logged instead): hide_on_item/book, item lists, descriptions.",
+            "Descriptions get added to descriptions.txt for enchantments that don't have one there yet.",
+            "Not imported (logged instead): hide_on_item/book, item lists.",
             "Afterwards the original is backed up as enchantments.json.imported (numbered if that exists) and replaced with an empty list [], so it's only imported once",
             "and Enchantments Control (if still installed) doesn't apply it on top of this mod's jsons. Its config.json stays untouched.",
             "To re-import, restore the backup and delete the affected jsons in /enchantments/."
