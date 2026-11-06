@@ -240,6 +240,6 @@ public class EnchantmentInfo {
             s = TextFormatting.RED + s;
         }
 
-        return lvl == 1 && this.maxLvl == 1 ? s : s + " " + I18n.translateToLocal("enchantment.level." + lvl);
+        return lvl == 1 && this.maxLvl == 1 ? s : s + " " + EnchantmentLevelFormat.format(lvl);
     }
 }

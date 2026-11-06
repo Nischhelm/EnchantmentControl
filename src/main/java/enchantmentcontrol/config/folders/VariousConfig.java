@@ -20,6 +20,15 @@ public class VariousConfig {
     public boolean fixEnchantRandomlyCrash = true;
 
     @Config.Comment({
+            "Displays enchantment levels without a lang entry (vanilla only has 1-10) as numbers, instead of \"enchantment.level.11\".",
+            "Levels with a lang entry keep using it, so resource packs can still change them"
+    })
+    @Config.Name("(MixinToggle) Fix Enchantment Level Display")
+    @Config.RequiresMcRestart
+    @MixinConfig.MixinToggle(earlyMixin = "mixins.enchantmentcontrol.vanilla.leveldisplay.json", defaultValue = true)
+    public boolean fixEnchantmentLevelDisplay = true;
+
+    @Config.Comment({
             "Allows to draw bows enchanted with Infinity without having any arrows in the inventory.",
             "Vanilla Infinity already shoots without consuming arrows, but still requires one to be in the inventory to start drawing the bow.",
             "Note: Only affects bows that don't override the vanilla bow drawing logic"
