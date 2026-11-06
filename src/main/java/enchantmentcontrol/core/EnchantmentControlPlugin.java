@@ -1,18 +1,14 @@
 package enchantmentcontrol.core;
 
 import com.google.common.collect.ImmutableMap;
-import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.config.ConfigHandler;
-import enchantmentcontrol.config.folders.ItemTypeConfig;
 import fermiumbooter.FermiumRegistryAPI;
 import fermiumbooter.util.FermiumJarScanner;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")
@@ -20,8 +16,6 @@ import java.util.Map;
 public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 	public EnchantmentControlPlugin() {
 		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.json");
-		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.creativecanapplyoverride.json", () -> ConfigHandler.itemTypes.creativeOptions != ItemTypeConfig.EnumCreativeAllowed.ANVIL);
-		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.etablemaxlvl.json", () -> !FermiumJarScanner.isModPresent("apotheosis") && ConfigHandler.etable.maxLvl >= 0);
 
 		if (FermiumJarScanner.isModPresent("noexpensive")) {
 			if (ConfigHandler.compat.noExpensive.replaceNoExpensive) {
@@ -36,8 +30,8 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 			}
 		}
 
-		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.contenttweaker.json", CompatUtil.contenttweaker::isLoaded);
-		FermiumRegistryAPI.enqueueMixin(true, "mixins.enchantmentcontrol.crafttweaker.json", () -> Loader.isModLoaded("crafttweaker"));
+		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.contenttweaker.json", () -> FermiumJarScanner.isModPresent("contenttweaker"));
+		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.crafttweaker.json", () -> FermiumJarScanner.isModPresent("crafttweaker"));
 	}
 
 	@Override

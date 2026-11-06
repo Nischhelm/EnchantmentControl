@@ -1,12 +1,22 @@
 package enchantmentcontrol.config.folders;
 
+import enchantmentcontrol.Tags;
+import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.util.matchers.EnumMatcherType;
+import fermiumbooter.FermiumRegistryAPI;
+import fermiumbooter.annotations.MixinConfig;
 import meldexun.betterconfig.api.Order;
 import net.minecraftforge.common.config.Config;
 
 import java.util.*;
 
+@MixinConfig(name = Tags.MODID, classloadEarly = true)
 public class ItemTypeConfig {
+    static {
+        FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.creativecanapplyoverride.json", () ->
+                ConfigHandler.itemTypes.creativeOptions != EnumCreativeAllowed.ANVIL);
+    }
+
     @Config.Comment("Global Toggle to disable the entire Item Types category")
     @Config.Name("Section Enabled")
     @Order(0)

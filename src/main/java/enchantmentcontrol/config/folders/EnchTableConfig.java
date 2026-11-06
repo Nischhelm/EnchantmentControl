@@ -1,12 +1,20 @@
 package enchantmentcontrol.config.folders;
 
 import enchantmentcontrol.Tags;
+import enchantmentcontrol.config.ConfigHandler;
+import fermiumbooter.FermiumRegistryAPI;
+import fermiumbooter.util.FermiumJarScanner;
 import fermiumbooter.annotations.MixinConfig;
 import meldexun.betterconfig.api.Order;
 import net.minecraftforge.common.config.Config;
 
-@MixinConfig(name = Tags.MODID)
+@MixinConfig(name = Tags.MODID, classloadEarly = true)
 public class EnchTableConfig {
+    static {
+        FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.vanilla.etablemaxlvl.json", () ->
+                !FermiumJarScanner.isModPresent("apotheosis") && ConfigHandler.etable.maxLvl >= 0);
+    }
+
     @Config.Comment({
             "Max level the vanilla enchanting table can roll. ",
             "Only works in steps of 2.",
