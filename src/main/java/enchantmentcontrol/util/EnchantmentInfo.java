@@ -133,6 +133,12 @@ public class EnchantmentInfo {
     public boolean overwritesDoublePrice = false;
     public boolean doublePrice;
 
+    //Hide the enchantment in item / enchanted book tooltips
+    public boolean overwritesHideOnItem = false;
+    public boolean hideOnItem;
+    public boolean overwritesHideOnBook = false;
+    public boolean hideOnBook;
+
     //More control via ContentTweaker  using calcDamageByCreature, calcModifierDamage, onEntityDamaged, onUserHurt
     public SharpnessBehavior sharpnessBehavior;
     public ProtectionBehavior protectionBehavior;
@@ -214,6 +220,26 @@ public class EnchantmentInfo {
     public void setDoublePrice(boolean doublePrice) {
         this.doublePrice = doublePrice;
         this.overwritesDoublePrice = true;
+    }
+
+    public void setHideOnItem(boolean hideOnItem) {
+        this.hideOnItem = hideOnItem;
+        this.overwritesHideOnItem = true;
+    }
+
+    public void setHideOnBook(boolean hideOnBook) {
+        this.hideOnBook = hideOnBook;
+        this.overwritesHideOnBook = true;
+    }
+
+    public static boolean isHiddenOnItem(Enchantment ench) {
+        EnchantmentInfo info = get(ench);
+        return info != null && info.overwritesHideOnItem && info.hideOnItem;
+    }
+
+    public static boolean isHiddenOnBook(Enchantment ench) {
+        EnchantmentInfo info = get(ench);
+        return info != null && info.overwritesHideOnBook && info.hideOnBook;
     }
 
     //Input (from other modifiers, otherwise 0), Ench Lvl, Output

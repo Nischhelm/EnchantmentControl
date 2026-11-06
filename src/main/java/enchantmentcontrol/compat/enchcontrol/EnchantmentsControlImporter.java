@@ -162,6 +162,10 @@ public class EnchantmentsControlImporter {
         Boolean doublePrice = bool(o, "double_price");
         if (doublePrice != null && (treasureChanged || doublePrice != ench.isTreasureEnchantment())) { info.setDoublePrice(doublePrice); changed = true; }
 
+        // Both default to false, which is also what our unset values do
+        if (Boolean.TRUE.equals(bool(o, "hide_on_item"))) { info.setHideOnItem(true); changed = true; }
+        if (Boolean.TRUE.equals(bool(o, "hide_on_book"))) { info.setHideOnBook(true); changed = true; }
+
         Boolean curse = bool(o, "curse");
         if (curse != null && curse != ench.isCurse()) { info.setCurse(curse); changed = true; }
 
@@ -326,8 +330,6 @@ public class EnchantmentsControlImporter {
     /** Fields this mod has no per-enchant json equivalent for. Only logs them if they deviate from Enchantments Control's defaults. */
     private static void logUnsupported(String id, JsonObject o) {
         List<String> dropped = new ArrayList<>();
-        if (Boolean.TRUE.equals(bool(o, "hide_on_item"))) dropped.add("hide_on_item");
-        if (Boolean.TRUE.equals(bool(o, "hide_on_book"))) dropped.add("hide_on_book");
         if (nonZero(o, "applicability_mode") || nonZero(o, "items_list_mode") || nonEmpty(o, "items_list")) dropped.add("item applicability (use the \"Item Types\" configs)");
         if (!dropped.isEmpty())
             Tags.LOGGER.warn("Enchantments Control import: {} has settings that can't be imported automatically: {}", id, String.join(", ", dropped));

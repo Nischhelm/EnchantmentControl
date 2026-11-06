@@ -63,6 +63,8 @@ public class EnchantmentInfoInferrerWriter {
         if(ConfigHandler.dev.printInferredExpanded) {
             info.setMinLvl(ench.getMinLevel());
             info.setDoublePrice(ench.isTreasureEnchantment()); //just copying behavior
+            info.setHideOnItem(false);
+            info.setHideOnBook(false);
             info.setAllowedOnBooks(ench.isAllowedOnBooks());
             info.setEnchantabilities(probeEnchantability(ench));
             info.slots = Arrays.asList(((EnchantmentAccessor) ench).getSlots());

@@ -38,6 +38,7 @@ public class FirstSetupConfig {
             " - slots - rarely used system in what slot an enchant has to be in to be used",
             " - minLvl - basically always 1",
             " - doublePrice - to modify librarian price doubling independent of treasure property",
+            " - hideOnItem / hideOnBook - to hide the enchantment in the tooltip of items / enchanted books (it still works)",
             " - enchantability - to modify at which lvl which enchant is available on enchanting table and connected systems",
             " - isAllowedOnBooks - a vanilla property, only used specifically when enchanting books with lvls, where those disallowed will never be rolled",
             "Every option that is not existing in a json will keep the enchantment unmodified there, so reduction is advised."
@@ -86,7 +87,7 @@ public class FirstSetupConfig {
             "Incompatibilities get added to \"Incompatible Groups\" (merged into the inferred ones if \"Print Default Incompatibilities\" runs in the same startup).",
             "Disabled enchantments (enabled=false) get added to \"Registered Enchantment Blacklist\", so they're fully unregistered from the next startup on.",
             "Descriptions get added to descriptions.txt for enchantments that don't have one there yet.",
-            "Not imported (logged instead): hide_on_item/book, item lists.",
+            "Not imported (logged instead): item lists.",
             "Afterwards the original is backed up as enchantments.json.imported (numbered if that exists) and replaced with an empty list [], so it's only imported once",
             "and Enchantments Control (if still installed) doesn't apply it on top of this mod's jsons. Its config.json stays untouched.",
             "To re-import, restore the backup and delete the affected jsons in /enchantments/."

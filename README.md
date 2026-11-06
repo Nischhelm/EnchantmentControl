@@ -37,6 +37,7 @@ How the import works:
 | `allowed_on_books` | `isAllowedOnBooks` |
 | `min_lvl` / `max_lvl` | `minLvl` / `maxLvl` |
 | `double_price` | `doublePrice` |
+| `hide_on_item` / `hide_on_book` | `hideOnItem` / `hideOnBook` |
 | `type` | `type` |
 | `equipment_slots` | `slots` (`ALL` or empty = all slots) |
 | `min_ench_eval` / `max_ench_eval` (only if `custom_evaluations` is true) | `enchantability` |
@@ -62,7 +63,6 @@ Enchantability formulas are translated if they match one of these patterns (spac
 Other formulas are skipped with a warning in the log.
 
 Not imported (a warning is logged for each enchantment that uses them):
-- `hide_on_item`, `hide_on_book`
 - `items_list` / `applicability_mode`: use the "Item Types" configs instead
 
 Enchantments Control's own `config.json` (roman numerals, level caps, curse hiding, description tooltips, Thermal Expansion support) isn't touched.

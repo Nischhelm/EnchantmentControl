@@ -93,6 +93,15 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
         if (doublePrice == null) doublePrice = getAsBoolean(jsonObj, "double_price");
         if (doublePrice != null) info.setDoublePrice(doublePrice);
 
+        // hide in tooltips (with legacy aliases)
+        Boolean hideOnItem = getAsBoolean(jsonObj, "hideOnItem");
+        if (hideOnItem == null) hideOnItem = getAsBoolean(jsonObj, "hide_on_item");
+        if (hideOnItem != null) info.setHideOnItem(hideOnItem);
+
+        Boolean hideOnBook = getAsBoolean(jsonObj, "hideOnBook");
+        if (hideOnBook == null) hideOnBook = getAsBoolean(jsonObj, "hide_on_book");
+        if (hideOnBook != null) info.setHideOnBook(hideOnBook);
+
         // legacy enchantments control support
         Boolean legacyCustom = getAsBoolean(jsonObj, "custom_evaluations");
         String legacyMin = getAsString(jsonObj, "min_ench_eval");
@@ -223,6 +232,10 @@ public class EnchantmentInfoDeserialiser implements JsonDeserializer<Enchantment
 
         // doublePrice
         if (info.overwritesDoublePrice) o.addProperty("doublePrice", info.doublePrice);
+
+        // hide in tooltips
+        if (info.overwritesHideOnItem) o.addProperty("hideOnItem", info.hideOnItem);
+        if (info.overwritesHideOnBook) o.addProperty("hideOnBook", info.hideOnBook);
 
         // vanilla system override
         JsonObject vanillaSystems = writeVanillaOverrideEntries(info);

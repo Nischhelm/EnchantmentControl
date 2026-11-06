@@ -25,6 +25,8 @@
   ],
   "client": [
     "vanilla.EntityRendererMixin",
+    "vanilla.ItemEnchantedBookMixin_HideEnchants",
+    "vanilla.ItemStackMixin_HideEnchants",
     "vanilla.accessor.I18nAccessor",
     "vanilla.accessor.LocaleAccessor"
   ],
