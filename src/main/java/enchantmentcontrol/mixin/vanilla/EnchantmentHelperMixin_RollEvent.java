@@ -93,7 +93,7 @@ public abstract class EnchantmentHelperMixin_RollEvent {
 
     @WrapOperation(
             method = "getEnchantmentDatas",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/Enchantment;canApplyAtEnchantingTable(Lnet/minecraft/item/ItemStack;)Z")
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/Enchantment;canApplyAtEnchantingTable(Lnet/minecraft/item/ItemStack;)Z", remap = false)
     )
     private static boolean ec_overrideCanApply(Enchantment enchantment, ItemStack stack, Operation<Boolean> original) {
         EnchantmentOverride override = ec$overrides.get(enchantment);
