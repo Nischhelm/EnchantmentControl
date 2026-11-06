@@ -4,11 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import enchantmentcontrol.EnchantmentControl;
 import enchantmentcontrol.Tags;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoConfigReader;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoDeserialiser;
 import enchantmentcontrol.config.enchantmentinfojsons.EnchantmentInfoWriter;
+import enchantmentcontrol.config.provider.IncompatibleConfigProvider;
 import enchantmentcontrol.util.EnchantmentInfo;
 import enchantmentcontrol.util.IOriginalEnchantmentProperties;
 import net.minecraft.enchantment.Enchantment;
@@ -45,6 +47,11 @@ import java.util.*;
 @Mod.EventBusSubscriber
 public class EnchantmentsControlImporter {
     public static final String ENCHCONTROL_PATH = "config/enchcontrol/enchantments.json";
+
+    /** Imported incompatibilities (enchant -> its "incompatible" list), merged into the incompatibility config by {@link IncompatibleConfigProvider} */
+    public static final Map<Enchantment, Set<Enchantment>> importedIncompats = new HashMap<>();
+    /** Enchants with incompat_mode 1, where only the imported list should decide, not their own isCompatibleWith */
+    public static final Set<Enchantment> replacesOwnIncompats = new HashSet<>();
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onEnchantmentRegistry(RegistryEvent.Register<Enchantment> event) {
@@ -85,6 +92,7 @@ public class EnchantmentsControlImporter {
             }
         }
         Tags.LOGGER.info("Enchantments Control import: wrote {} changed enchantments to {}", written, outDir.getPath());
+        applyIncompats();
 
         // Back up the original, then neutralise it so it's not imported again and Enchantments Control doesn't apply it alongside our jsons
         try {
@@ -108,6 +116,8 @@ public class EnchantmentsControlImporter {
             return false;
         }
         logUnsupported(id, o);
+        collectIncompats(id, ench, o);
+        if (Boolean.FALSE.equals(bool(o, "enabled"))) unregister(id);
 
         if (EnchantmentInfo.get(id) != null) {
             Tags.LOGGER.warn("Enchantments Control import: {} already has a config json, skipping", id);
@@ -210,13 +220,66 @@ public class EnchantmentsControlImporter {
         return out.isEmpty() ? Arrays.asList(EntityEquipmentSlot.values()) : out;
     }
 
+    /**
+     * Enchantments Control's enabled=false only keeps the enchant out of the enchanting table, librarians and random loot, but it stays registered.
+     * We unregister it instead. The registry blacklist is checked during registration, so this applies from the next startup on
+     * (this startup Enchantments Control still has the original file loaded and keeps it out of those sources itself).
+     */
+    private static void unregister(String id) {
+        List<String> blacklist = ConfigHandler.blacklists.blacklistedRegistryEnchants;
+        if (blacklist.contains(id)) return;
+        blacklist.add(id);
+        EnchantmentControl.configNeedsSaving = true;
+        Tags.LOGGER.info("Enchantments Control import: {} is disabled, added to \"Registered Enchantment Blacklist\". It will be unregistered from the next startup on.", id);
+    }
+
+    private static void collectIncompats(String id, Enchantment ench, JsonObject o) {
+        if (nonZero(o, "incompat_mode")) replacesOwnIncompats.add(ench);
+        if (!nonEmpty(o, "incompatible")) return;
+        Set<Enchantment> listed = new HashSet<>();
+        for (JsonElement e : o.getAsJsonArray("incompatible")) {
+            Enchantment other = Enchantment.getEnchantmentByLocation(e.getAsString());
+            if (other == null) Tags.LOGGER.info("Enchantments Control import: {} lists {} as incompatible, which is not registered, ignoring", id, e.getAsString());
+            else if (other != ench) listed.add(other);
+        }
+        if (!listed.isEmpty()) importedIncompats.put(ench, listed);
+    }
+
+    /**
+     * On first setup ("Print Default Incompatibilities" enabled), the imported incompats get merged into the inferred incompatibility matrix in postInit.
+     * Otherwise the groups are already set up, so each imported pair gets added as its own group.
+     */
+    private static void applyIncompats() {
+        if (importedIncompats.isEmpty() && replacesOwnIncompats.isEmpty()) return;
+        if (ConfigHandler.dev.printIncompats) {
+            Tags.LOGGER.info("Enchantments Control import: incompatibilities will be merged into the inferred \"Incompatible Groups\"");
+            return;
+        }
+
+        Map<String, ArrayList<String>> groups = ConfigHandler.incompatible.incompatibleGroups;
+        int added = 0;
+        for (Map.Entry<Enchantment, Set<Enchantment>> entry : importedIncompats.entrySet()) {
+            for (Enchantment other : entry.getValue()) {
+                if (!IncompatibleConfigProvider.areCompatibleByGroups(groups, entry.getKey(), other)) continue; // already in a shared group
+                ArrayList<String> pair = new ArrayList<>(Arrays.asList(String.valueOf(entry.getKey().getRegistryName()), String.valueOf(other.getRegistryName())));
+                Collections.sort(pair);
+                groups.put("Enchantments Control: " + pair.get(0) + " + " + pair.get(1), pair);
+                added++;
+            }
+        }
+        if (added > 0) {
+            Tags.LOGGER.info("Enchantments Control import: added {} incompatible pairs to \"Incompatible Groups\"", added);
+            EnchantmentControl.configNeedsSaving = true;
+        }
+        for (Enchantment ench : replacesOwnIncompats)
+            Tags.LOGGER.warn("Enchantments Control import: {} has incompat_mode 1 (ignore its own incompatibilities), which can't be applied to already set up \"Incompatible Groups\". Remove it from those groups manually if needed.", ench.getRegistryName());
+    }
+
     /** Fields this mod has no per-enchant json equivalent for. Only logs them if they deviate from Enchantments Control's defaults. */
     private static void logUnsupported(String id, JsonObject o) {
         List<String> dropped = new ArrayList<>();
-        if (Boolean.FALSE.equals(bool(o, "enabled"))) dropped.add("enabled=false");
         if (Boolean.TRUE.equals(bool(o, "hide_on_item"))) dropped.add("hide_on_item");
         if (Boolean.TRUE.equals(bool(o, "hide_on_book"))) dropped.add("hide_on_book");
-        if (nonZero(o, "incompat_mode") || nonEmpty(o, "incompatible")) dropped.add("incompatibilities (use the \"Incompatible Enchantment Groups\" config)");
         if (nonZero(o, "applicability_mode") || nonZero(o, "items_list_mode") || nonEmpty(o, "items_list")) dropped.add("item applicability (use the \"Item Types\" configs)");
         if (nonEmpty(o, "description")) dropped.add("description (use /config/enchantmentcontrol/descriptions.txt)");
         if (!dropped.isEmpty())

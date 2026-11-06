@@ -1,6 +1,7 @@
 package enchantmentcontrol.config.provider;
 
 import enchantmentcontrol.EnchantmentControl;
+import enchantmentcontrol.compat.enchcontrol.EnchantmentsControlImporter;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.util.DefaultIncompatibleGroups;
 import net.minecraft.enchantment.Enchantment;
@@ -37,6 +38,13 @@ public class IncompatibleConfigProvider {
         );
     }
 
+    /** Whether no group in the given (config) groups contains both enchants */
+    public static boolean areCompatibleByGroups(Map<String, ? extends Collection<String>> groups, Enchantment ench, Enchantment other){
+        String a = String.valueOf(ench.getRegistryName());
+        String b = String.valueOf(other.getRegistryName());
+        return groups.values().stream().noneMatch(group -> group.contains(a) && group.contains(b));
+    }
+
     public static boolean areCompatible(Enchantment ench, Enchantment other){
         return !incompatibleEnchantments.getOrDefault(ench, new HashSet<>()).contains(other);
     }
@@ -48,16 +56,35 @@ public class IncompatibleConfigProvider {
         //k: 0-n, v: enchid
         Map<Integer, Integer> idmap = new HashMap<>();
 
+        Map<Enchantment, Integer> indices = new HashMap<>();
         int i = 0;
         for(Enchantment ench : Enchantment.REGISTRY) {
             int id = Enchantment.getEnchantmentID(ench);
             idmap.put(i, id);
+            indices.put(ench, i);
 
             int j=0;
             for(Enchantment ench2 : Enchantment.REGISTRY)
                 incompatMatrix[i][j++] = !ench.isCompatibleWith(ench2);
             i++;
         }
+
+        // Merge imported Enchantments Control incompatibilities. Those only work from one side there, but groups are symmetric
+        for(Enchantment ench : EnchantmentsControlImporter.replacesOwnIncompats) {
+            Integer k = indices.get(ench);
+            if(k == null) continue;
+            for(int j = 0; j < n; j++) { incompatMatrix[k][j] = false; incompatMatrix[j][k] = false; }
+        }
+        EnchantmentsControlImporter.importedIncompats.forEach((ench, others) -> {
+            Integer k = indices.get(ench);
+            if(k == null) return;
+            for(Enchantment other : others) {
+                Integer l = indices.get(other);
+                if(l == null) continue;
+                incompatMatrix[k][l] = true;
+                incompatMatrix[l][k] = true;
+            }
+        });
 
         //Bron-Kerbosch Algorithm
         List<Set<Integer>> groups = findMaximalIncompatibilityGroups(incompatMatrix);
