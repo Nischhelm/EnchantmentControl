@@ -15,6 +15,6 @@ import java.util.List;
 public abstract class RuneEnchantmentLogicMixin {
     @ModifyReturnValue(method = "buildRunePool", at = @At("RETURN"), remap = false)
     private static List<EnchantmentData> ec_reenchantLapisRuneEnchanting(List<EnchantmentData> original, ItemLapisRune.RuneType runeType, ItemStack stack){
-        return ReEnchantUtil.reenchant(original, stack, true); // can't use not-simulated (so combining with existing) because of how EnchanterTools handles it
+        return ReEnchantUtil.reenchantIfPossible(original, stack, false); // no combining: EnchanterTools applies the pool itself (would add duplicates)
     }
 }

@@ -1,11 +1,13 @@
 package enchantmentcontrol.mixin.vanilla.etable;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.util.AnvilCostUtil;
 import enchantmentcontrol.util.ReEnchantUtil;
-import net.minecraft.enchantment.EnchantmentData;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ContainerEnchantment;
 import net.minecraft.item.ItemStack;
@@ -14,8 +16,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-
+/**
+ * Filtering+changing the rolled enchants is done in ContainerEnchantmentMixin_ReEnchantRoll (no EE)
+ * or via GenerateEnchantmentListEvent if Expanded Events is installed.
+ */
 @Mixin(ContainerEnchantment.class)
 public abstract class ContainerEnchantmentMixin_ReEnchant {
     @ModifyExpressionValue(
@@ -31,20 +35,13 @@ public abstract class ContainerEnchantmentMixin_ReEnchant {
             return false;
     }
 
-    @ModifyExpressionValue(
-            method = {"onCraftMatrixChanged"},
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/ContainerEnchantment;getEnchantmentList(Lnet/minecraft/item/ItemStack;II)Ljava/util/List;")
+    @WrapOperation(
+            method = "enchantItem",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;addEnchantment(Lnet/minecraft/enchantment/Enchantment;I)V")
     )
-    private List<EnchantmentData> ec_disallowIllegallReEnchant_simulate(List<EnchantmentData> rolledEnchants, @Local(name="itemstack") ItemStack stack) {
-        return ReEnchantUtil.reenchant(rolledEnchants, stack, true);
-    }
-
-    @ModifyExpressionValue(
-            method = {"enchantItem"},
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/ContainerEnchantment;getEnchantmentList(Lnet/minecraft/item/ItemStack;II)Ljava/util/List;")
-    )
-    private List<EnchantmentData> ec_disallowIllegallReEnchant_actual(List<EnchantmentData> rolledEnchants, @Local(name="itemstack") ItemStack stack) {
-        return ReEnchantUtil.reenchant(rolledEnchants, stack, false);
+    private void ec_combineExisting(ItemStack stack, Enchantment enchantment, int level, Operation<Void> original) {
+        if(!ReEnchantUtil.combineNewLevelWithExisting(stack, enchantment, level))
+            original.call(stack, enchantment, level);
     }
 
     @Inject(

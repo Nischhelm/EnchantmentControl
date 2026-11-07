@@ -5,6 +5,7 @@ import enchantmentcontrol.compat.CompatUtil;
 import enchantmentcontrol.compat.crafttweaker.CT_EnchantmentInfo;
 import enchantmentcontrol.compat.crafttweaker.CT_RollEnchantments_EventManagerExpansion;
 import enchantmentcontrol.compat.enchcontrol.EnchantmentsControlImporter;
+import enchantmentcontrol.compat.expandedevents.ReEnchantEventHandler;
 import enchantmentcontrol.config.ConfigHandler;
 import enchantmentcontrol.config.descriptions.DescriptionReader;
 import enchantmentcontrol.config.descriptions.EmptyEnchantmentWriter;
@@ -54,6 +55,8 @@ public class EnchantmentControl {
             MinecraftForge.EVENT_BUS.register(AnvilUseTooltipHandler.class);
         if(ConfigHandler.etable.reEnchant.allowReEnchant && ConfigHandler.etable.reEnchant.tooltip.enabled && event.getSide() == Side.CLIENT)
             MinecraftForge.EVENT_BUS.register(ReEnchantTooltipHandler.class);
+        if(ConfigHandler.etable.reEnchant.allowReEnchant && CompatUtil.expandedevents.isLoaded())
+            MinecraftForge.EVENT_BUS.register(ReEnchantEventHandler.class);
 
         MinecraftForge.EVENT_BUS.register(ModEnchantments.class);
         if(ConfigHandler.enchantments.swiftSneak.enabled && event.getSide() == Side.CLIENT)

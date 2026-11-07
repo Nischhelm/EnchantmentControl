@@ -6,6 +6,7 @@ import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,25 +34,48 @@ public class ReEnchantUtil {
         stack.setTagCompound(tagCompound);
     }
 
-    public static List<EnchantmentData> reenchant(List<EnchantmentData> rolledEnchants, ItemStack stack, boolean simulate) {
-        Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(stack);
-        boolean mapChanged = false;
+    /**
+     * Filters rolled enchants for an already enchanted stack
+     * and removes enchants incompatible with the existing ones / enchants the stack already has.
+     * Exception: If "Combine Existing" is enabled and allowed, existing enchants are instead kept at the level they will have after combining.
+     */
+    public static List<EnchantmentData> reenchantIfPossible(List<EnchantmentData> rolledEnchants, ItemStack stack, boolean allowCombine) {
+        if(!stack.isItemEnchanted()) return rolledEnchants;
+        boolean combine = allowCombine && ConfigHandler.etable.reEnchant.combineExisting;
+        Map<Enchantment, Integer> existing = EnchantmentHelper.getEnchantments(stack);
         List<EnchantmentData> list = new ArrayList<>();
+        NBTTagList tagList = stack.getEnchantmentTagList();
         for(EnchantmentData data : rolledEnchants) {
-            if(map.containsKey(data.enchantment)) {
-                //already in
-                if(ConfigHandler.etable.reEnchant.combineExisting){
-                    int existingLvl = map.get(data.enchantment);
-                    int newLvl = data.enchantmentLevel;
-                    int resultLvl = Math.max(existingLvl, newLvl) + (existingLvl == newLvl ? 1 : 0); //Like anvil
-                    map.put(data.enchantment, resultLvl);
-                    mapChanged = true;
-                }
-
-            } else if (ConfigHandler.etable.reEnchant.allowIncompatible || map.keySet().stream().allMatch(origE -> origE.isCompatibleWith(data.enchantment)))
+            if(existing.containsKey(data.enchantment)) {
+                if(!combine) continue;
+                //Read from the first matching entry (the one that gets combined), the map would give the last one if there are duplicates
+                int existingLvl = findExistingEntry(tagList, data.enchantment).getShort("lvl");
+                //Anvil logic, but lower rolled levels are dropped
+                if(data.enchantmentLevel >= existingLvl)
+                    list.add(new EnchantmentData(data.enchantment, data.enchantmentLevel + (existingLvl == data.enchantmentLevel ? 1 : 0)));
+            } else if(ConfigHandler.etable.reEnchant.allowIncompatible || existing.keySet().stream().allMatch(origE -> origE == null || origE.isCompatibleWith(data.enchantment)))
                 list.add(data);
         }
-        if(!simulate && mapChanged) EnchantmentHelper.setEnchantments(map, stack);
         return list;
+    }
+
+    // Happens right when the enchants are actually added to the item
+    public static boolean combineNewLevelWithExisting(ItemStack stack, Enchantment enchantment, int newLevel) {
+        if(!stack.isItemEnchanted()) return false;
+        NBTTagCompound existing = findExistingEntry(stack.getEnchantmentTagList(), enchantment);
+        if(existing == null) return false;
+
+        // take the higher one
+        if(existing.getShort("lvl") < newLevel) existing.setShort("lvl", (short) newLevel);
+        return true; // don't add normally
+    }
+
+    private static NBTTagCompound findExistingEntry(NBTTagList tagList, Enchantment enchantment) {
+        int id = Enchantment.getEnchantmentID(enchantment);
+        for(int i = 0; i < tagList.tagCount(); i++) {
+            NBTTagCompound entry = tagList.getCompoundTagAt(i);
+            if(entry.getShort("id") == id) return entry;
+        }
+        return null;
     }
 }

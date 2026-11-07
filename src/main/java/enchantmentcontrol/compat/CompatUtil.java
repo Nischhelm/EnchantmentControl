@@ -10,6 +10,7 @@ public class CompatUtil {
     public static final LoadedContainer crafttweaker = new LoadedContainer("crafttweaker");
     public static final LoadedContainer contenttweaker = new LoadedContainer("contenttweaker");
     public static final LoadedContainer enchdesc = new LoadedContainer("enchdesc");
+    public static final LoadedContainer expandedevents = new LoadedContainer("expandedevents");
 
     public static boolean versionInRange(LoadedContainer container, String version) {
         if (!container.isLoaded()) return false;
