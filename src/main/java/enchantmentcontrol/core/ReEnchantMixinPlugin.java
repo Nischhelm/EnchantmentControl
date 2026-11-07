@@ -1,6 +1,6 @@
 package enchantmentcontrol.core;
 
-import fermiumbooter.util.FermiumJarScanner;
+import enchantmentcontrol.compat.CompatUtil;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -12,17 +12,9 @@ import java.util.Set;
  * Re-Enchant uses Expanded Events' GenerateEnchantmentListEvent if it's installed, and its own mixins otherwise.
  */
 public class ReEnchantMixinPlugin implements IMixinConfigPlugin {
-    private static Boolean expandedEvents = null;
-
-    private static boolean hasExpandedEvents() {
-        if(expandedEvents == null) expandedEvents = FermiumJarScanner.isModPresent("expandedevents");
-        return expandedEvents;
-    }
-
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if(mixinClassName.endsWith("_ReEnchantRoll")) return !hasExpandedEvents();
-        return true;
+        return !mixinClassName.endsWith("ContainerEnchantmentMixin_ReEnchantRoll") || !CompatUtil.expandedevents.isLoaded();
     }
 
     @Override public void onLoad(String mixinPackage) {}

@@ -219,7 +219,7 @@ public class ItemTypeConfigProvider {
         if(ConfigHandler.advanced.printItemTypeBlacklists)
             printDefaultBlacklist();
 
-        if(CompatUtil.somanyenchantments.isLoaded() && CompatUtil.versionInRange(CompatUtil.somanyenchantments, "[1.0.0,)"))
+        if(CompatUtil.versionInRange(CompatUtil.somanyenchantments, "[1.0.0,)"))
             NewSMECompat.addNewSMECustomTypes(); //as early as possible so others can override these. its mainly for having something available for the names
 
         Map<String, Set<Enchantment>> byName = new LinkedHashMap<>();
@@ -269,7 +269,7 @@ public class ItemTypeConfigProvider {
                 }
             }
         }
-        if(CompatUtil.somanyenchantments.isLoaded() && CompatUtil.versionInRange(CompatUtil.somanyenchantments, "[1.0.0,)"))
+        if(CompatUtil.versionInRange(CompatUtil.somanyenchantments, "[1.0.0,)"))
             NewSMECompat.addNewSMETypes(byName, byEnchantment, byNameAnvil, byEnchantmentAnvil);
 
         simplify(byName, byEnchantment);
