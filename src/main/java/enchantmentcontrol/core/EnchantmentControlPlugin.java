@@ -1,6 +1,7 @@
 package enchantmentcontrol.core;
 
 import com.google.common.collect.ImmutableMap;
+import enchantmentcontrol.compat.universaltweaks.UniversalTweaksConfigFixer;
 import enchantmentcontrol.config.ConfigHandler;
 import fermiumbooter.FermiumRegistryAPI;
 import fermiumbooter.FermiumTransformerAPI;
@@ -21,6 +22,9 @@ public class EnchantmentControlPlugin implements IFMLLoadingPlugin {
 		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.contenttweaker.json", () -> FermiumJarScanner.isModPresent("contenttweaker"));
 		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.crafttweaker.json", () -> FermiumJarScanner.isModPresent("crafttweaker"));
 		FermiumRegistryAPI.enqueueMixin(false, "mixins.enchantmentcontrol.enchcontrol.json", () -> FermiumJarScanner.isModPresent("enchcontrol"));
+
+		if (FermiumJarScanner.isModPresent("universaltweaks"))
+			UniversalTweaksConfigFixer.disableConflictingOptions();
 
 		if (FermiumJarScanner.isModPresent("enchcontrol")) {
 			String[] blockedClasses = {

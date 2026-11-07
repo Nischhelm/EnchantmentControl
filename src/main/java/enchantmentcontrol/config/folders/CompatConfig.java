@@ -138,6 +138,21 @@ public class CompatConfig {
         public boolean replaceNoExpensive = true;
     }
 
+    @Config.Name("Universal Tweaks")
+    public UniversalTweaksCompat universalTweaks = new UniversalTweaksCompat();
+
+    public static class UniversalTweaksCompat {
+        @Config.Comment({
+                "Some Universal Tweaks options mixin into the same anvil/enchantment table code as this mod and would conflict.",
+                "If enabled, this mod turns those options off in UT's config file (\"Universal Tweaks - Tweaks.cfg\") on game start, before UT reads it:",
+                " - \"Blocks.Anvil.Anvil XP Level Cap\" is reset to 40 if \"Anvil Mechanics.Anvil Costs.(MixinToggle) Never Too Expensive\" is enabled",
+                " - \"Blocks.No Enchantment Table Obstruction\" is disabled if \"Enchantment Table Mechanics.(MixinToggle) Remove Air Requirement\" is enabled"
+        })
+        @Config.RequiresMcRestart
+        @Config.Name("Disable Conflicting Universal Tweaks Options")
+        public boolean disableConflicting = true;
+    }
+
     @Config.Name("Merge Enchantments")
     public MergeEnchantmentsCompat mergeEnchantments = new MergeEnchantmentsCompat();
 

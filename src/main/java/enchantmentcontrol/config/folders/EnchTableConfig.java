@@ -28,7 +28,8 @@ public class EnchTableConfig {
 
     @Config.Comment({
             "Removes the requirement of the blocks around the enchantment table (and one higher) needing to be air for it to count bookshelves.",
-            "Incompatible with apotheosis"
+            "Incompatible with apotheosis",
+            "If Universal Tweaks is installed, this disables its \"Blocks.No Enchantment Table Obstruction\" option (see \"Compat.Universal Tweaks\")"
     })
     @Config.Name("(MixinToggle) Remove Air Requirement")
     @Config.RequiresMcRestart
