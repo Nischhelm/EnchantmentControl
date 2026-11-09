@@ -50,9 +50,11 @@ public class ReEnchantUtil {
                 if(!combine) continue;
                 //Read from the first matching entry (the one that gets combined), the map would give the last one if there are duplicates
                 int existingLvl = findExistingEntry(tagList, data.enchantment).getShort("lvl");
-                //Anvil logic, but lower rolled levels are dropped
-                if(data.enchantmentLevel >= existingLvl)
-                    list.add(new EnchantmentData(data.enchantment, data.enchantmentLevel + (existingLvl == data.enchantmentLevel ? 1 : 0)));
+                //Anvil logic (capped at max lvl), dropped if it wouldn't raise the existing lvl (lower roll, or already at/above max)
+                int combinedLvl = Math.max(existingLvl, data.enchantmentLevel) + (existingLvl == data.enchantmentLevel ? 1 : 0);
+                combinedLvl = Math.min(combinedLvl, data.enchantment.getMaxLevel());
+                if(combinedLvl > existingLvl)
+                    list.add(new EnchantmentData(data.enchantment, combinedLvl));
             } else if(ConfigHandler.etable.reEnchant.allowIncompatible || existing.keySet().stream().allMatch(origE -> origE == null || origE.isCompatibleWith(data.enchantment)))
                 list.add(data);
         }

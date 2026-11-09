@@ -108,7 +108,7 @@ public class EnchTableConfig {
 
         @Config.Comment({
                 "Whether to combine lvls of same enchantments when enchanting an item again in the enchanting table.",
-                "NOTE: if the all rolled enchants already are on the item, the enchantment wont be possible.",
+                "Works like the anvil (same lvls: +1, otherwise the higher one), capped at the enchantment's max lvl.",
                 "Requires \"(MixinToggle) Allow Re-Enchant\""
         })
         @Config.Name("Combine Existing")
