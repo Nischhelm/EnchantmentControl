@@ -60,10 +60,7 @@ public class AnvilConfig {
 
     @MixinConfig(name = Tags.MODID)
     public static class AnvilCostConfig {
-        @Config.Comment({
-                "Removes the \"Too Expensive\" system of anvils",
-                "If Universal Tweaks is installed, this resets its \"Blocks.Anvil.Anvil XP Level Cap\" option to 40 (see \"Compat.Universal Tweaks\")"
-        })
+        @Config.Comment("Removes the \"Too Expensive\" system of anvils")
         @Config.Name("(MixinToggle) Never Too Expensive")
         @Config.RequiresMcRestart
         @MixinConfig.MixinToggle(mixinJson = "mixins.enchantmentcontrol.vanilla.anvilnoexpensive.json", defaultValue = true)
